@@ -5,6 +5,8 @@ spring:
     url: jdbc:hsqldb:mem:dataSource
     username: sa
     password:
+    hikari:
+      maximum-pool-size: 2
 ---
 spring:
   profiles: local

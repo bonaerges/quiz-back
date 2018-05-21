@@ -12,11 +12,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Result {
 
 	public static final String FIELD_USER = "user";
@@ -25,11 +28,13 @@ public class Result {
 	@GeneratedValue
 	private Integer id;
 
+	private String name;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
-	@JoinColumn(name = FIELD_USER)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idResult", insertable=false, updatable=false)
+	@ManyToOne
 	private User user;
 
 }

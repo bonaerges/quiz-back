@@ -16,7 +16,6 @@ import lombok.ToString;
 @Setter
 @Getter
 @Entity
-@ToString
 public class User {
 
 	@Id
@@ -34,4 +33,11 @@ public class User {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Result.FIELD_USER)
 	private List<Result> result;
 
+	@Override
+	public String toString() {
+		return "User id = " + this.idUser + " , name= "+ name ;
+	}
+
 }
+
+
