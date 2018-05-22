@@ -19,7 +19,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
 public class Result {
 
 	public static final String FIELD_USER = "user";
