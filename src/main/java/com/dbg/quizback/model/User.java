@@ -29,13 +29,15 @@ public class User {
 	private String email;
 
 	private String password;
+	
+	private float averageNote;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Result.FIELD_USER)
 	private List<Result> result;
 
 	@Override
 	public String toString() {
-		return "User id = " + this.idUser + " , name= "+ name ;
+		return "User id= " + this.idUser + " , name= "+ name + ", Average Note= "+ averageNote;
 	}
 
 }

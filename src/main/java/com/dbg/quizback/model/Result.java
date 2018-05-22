@@ -23,6 +23,7 @@ import lombok.ToString;
 public class Result {
 
 	public static final String FIELD_USER = "user";
+	public static final String FIELD_ID_FK = "idResult";
 
 	@Id
 	@GeneratedValue
@@ -33,7 +34,7 @@ public class Result {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
-	@JoinColumn(name = "idResult", insertable=false, updatable=false)
+	@JoinColumn(name = FIELD_ID_FK, insertable=false, updatable=false)
 	@ManyToOne
 	private User user;
 
