@@ -2,14 +2,12 @@ package com.dbg.quizback.dao;
 
 import java.util.Optional;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import com.dbg.quizback.model.Questionnaire;
-import com.dbg.quizback.model.User;
 
 @Repository
-public interface QuestionnaireDAO extends PagingAndSortingRepository<Questionnaire, Integer> {
+public interface QuestionnaireDAO extends AbstractCrossDAO<Questionnaire> {
 
 	Optional<Questionnaire> findOneByDescriptionOrderByIdDesc(String desc);
 
