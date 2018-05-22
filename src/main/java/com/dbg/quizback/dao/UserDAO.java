@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.dbg.quizback.model.User;
 
 @Repository
-public interface UserDAO extends PagingAndSortingRepository<User, Integer> {
+public interface UserDAO extends PagingAndSortingRepository<User, Integer>{
 
 	Optional<User> findOneByNameOrderByIdUserDesc(String name);
 

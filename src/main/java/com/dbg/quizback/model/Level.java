@@ -8,38 +8,33 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Setter
 @Getter
 @Entity
-public class User {
+public class Level {
 
+	public static final String FIELD_ID = "idLevel";
+	
 	@Id
 	@GeneratedValue
-	private Integer idUser;
+	private Integer id;
 
 	@Column(nullable = false)
 	private String name;
 
-	@Column(unique = true, nullable = false)
-	private String email;
 
-	private String password;
-	
-	private float averageNote;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = Result.FIELD_USER)
-	private List<Result> result;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = Question.LEVEL_FIELD)
+	private Question question;
 
 	@Override
 	public String toString() {
-		return "User id= " + this.idUser + " , name= "+ name + ", Average Note= "+ averageNote;
+		return "Level id= " + id + " , name="+ name ;
 	}
-
 }
-
-
