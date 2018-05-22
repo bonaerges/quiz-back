@@ -13,5 +13,7 @@ public interface CourseDAO extends AbstractCrossDAO<Course> {
 	Optional<Course> findOneByDescription(String name);
 	
 	Set <Course> findAllByDescription(String name);
+	
+	Optional<Course> findOneByDescriptionOrderByIdDesc(String name);
 
 }
