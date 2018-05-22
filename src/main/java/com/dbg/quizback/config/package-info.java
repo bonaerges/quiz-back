@@ -5,4 +5,4 @@
  * @author papa
  *
  */
-package com.dbg.quizback.repository;
+package com.dbg.quizback.config;

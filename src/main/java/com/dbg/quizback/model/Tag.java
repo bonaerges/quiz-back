@@ -21,9 +21,11 @@ import lombok.ToString;
 public class Tag {
 
 	public static final String FIELD = "tag";
+	public static final String FIELD_ID = "idTag";
 	
 	@Id
 	@GeneratedValue
+	@Column(name=FIELD_ID)
 	private Integer id;
 
 	@Column(nullable = false)

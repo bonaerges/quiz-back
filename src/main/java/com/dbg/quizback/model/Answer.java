@@ -24,10 +24,12 @@ import lombok.ToString;
 @Entity
 public class Answer {
 
-	public static final String FIELD_ID = "question";
+	public static final String FIELD= "question";
+	public static final String FIELD_ID= "idQuestion";
 	
 	@Id
 	@GeneratedValue
+	@Column(name=FIELD_ID)
 	private Integer id;
 
 	@Column(nullable = false)

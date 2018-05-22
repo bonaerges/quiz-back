@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
@@ -17,9 +18,13 @@ import lombok.Setter;
 @Entity
 public class User {
 
+	public static final String FIELD_ID = "idUser";
+	public static final String FIELD_ID_FK_COURSE="idUserCourse";
+	
 	@Id
 	@GeneratedValue
-	private Integer idUser;
+	@Column(name=FIELD_ID)
+	private Integer id;
 
 	@Column(nullable = false)
 	private String name;
@@ -30,13 +35,19 @@ public class User {
 	private String password;
 	
 	private float averageNote;
-
+	
+	@Column(nullable = false)
+	private String role;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Result.FIELD_USER)
 	private List<Result> result;
 
+	@ManyToMany(fetch=FetchType.LAZY, mappedBy = Course.FIELD_USER)
+	private List<Course> course;
+	
 	@Override
 	public String toString() {
-		return "User id= " + this.idUser + " , name= "+ name + ", Average Note= "+ averageNote;
+		return "User id= " + this.id + " , name= "+ name + ", Average Note= "+ averageNote;
 	}
 
 }

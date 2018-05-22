@@ -15,13 +15,16 @@ import com.dbg.quizback.dao.UserDAO;
 import com.dbg.quizback.model.User;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl<DozerBeanMapper> implements UserService {
 
 	private static final Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
 	UserDAO userDAO;
  
+	@Autowired
+	DozerBeanMapper dozzerBean;
+	
 	@Override
 	public User create(User t) {
 		User userObject=userDAO.save(t);
@@ -55,9 +58,9 @@ public class UserServiceImpl implements UserService {
 		return userDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
 	}
 	
-	public Optional<User> findOneByNameOrderByIdUserDesc(String name){
-		Optional <User> userObject=userDAO.findOneByNameOrderByIdUserDesc(name);
-		userObject.ifPresent(u ->logger.info("User findOneByNameOrderByIdUserDesc "  + u.toString()));
+	public Optional<User> findOneByNameOrderByIdDesc(String name){
+		Optional <User> userObject=userDAO.findOneByNameOrderByIdDesc(name);
+		userObject.ifPresent(u ->logger.info("User findOneByNameOrderByIdDesc "  + u.toString()));
 		return userObject;
 		
 	}

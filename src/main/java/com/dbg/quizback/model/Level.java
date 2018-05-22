@@ -24,6 +24,7 @@ public class Level {
 	
 	@Id
 	@GeneratedValue
+	@Column(name=FIELD_ID)
 	private Integer id;
 
 	@Column(nullable = false)

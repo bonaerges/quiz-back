@@ -25,7 +25,7 @@ public class Question {
 	
 	@Id
 	@GeneratedValue
-	
+	@Column(name=FIELD_ID)
 	private Integer id;
 
 	@Column(nullable = false)

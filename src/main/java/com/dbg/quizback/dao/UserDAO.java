@@ -9,6 +9,6 @@ import com.dbg.quizback.model.User;
 @Repository
 public interface UserDAO extends AbstractCrossDAO<User>{
 
-	Optional<User> findOneByNameOrderByIdUserDesc(String name);
+	Optional<User> findOneByNameOrderByIdDesc(String name);
 
 }
