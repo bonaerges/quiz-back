@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.dozer.DozerBeanMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dbg.quizback.dao.UserDAO;
+import com.dbg.quizback.dto.UserDTO;
 import com.dbg.quizback.model.User;
 
 @Service
-public class UserServiceImpl<DozerBeanMapper> implements UserService {
+public class UserServiceImpl implements UserService {
 
 	private static final Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -23,10 +25,11 @@ public class UserServiceImpl<DozerBeanMapper> implements UserService {
 	UserDAO userDAO;
  
 	@Autowired
-	DozerBeanMapper dozzerBean;
+	DozerBeanMapper dozerBean;
 	
 	@Override
 	public User create(User t) {
+		//UserDTO userDTO=dozerBean.map(t, UserDTO.class);
 		User userObject=userDAO.save(t);
 		logger.info(" User create successfully " + t.toString());
 		return userObject;

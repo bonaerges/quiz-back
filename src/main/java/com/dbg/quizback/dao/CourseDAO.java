@@ -3,12 +3,13 @@ package com.dbg.quizback.dao;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import com.dbg.quizback.model.Course;
 
 @Repository
-public interface CourseDAO extends AbstractCrossDAO<Course> {
+public interface CourseDAO extends PagingAndSortingRepository<Course, Integer> {
 
 	Optional<Course> findOneByDescription(String name);
 	
