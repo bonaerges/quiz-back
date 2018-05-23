@@ -1,5 +1,6 @@
 package com.dbg.quizback.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +24,17 @@ import lombok.Setter;
 public class Questionnaire {
 
 	public static final String FIELD_ID = "idQuestionnaire";
-	public static final String FIELD_ID_FK_TAG = "idQuestionnaireTag";
-	public static final String FIELD_ID_FK_QUESTION = "idQuestionnaireQuestion";
-	public static final String FIELD_ID_FK_COURSE="idQuestionnaireCourse";
-	public static final String FIELD_ID_FK_RESULT = "idQuestionnaireResult";
+	//public static final String FIELD_ID_FK_TAG = "idQuestionnaireTag";
+	//public static final String FIELD_ID_FK_QUESTION = "idQuestionnaireQuestion";
+	//public static final String FIELD_ID_FK_COURSE="idQuestionnaireCourse";
+	//public static final String FIELD_ID_FK_RESULT = "idQuestionnaireResult";
 	public static final String TAG_FIELD = "tag";
 	public static final String QUESTION_FIELD = "question";
+	public static final String COURSE_FIELD = "course";
 	public static final String TABLE_QUESTIONNAIRE_TAG = "questionnaireTag";
 	public static final String TABLE_QUESTIONNAIRE_QUESTION = "questionnaireQuestion";
+	
+	//TABLE FIELDS
 	@Id
 	@GeneratedValue
 	@Column(name=FIELD_ID)
@@ -37,13 +43,10 @@ public class Questionnaire {
 	@Column(nullable = false)
 	private String description;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-      name=TABLE_QUESTIONNAIRE_QUESTION,
-      joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
-      inverseJoinColumns=@JoinColumn(name=Question.FIELD_ID, referencedColumnName=Question.FIELD_ID))
-	private List<Question> question;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date update;
 	
+	//FOREIGN KEYS
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
       name=TABLE_QUESTIONNAIRE_TAG,
@@ -51,6 +54,17 @@ public class Questionnaire {
       inverseJoinColumns=@JoinColumn(name=Tag.FIELD_ID, referencedColumnName=Tag.FIELD_ID))
 	private List<Tag> tag;
 
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+      name=TABLE_QUESTIONNAIRE_QUESTION,
+      joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
+      inverseJoinColumns=@JoinColumn(name=Question.FIELD_ID, referencedColumnName=Question.FIELD_ID))
+	private List<Question> question;
+	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = COURSE_FIELD)
+	private Course course;
 	
 	@Override
 	public String toString() {

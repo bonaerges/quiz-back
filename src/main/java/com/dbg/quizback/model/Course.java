@@ -29,6 +29,7 @@ public class Course {
 	public static final String FIELD_USER = "user";
 	public static final String TABLE_COURSE_USER = "courseUser";
 	
+	//TABLE FIELDS
 	@Id
 	@GeneratedValue
 	@Column(name=FIELD_ID)
@@ -37,20 +38,24 @@ public class Course {
 	@Column(nullable = false)
 	private String description;
 	
-	 @Temporal(TemporalType.TIMESTAMP)
-	 private Date startDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startDate;
 	 
-	 @Temporal(TemporalType.TIMESTAMP)
-	 private Date finishDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date finishDate;
 	 
-	 @Column
-	 private Date createdOn;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdOn;
 	 
-	 @Column
-	 private String createdBy;
+	@Column
+	private String createdBy; 
 	 
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date update;
 	 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = Questionnaire.FIELD_ID_FK_COURSE)
+	//FOREIGN KEYS
+	 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = Questionnaire.COURSE_FIELD)
 	private List<Questionnaire> questionnaire;
 
 	@ManyToMany(fetch=FetchType.LAZY)
@@ -59,10 +64,7 @@ public class Course {
 	inverseJoinColumns=@JoinColumn(name=User.FIELD_ID, referencedColumnName=User.FIELD_ID))
 	private List<User> user;
 	
-	
-	@JoinColumn(name = FIELD_COURSE)
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Course course;
+//
 	
 	@Override
 	public String toString() {

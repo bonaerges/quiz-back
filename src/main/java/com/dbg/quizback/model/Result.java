@@ -24,6 +24,7 @@ public class Result {
 	public static final String FIELD_ID = "idUser";
 	public static final String FIELD_ID_FK = "idResult";
 
+	//TABLE FIELDS
 	@Id
 	@GeneratedValue
 	@Column(name=FIELD_ID)
@@ -34,11 +35,15 @@ public class Result {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	
-	@JoinColumn(name = Questionnaire.FIELD_ID_FK_RESULT)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date update;
+	
+	//FOREIGN KEYS
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = Questionnaire.FIELD_ID)
 	private Questionnaire questionary;
 
-	@JoinColumn(name = FIELD_ID_FK)
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = FIELD_USER)
 	private User user;
 }

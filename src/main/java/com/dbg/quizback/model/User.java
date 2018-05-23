@@ -1,5 +1,6 @@
 package com.dbg.quizback.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +24,7 @@ public class User {
 	public static final String FIELD_ID = "idUser";
 	public static final String FIELD_ID_FK_COURSE="idUserCourse";
 	
+	//TABLE FIELDS
 	@Id
 	@GeneratedValue
 	@Column(name=FIELD_ID)
@@ -39,6 +43,10 @@ public class User {
 	@Column(nullable = false)
 	private String role;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date update;
+	
+	//FOREIGN KEYS
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Result.FIELD_USER)
 	private List<Result> result;
 
