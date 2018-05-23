@@ -3,9 +3,6 @@ package com.dbg.quizback.dto;
 import lombok.Data;
 
 @Data
-public class UserDTO {
-
-	//private Integer id;
-	private String email;
+public class TagDTO {
 	private String name;
 }

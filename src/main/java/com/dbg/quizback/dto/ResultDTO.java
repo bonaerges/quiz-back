@@ -1,11 +1,14 @@
 package com.dbg.quizback.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class ResultDTO {
 
-	//private Integer id;
-	private String email;
 	private String name;
+	
+	private Date date;
+	
 }
