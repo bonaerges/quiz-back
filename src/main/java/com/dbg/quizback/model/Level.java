@@ -30,8 +30,8 @@ public class Level {
 	@Column(nullable = false)
 	private String name;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date update;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	private Date update;
 
 	 //FOREIGN KEYS
 	 

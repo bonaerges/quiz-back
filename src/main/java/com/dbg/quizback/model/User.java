@@ -43,8 +43,8 @@ public class User {
 	@Column(nullable = false)
 	private String role;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date update;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	private Date update;
 	
 	//FOREIGN KEYS
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Result.FIELD_USER)

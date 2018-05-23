@@ -1,17 +1,21 @@
 package com.dbg.quizback.controller;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.dbg.quizback.component.mapper.user.UserMapper;
 import com.dbg.quizback.dto.UserDTO;
@@ -22,6 +26,9 @@ import com.dbg.quizback.service.UserService;
 @RestController
 @RequestMapping(value="/user")
 public class UserController {
+	
+	private static final Logger logger= LoggerFactory.getLogger(UserController.class);
+	
 	@Autowired
 	UserService userService;
 	
@@ -29,7 +36,7 @@ public class UserController {
 	UserMapper userMapper;
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public Set<UserDTO> findAll(
+	public Set<UserDTO>  findAll(
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false)Integer size){
 		
@@ -38,11 +45,14 @@ public class UserController {
 	}
 	 
 
-	@RequestMapping(value="/user/create",method = RequestMethod.POST)
-	public UserDTO create(@RequestBody UserPostDTO dto) {
-		final User user = userMapper.dtoToModel(dto);
-		final User createUser = userService.create(user);
-		return userMapper.modelToDto(createUser);
+	@RequestMapping(value="/user/add",method = RequestMethod.POST)
+	public ResponseEntity<String> create(@RequestBody UserPostDTO dto,UriComponentsBuilder ucBuilder) {
+		final User userModel = userMapper.dtoToModel(dto);
+		final User createUser = userService.create(userModel);
+		logger.info("User: "+dto.toString()+ "  Added successfully "  );
+		HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(userModel.getId()).toUri());
+        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 
 //	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
@@ -56,4 +66,6 @@ public class UserController {
 //	void delete(T t) {
 //		
 //	}
+	
+	
 }

@@ -35,8 +35,8 @@ public class Result {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date update;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	private Date update;
 	
 	//FOREIGN KEYS
 	@ManyToOne(fetch = FetchType.LAZY)

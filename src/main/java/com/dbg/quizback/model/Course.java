@@ -50,8 +50,8 @@ public class Course {
 	@Column
 	private String createdBy; 
 	 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date update;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	private Date update;
 	 
 	//FOREIGN KEYS
 	 

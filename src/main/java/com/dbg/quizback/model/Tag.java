@@ -36,8 +36,8 @@ public class Tag {
 	@Column(nullable = false)
 	private String name;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date update;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	private Date update;
 	
 	//FOREIGN KEY
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = Questionnaire.TAG_FIELD)

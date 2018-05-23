@@ -38,8 +38,8 @@ public class Question {
 	@Column(nullable = false)
 	private String description;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date update;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	private Date update;
 	
 	 //FOREIGN KEYS
 	 
