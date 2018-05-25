@@ -12,4 +12,8 @@ public interface UserDAO extends PagingAndSortingRepository<User, Integer>{
 
 	Optional<User> findOneByNameOrderByIdDesc(String name);
 
+	//Optional<User> findAllOrderByNameAsc(String name);
+	
+	 long countByName(String name);
+	 
 }

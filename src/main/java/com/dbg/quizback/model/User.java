@@ -36,12 +36,13 @@ public class User {
 	@Column(unique = true, nullable = false)
 	private String email;
 
+	@Column(nullable = true)
 	private String password;
 	
-	private float averageNote;
+	@Column(nullable = true)
+	private float averageCoursesNote;
 	
-	@Column(nullable = false)
-	private String role;
+	//private String role;
 	
 //	@Temporal(TemporalType.TIMESTAMP)
 //	private Date update;
@@ -55,7 +56,7 @@ public class User {
 	
 	@Override
 	public String toString() {
-		return "User id= " + this.id + " , name= "+ name + ", Average Note= "+ averageNote;
+		return "User id= " + this.id + " , name= "+ name ;
 	}
 
 }

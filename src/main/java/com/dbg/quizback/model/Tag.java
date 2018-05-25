@@ -1,7 +1,7 @@
 package com.dbg.quizback.model;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,14 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Setter
 @Getter
@@ -40,8 +35,9 @@ public class Tag {
 //	private Date update;
 	
 	//FOREIGN KEY
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = Questionnaire.TAG_FIELD)
-	private List<Questionnaire> questionnaire;
+	//QUESTION (N) <--> (M) TAG
+	@ManyToMany(fetch = FetchType.LAZY,mappedBy=FIELD)
+	private Set<Question> question;
 	
 	@Override
 	public String toString() {

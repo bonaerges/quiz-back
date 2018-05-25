@@ -1,5 +1,6 @@
 package com.dbg.quizback.service;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.dbg.quizback.dao.CourseDAO;
 import com.dbg.quizback.model.Course;
+import com.dbg.quizback.model.User;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -67,5 +69,17 @@ public class CourseServiceImpl implements CourseService {
 		return courseObject;
 		
 	}
+
+	@Override
+	public Set<User> findAllUserById(Integer idCourse) {
+		Set <User> usersByCourse=new HashSet<User>();
+		Optional <Course> courseObject=courseDAO.findById(idCourse);	
+		if (courseObject.isPresent()) {
+			usersByCourse=courseObject.get().getUser();
+		}
+		return usersByCourse;
+	}
+
+
 	
 }

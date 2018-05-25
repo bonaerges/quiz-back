@@ -2,6 +2,7 @@ package com.dbg.quizback.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,22 +48,22 @@ public class Course {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdOn;
 	 
-	@Column
+	@Column(nullable = true)
 	private String createdBy; 
 	 
 //	@Temporal(TemporalType.TIMESTAMP)
 //	private Date update;
 	 
 	//FOREIGN KEYS
-	 
+	//COURSE (1) --> (M) QUESTIONNAIRE
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Questionnaire.COURSE_FIELD)
-	private List<Questionnaire> questionnaire;
+	private Set<Questionnaire> questionnaire;
 
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name=TABLE_COURSE_USER, 
 	joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
 	inverseJoinColumns=@JoinColumn(name=User.FIELD_ID, referencedColumnName=User.FIELD_ID))
-	private List<User> user;
+	private Set<User> user;
 	
 //
 	

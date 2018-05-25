@@ -46,13 +46,6 @@ public class Questionnaire {
 //	@Temporal(TemporalType.TIMESTAMP)
 //	private Date update;
 	
-	//FOREIGN KEYS
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-      name=TABLE_QUESTIONNAIRE_TAG,
-      joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
-      inverseJoinColumns=@JoinColumn(name=Tag.FIELD_ID, referencedColumnName=Tag.FIELD_ID))
-	private List<Tag> tag;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
