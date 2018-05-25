@@ -4,10 +4,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +54,7 @@ public class UserController {
 	//user/ and POST METHOD with body
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
+	
 	public UserDTO create(@RequestBody UserPostDTO dto) {
 		final User user = userMapper.dtoToModel(dto);
 		final User createUser = userService.create(user);

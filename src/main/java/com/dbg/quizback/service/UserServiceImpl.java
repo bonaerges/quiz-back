@@ -5,12 +5,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.dbg.quizback.dao.UserDAO;
 import com.dbg.quizback.dto.UserDTO;
@@ -28,8 +30,9 @@ public class UserServiceImpl implements UserService {
 	DozerBeanMapper dozerBean;
 	
 	@Override
+	@ExceptionHandler({ ConstraintViolationException.class })
 	public User create(User t) {
-		//UserDTO userDTO=dozerBean.map(t, UserDTO.class);
+		
 		User userObject=userDAO.save(t);
 		logger.info(" User create successfully " + t.toString());
 		return userObject;

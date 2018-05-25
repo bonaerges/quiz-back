@@ -62,5 +62,11 @@ public class AnswerServiceImpl implements AnswerService {
 		
 	}
 
+	@Override
+	public Iterable<Answer> findAll() {
+		
+		return answerDAO.findAll();		
+	}
+
 	
 }
