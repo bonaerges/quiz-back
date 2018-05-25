@@ -39,6 +39,7 @@ public class CourseController {
 //	    model.addAttribute("courses", crepository.findAll());
 //		model.addAttribute("student", repository.findOne(studentId));
 //	    return "addStudentCourse";
+		
 	}
 	
 	@RequestMapping(value="/user/{id}/course", method=RequestMethod.GET)
