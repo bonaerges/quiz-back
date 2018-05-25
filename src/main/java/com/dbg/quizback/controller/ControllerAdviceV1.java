@@ -14,7 +14,7 @@ public class ControllerAdviceV1 {
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ErrorDTO error(NotFoundException nfe) {
-		return new ErrorDTO();
+		return new ErrorDTO(nfe.getMessage());
 	}
 
 }
