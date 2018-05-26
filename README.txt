@@ -1,6 +1,5 @@
-# quiz-back
 
- #Question Controller Service:
+Question Service:
 
 	Create:
 		addQuestion(Question question) - create a new question

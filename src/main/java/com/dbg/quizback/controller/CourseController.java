@@ -33,7 +33,7 @@ public class CourseController {
 	@Autowired
 	CourseMapper courseMapper;
 	
-	
+	/************************************HTTP METHOD GET *************************************/
 	@RequestMapping(value = "addUserCourse/", method = RequestMethod.GET)
 	public void create(@PathVariable("userId") Integer userId, @PathVariable("courseId") Integer courseId){
 //	    model.addAttribute("courses", crepository.findAll());
@@ -55,4 +55,10 @@ public class CourseController {
 			}
 		}
 	} 
+	
+	/************************************HTTP METHOD POST *************************************/
+	
+	/************************************HTTP METHOD PUT *************************************/
+	
+	/************************************HTTP METHOD DELETE *************************************/
 }

@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class Question {
 	@Column(name=FIELD_ID)
 	private Integer id;
 
-	@Column(nullable = false)
+	@Column(nullable = false,unique = true)
 	private String description;
 
 //	@Temporal(TemporalType.TIMESTAMP)

@@ -1,15 +1,11 @@
 package com.dbg.quizback.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,13 +18,16 @@ public class Level {
 	public static final String FIELD_ID = "idLevel";
 	public static final String FIELD_ID_FK_LEVEL="idLevelQ";
 	
+	public enum LevelValue {
+		EASY, DIFICULT 
+	}
 	@Id
 	@GeneratedValue
 	@Column(name=FIELD_ID)
 	private Integer id;
 
 	@Column(nullable = false)
-	private String name;
+	private LevelValue name;
 
 //	@Temporal(TemporalType.TIMESTAMP)
 //	private Date update;

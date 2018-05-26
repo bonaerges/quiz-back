@@ -1,8 +1,7 @@
 package com.dbg.quizback.dto;
 
 import java.util.List;
-
-import com.dbg.quizback.model.Answer;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -11,6 +10,9 @@ public class QuestionDTO {
 
 	private String description;
 	
-	private List<Answer> answer;
+	private List<AnswerDTO> answer;
 	
+	private LevelDTO level;
+	
+	private Set<TagDTO> tag;
 }

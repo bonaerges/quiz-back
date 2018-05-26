@@ -37,7 +37,7 @@ public class Questionnaire {
 	@Column(name=FIELD_ID)
 	private Integer id;
 
-	@Column(nullable = false)
+	@Column(nullable = false,unique=true)
 	private String description;
 	
 //	@Temporal(TemporalType.TIMESTAMP)
