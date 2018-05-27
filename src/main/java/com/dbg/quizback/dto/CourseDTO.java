@@ -1,6 +1,7 @@
 package com.dbg.quizback.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -14,4 +15,6 @@ public class CourseDTO {
 	private Date finishDate;
 	 
 	private Date createdOn;
+	
+	private List<UserDTO> users;
 }

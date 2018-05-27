@@ -6,5 +6,7 @@ import lombok.Data;
 public class UserPostDTO extends UserDTO {
 
 	public String password;
+	
+	
 
 }

@@ -98,7 +98,7 @@ public class QuestionController {
 	ResponseEntity<QuestionDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionDTO dto) {
 
 		Optional<Question> questionModel=questionService.findById(id);
-		ResponseEntity<QuestionDTO> respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.OK);
+		ResponseEntity<QuestionDTO> respEnt=respEntOK;
 		if(questionModel.isPresent()) {
 			questionModel.get().setId(id);
 			questionService.update(questionModel.get());  
@@ -128,7 +128,7 @@ public class QuestionController {
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
 	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id, @RequestBody QuestionDTO dto) {		
 		Optional<Question> question=questionService.findById(id);
-		ResponseEntity<QuestionDTO> respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.OK);
+		ResponseEntity<QuestionDTO> respEnt=respEntOK;
 		if(question.isPresent()) {
 			//delete all answers linked to current question 
 			question.get().getAnswer().forEach((final Answer answerLink)->answerService.delete(answerLink));
@@ -140,6 +140,22 @@ public class QuestionController {
 			respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
 		}
 		return respEnt;
-
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/{id}/answer/{idA}",method = {RequestMethod.DELETE})
+	public ResponseEntity<QuestionDTO> deleteAnswerQuestion(
+			@PathVariable("id") Integer id,
+			@PathVariable("idA") Integer idA) throws NotFoundException {
+		Optional<Question> question=questionService.findById(id);
+		ResponseEntity<QuestionDTO> respEnt=respEntOK;
+		if (question.isPresent()) {
+			answerService.deleteAnswerQuestion(idA,id);
+			questionService.update(question.get());
+			respEnt=new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(question.get()),HttpStatus.OK);
+			log.info("Succesfully delete answer "+ idA + " linked to question " + id ); 
+		}
+		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+		return respEnt;
+	}	
 }

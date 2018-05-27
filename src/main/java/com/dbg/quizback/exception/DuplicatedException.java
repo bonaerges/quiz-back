@@ -13,4 +13,8 @@ public class DuplicatedException extends Exception {
 		super(MSG);
 	}
 	
+	public DuplicatedException(String msg) {
+		super(msg);
+	}
+	
 }

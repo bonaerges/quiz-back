@@ -13,7 +13,7 @@ public class NotFoundException extends Exception {
 		super(MSG);
 	}
 	public NotFoundException(String msg) {
-		super(MSG);
+		super(msg);
 	}
 	
 }
