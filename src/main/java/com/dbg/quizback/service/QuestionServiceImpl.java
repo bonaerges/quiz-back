@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dbg.quizback.dao.QuestionDAO;
+import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.model.Question;
 
 @Service
@@ -61,6 +62,15 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionObject;
 		
 	}
+	//TO modify a answer response to a question in case user need to change response
+	public void updateSelectedAnswer(Question question, Answer answer) {
+		Optional <Question> questionObject=questionDAO.findById(question.getId());
+		if (questionObject.isPresent()) {
+			questionObject.get().setCorrectAnswer(answer);
+			questionDAO.save(question);
+		}
+	}
+	
 
 	
 }

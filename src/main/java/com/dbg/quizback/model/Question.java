@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -45,6 +46,9 @@ public class Question {
 	//QUESTION (1) --> (M) ANSWER
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = QUESTION_FIELD)
 	private List<Answer> answer;
+	
+	@OneToOne
+	private Answer correctAnswer;
 	
 	//QUESTION (N) <-- (1) LEVEL
 	@JoinColumn(name = Level.FIELD_ID)

@@ -1,5 +1,7 @@
 package com.dbg.quizback.component.mapper.answer;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.dbg.quizback.component.mapper.AbstractMapper;
@@ -17,6 +19,18 @@ public class AnswerMapperImpl extends AbstractMapper<Answer,AnswerDTO> implement
 	@Override
 	public Class<? extends Answer> modelClazz() {
 		return Answer.class;
+	}
+
+	@Override
+	public List<Answer> dtoToModel(List<AnswerDTO> dtos) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AnswerDTO> modelToDto(List<Answer> models) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

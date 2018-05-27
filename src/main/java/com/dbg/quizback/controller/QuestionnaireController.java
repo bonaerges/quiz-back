@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dbg.quizback.component.mapper.questionnaire.QuestionnaireMapper;
+import com.dbg.quizback.dto.AnswerDTO;
 import com.dbg.quizback.dto.QuestionnaireDTO;
 import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.model.Question;
 import com.dbg.quizback.model.Questionnaire;
+import com.dbg.quizback.model.User;
 import com.dbg.quizback.service.AnswerService;
+import com.dbg.quizback.service.QuestionService;
 import com.dbg.quizback.service.QuestionnaireService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,73 +36,87 @@ public class QuestionnaireController {
 	@Autowired
 	QuestionnaireService questionnaireService;
 	
+
 	@Autowired
 	AnswerService answerService;
+	
+	@Autowired
+	QuestionService questionService;
 	
 	@Autowired
 	QuestionnaireMapper questionnaireMapper;
 	
 	
+	final ResponseEntity<QuestionnaireDTO> respEntOK=new ResponseEntity<QuestionnaireDTO>(HttpStatus.OK);
+	final ResponseEntity<QuestionnaireDTO> respEntNotFound=new ResponseEntity<QuestionnaireDTO>(HttpStatus.NOT_FOUND);
+	
 
-	//questionnaire/id?page=X&size=X
+	/************************************HTTP METHOD GET *************************************/
+	//questionnaire/id
 	@ResponseBody
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public QuestionnaireDTO  findById(
-			@PathVariable("id") Integer id){
-		Optional<Questionnaire> questionnaire=questionnaireService.findById(id);
-		questionnaire.ifPresent(q-> log.info("Questionnaire found "));
-		return questionnaireMapper.modelToDto(questionnaire.get());
+	public ResponseEntity<QuestionnaireDTO>  findById(@PathVariable("id") Integer id)
+	{
+		Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
+		ResponseEntity<QuestionnaireDTO> respEnt=respEntOK;
+		if(questionnaireModel.isPresent()) {
+			log.info("Questionnaire " + id + " found");
+			respEnt=new ResponseEntity<QuestionnaireDTO>(questionnaireMapper.modelToDto(questionnaireModel.get()),HttpStatus.OK);
+		}
+		else respEnt=respEntNotFound;
+		return respEnt;
 	}
 	
 	//questionnaire?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
 	public Set<QuestionnaireDTO>  findAll(
-			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
+			@RequestParam(value = "page", defaultValue="1",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
 		Set<Questionnaire> questionnaires=questionnaireService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
 		log.info("findAll questionnaires count is: "+ Integer.toString(questionnaires.size()));
 		return questionnaireMapper.modelToDto(questionnaires);
 	}
 	
-	//questionnaire/ and POST METHOD with body
+	/************************************HTTP METHOD POST *************************************/
+	//questionnaire
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)	
 	public QuestionnaireDTO create(@RequestBody QuestionnaireDTO dto) {
-		final Questionnaire questionnaire = questionnaireMapper.dtoToModel(dto);
-		final Questionnaire createQuestionnaire = questionnaireService.create(questionnaire);
+		final Questionnaire questionnaireModel = questionnaireMapper.dtoToModel(dto);
+		final Questionnaire createQuestionnaire = questionnaireService.create(questionnaireModel);
 		log.info("Questionnaire " + createQuestionnaire.getId() + " succesfuly created.");
-		log.warn("Pending to create answers linked to questionnaire");
+		log.warn("Check answers linked to questionnaire");
 		return questionnaireMapper.modelToDto(createQuestionnaire);
 	}
 
+	/************************************HTTP METHOD PUT *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
-	ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody QuestionnaireDTO dto) {
+	ResponseEntity<QuestionnaireDTO>  update(@PathVariable("id") Integer id, @RequestBody QuestionnaireDTO dto) {
 		
-		Optional<Questionnaire> questionnaire=questionnaireService.findById(id);
-		ResponseEntity<?> respEnt=new ResponseEntity<>(HttpStatus.OK);
-	    if(questionnaire.isPresent()) {
+		final Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
+		ResponseEntity<QuestionnaireDTO> respEnt=respEntOK;
+	    if(questionnaireModel.isPresent()) {
 	    	questionnaireService.update(questionnaireMapper.dtoToModel(dto));  
 	    }
-	    else respEnt=new ResponseEntity(HttpStatus.NOT_FOUND);
+	    else respEnt=respEntNotFound;
 		return respEnt;
 	}
 
+	/************************************HTTP METHOD DELETE *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
-	ResponseEntity<?> delete(@PathVariable("id") Integer id, @RequestBody QuestionnaireDTO dto) {		
-		Optional<Questionnaire> questionnaire=questionnaireService.findById(id);
-		ResponseEntity respEnt=new ResponseEntity<Object>(HttpStatus.OK);
-	    if(questionnaire.isPresent()) {
+	ResponseEntity<QuestionnaireDTO> delete(@PathVariable("id") Integer id, @RequestBody QuestionnaireDTO dto) {		
+		final Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
+		ResponseEntity<QuestionnaireDTO> respEnt=respEntOK;
+	    if(questionnaireModel.isPresent()) {
 	    	//delete all answers linked to current questionnaire 
-	    //	questionnaire.get().getQuestion().forEach((final Question answerLink)->answerService.delete(answerLink));
+	    	//questionnaireModel.get().getQuestion().forEach((final Question questionMap)->questionService.delete(questionMap));
 	    	questionnaireService.delete(questionnaireMapper.dtoToModel(dto));   
 	    	log.info("Succesfully delete questionnaire " + id + " and answers linked to questionnaire"); 
 	    }
-	    else {
-	    	respEnt=new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-	    }
+	    else respEnt=respEntNotFound;
 		return respEnt;
 		
 	}

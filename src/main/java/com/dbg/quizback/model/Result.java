@@ -29,8 +29,15 @@ public class Result {
 	@GeneratedValue
 	@Column(name=FIELD_ID)
 	private Integer id;
-
-	private String name;
+		
+	private double averageNote=0;
+	
+	private int totalAnswerOK=0;
+	
+	private int totalAnswerKO=0;
+			
+	private  int totalQuestions=0;
+	
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;

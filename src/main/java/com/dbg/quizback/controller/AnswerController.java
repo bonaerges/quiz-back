@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dbg.quizback.component.mapper.answer.AnswerMapper;
 import com.dbg.quizback.dto.AnswerDTO;
-import com.dbg.quizback.dto.QuestionDTO;
 import com.dbg.quizback.model.Answer;
-import com.dbg.quizback.model.Question;
 import com.dbg.quizback.service.AnswerService;
 
 import lombok.extern.slf4j.Slf4j;

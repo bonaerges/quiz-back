@@ -1,5 +1,7 @@
 package com.dbg.quizback.component.mapper.level;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.dbg.quizback.component.mapper.AbstractMapper;
@@ -17,6 +19,18 @@ public class LevelMapperImpl extends AbstractMapper<Level,LevelDTO> implements L
 	@Override
 	public Class<? extends Level> modelClazz() {
 		return Level.class;
+	}
+
+	@Override
+	public List<Level> dtoToModel(List<LevelDTO> dtos) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LevelDTO> modelToDto(List<Level> models) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

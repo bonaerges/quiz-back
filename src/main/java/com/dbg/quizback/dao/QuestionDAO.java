@@ -12,5 +12,5 @@ import com.dbg.quizback.model.User;
 public interface QuestionDAO extends PagingAndSortingRepository<Question, Integer> {
 
 	Optional<Question> findOneByDescriptionOrderByIdDesc(String description);
-
+	
 }

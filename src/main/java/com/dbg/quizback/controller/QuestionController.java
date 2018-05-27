@@ -1,5 +1,6 @@
 package com.dbg.quizback.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -80,6 +81,21 @@ public class QuestionController {
 		return questionMapper.modelToDto(questions);
 	}
 
+	@RequestMapping(value = "/{id}/showCorrectAnswer", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<AnswerDTO> getCorrectAnswer(@PathVariable Integer idQuestion) {
+		Optional<Question> question = questionService.findById(idQuestion);
+		ResponseEntity<AnswerDTO> respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.OK);
+		if (question.isPresent()) {
+			Answer answerCorrect=
+					 question.get().getAnswer().stream()
+					 .filter(ans->ans.getIsCorrect() == true).findFirst().get();
+			 	log.info("Answer Correct " + answerCorrect.getDescription() + " found for question id "+ idQuestion);
+				respEnt=new ResponseEntity<AnswerDTO>(answerMapper.modelToDto(answerCorrect),HttpStatus.OK);
+		}
+		else respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.NOT_FOUND);
+		return respEnt;
+	}
 	/************************************HTTP METHOD POST *************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)	
@@ -123,6 +139,18 @@ public class QuestionController {
 		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(answerModel.getQuestion()),HttpStatus.OK);
 	}	
 	
+	@RequestMapping(value = "/updateQuestions", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public void updateQuestions(@RequestBody List<QuestionDTO> questions) {
+		List<Question> itemQuestions=questionMapper.dtoToModel(questions);
+		itemQuestions.forEach(qItem -> {
+			
+			Optional<Question> questionModel=questionService.findById(qItem.getId());
+			if (questionModel.isPresent()) {
+				questionService.update(questionModel.get());
+			}
+		});
+	}
 	/************************************HTTP METHOD DELETE *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
