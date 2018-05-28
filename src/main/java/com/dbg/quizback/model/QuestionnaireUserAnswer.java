@@ -12,6 +12,7 @@ public class QuestionnaireUserAnswer {
 	 private Question question;
 	 private Answer selectedAnswer;
 	 private User user;
+	 private Questionnaire questionnaire;
 	
 	 
 	 

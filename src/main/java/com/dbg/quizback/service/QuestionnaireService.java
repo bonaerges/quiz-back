@@ -7,7 +7,6 @@ import com.dbg.quizback.model.QuestionnaireUserAnswer;
 import com.dbg.quizback.model.Result;
 
 public interface QuestionnaireService extends AbstractCrossService<Questionnaire,Integer> {
-
-	Result validateAnswers(Questionnaire questionnaire, List<QuestionnaireUserAnswer> resultsQuestionAnswer);
+	Result validateQuestionAnswers(Questionnaire questionnaire, List<QuestionnaireUserAnswer> resultsQuestionAnswer);
 	
 }

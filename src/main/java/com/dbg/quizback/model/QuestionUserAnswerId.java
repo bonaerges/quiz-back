@@ -5,7 +5,12 @@ import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Embeddable
+@Getter
+@Setter
 public class QuestionUserAnswerId  implements Serializable {
 	
 	/**

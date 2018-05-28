@@ -17,6 +17,6 @@ public interface UserDAO extends PagingAndSortingRepository<User, Integer>{
 	
 	Optional<Course> findCourseByEmail(String email,Integer idCourse);
 	
-	 long countByName(String name);
+	long countByName(String name);
 	 
 }

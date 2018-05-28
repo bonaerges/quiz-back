@@ -1,5 +1,7 @@
 package com.dbg.quizback.service;
 
+import static org.assertj.core.api.Assertions.filter;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import com.dbg.quizback.dao.QuestionDAO;
@@ -24,11 +27,13 @@ import com.dbg.quizback.model.QuestionnaireUserAnswer;
 import com.dbg.quizback.model.Result;
 import com.dbg.quizback.model.User;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class QuestionnaireServiceImpl implements QuestionnaireService {
 
-	private static final Logger logger= LoggerFactory.getLogger(QuestionnaireServiceImpl.class);
-	
+
 	@Autowired
 	QuestionnaireDAO questionnaireDAO;
 	
@@ -38,29 +43,32 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	@Autowired
 	UserDAO userDAO;
 	
+	@Autowired
+	Answer answerDAO;
+	
 	@Override
 	public Questionnaire create(Questionnaire t) {
 		Questionnaire questionnaireObject=questionnaireDAO.save(t);
-		logger.info(" Questionnaire create successfully " + t.toString());
+		log.info(" Questionnaire create successfully " + t.toString());
 		return questionnaireObject;
 	}
 
 	@Override
 	public void update(Questionnaire t) {
 		questionnaireDAO.save(t);
-		logger.info(" Questionnaire update successfully " + t.toString());
+		log.info(" Questionnaire update successfully " + t.toString());
 		
 	}
 	@Override
 	public void delete(Questionnaire t) {
 		questionnaireDAO.delete(t);
-		logger.info(" Questionnaire delete successfully " + t.toString());
+		log.info(" Questionnaire delete successfully " + t.toString());
 		
 	}
 	@Override
 	public Optional<Questionnaire> findById(Integer id){	
 		Optional <Questionnaire> questionnaireObject=questionnaireDAO.findById(id);	
-		logger.info(" Questionnaire findById successfully " + questionnaireObject.toString());
+		log.info(" Questionnaire findById successfully " + questionnaireObject.toString());
 		return questionnaireObject;
 	}
 	
@@ -73,14 +81,14 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	
 	public Optional<Questionnaire> findOneByDescriptionOrderByIdDesc(String name){
 		Optional <Questionnaire> questionnaireObject=questionnaireDAO.findOneByDescriptionOrderByIdDesc(name);
-		questionnaireObject.ifPresent(q ->logger.info("Questionnaire findOneByDescriptionOrderByIdDesc "  + q.toString()));
+		questionnaireObject.ifPresent(q ->log.info("Questionnaire findOneByDescriptionOrderByIdDesc "  + q.toString()));
 		return questionnaireObject;
 		
 	}
 	
 
 	@Override
-	public Result validateAnswers(Questionnaire questionnaire, List<QuestionnaireUserAnswer> resultsQuestionAnswer) {
+	public Result validateQuestionAnswers(Questionnaire questionnaire, List<QuestionnaireUserAnswer> resultsQuestionAnswer) {
 	
 		//Get all questions from questionnaire
 		List<Question> questionsQuiz=questionnaire.getQuestion();
@@ -89,31 +97,48 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		double averageNote;
 	
 		
-		//From the filled quiz select the correct answer and compare with answer provide by user
+		//From the filled quiz , for each answer given to question, select the correct answer and compare with answer provide by user
 		questionsQuiz.forEach(questionFilledQ -> {
 			Answer correctAnswer=questionFilledQ.getCorrectAnswer();
 			//get answer provide by user
 			resultsQuestionAnswer.forEach(answerUser ->  {
-				int countCorrect=0;
-				int countIncorrect=0;
-				int toalQuestions=0;
+				
+				int countCorrect=resultUser.getTotalAnswerOK();
+				int countIncorrect=resultUser.getTotalAnswerKO();
+				int toalQuestions=resultUser.getTotalQuestions();
+				boolean answerSelected=false;
 				Optional<User> userAnswer=userDAO.findById(answerUser.getUser().getId());
-				if (answerUser.getQuestion().getId() ==	questionFilledQ.getId()) {
-					if (answerUser.getSelectedAnswer().getId() == correctAnswer.getId()) {
-						//find user that answer questionnaire for save into result	and update answer OK and KO					
-						
-						if (userAnswer.isPresent()) {
-							countCorrect++;
+				if (userAnswer.isPresent()) {
+					//Compare if question answer from questionnaire is the same question answered
+					if (answerUser.getQuestion().getId() ==	questionFilledQ.getId()) {
+						//Check if answer provide for the question is the correctAnswer to sumarize error or succeed
+						boolean answeredCorrect= Optional.ofNullable(answerUser)
+					    .map(aUser -> aUser.getSelectedAnswer())
+						.filter(aUser->aUser.getId() == correctAnswer.getId()).isPresent();
+						if (answeredCorrect) {
+							//find user that answer questionnaire for save into result	and update answer OK and KO					
+								countCorrect++;
+								answerSelected=true;
+						}
+						else {
+							countIncorrect++;
 						}
 					}
-					else countIncorrect++;
-					if (userAnswer.isPresent()) {
-						resultUser.setTotalAnswerOK(countCorrect);
-						resultUser.setTotalAnswerKO(countIncorrect);
-						resultUser.setTotalQuestions(toalQuestions+1);
-						resultUser.setUser(userAnswer.get());
-					}					
+								
 				}
+				if (answerSelected) {
+					resultUser.setTotalAnswerOK(countCorrect);
+					resultUser.setTotalAnswerKO(countIncorrect);
+					resultUser.setTotalQuestions(toalQuestions+1);
+					resultUser.setUser(userAnswer.get());
+				}	
+				else {
+					resultUser.setTotalAnswerOK(0);
+					resultUser.setTotalAnswerKO(countIncorrect);
+					resultUser.setTotalQuestions(toalQuestions+1);
+					resultUser.setUser(userAnswer.get());
+				}
+				
 				});
 			} );
 		
