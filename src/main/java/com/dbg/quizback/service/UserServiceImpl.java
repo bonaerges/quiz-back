@@ -9,7 +9,6 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -136,12 +135,6 @@ public class UserServiceImpl implements UserService {
         
     }
 
-	@Override
-	public	Set<User> findUsersByCourse(@Param("idCourse")Integer idCourse){
-		Set<User> usersCourse=userDAO.findUsersByCourse(idCourse);
-		return usersCourse;
-	
-	}
 	
 
 }

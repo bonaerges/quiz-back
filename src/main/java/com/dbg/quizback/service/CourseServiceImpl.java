@@ -94,7 +94,8 @@ public class CourseServiceImpl implements CourseService {
 		Optional <User> userObject=userDAO.findById(idCourse);	
 		if (courseObject.isPresent()) {
 			userObject.ifPresent(u ->{
-			 courseObject.get().getUser().stream().collect(Collectors.toList()).add(u);
+			courseObject.get().getUser().add(u);
+			
 			 courseDAO.save(courseObject.get());
 			});
 		

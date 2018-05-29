@@ -23,6 +23,7 @@ import com.dbg.quizback.component.mapper.user.UserMapper;
 import com.dbg.quizback.dto.AnswerDTO;
 import com.dbg.quizback.dto.CourseDTO;
 import com.dbg.quizback.dto.QuestionDTO;
+import com.dbg.quizback.dto.UserCourseDTO;
 import com.dbg.quizback.dto.UserDTO;
 import com.dbg.quizback.dto.UserPostDTO;
 import com.dbg.quizback.exception.DuplicatedException;
@@ -62,7 +63,7 @@ public class CourseController {
 	@RequestMapping(method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.FOUND)
 	public Set<CourseDTO>  findAll(
-			@RequestParam(value = "page", defaultValue="1",required = false) Integer page,
+			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
 		Set<Course> course=courseService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
 		log.info("findAll course count is: "+ Integer.toString(course.size()));
@@ -70,15 +71,14 @@ public class CourseController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(path="/{id}/user",method=RequestMethod.GET)
+	@RequestMapping(path="/{id}/",method=RequestMethod.GET)
 	public ResponseEntity<Set<UserDTO>> getUserCourseById(@PathVariable("id") Integer id)
 			{
 		Optional<Course> course=courseService.findById(id);
 		ResponseEntity<Set<UserDTO>> respEnt=new ResponseEntity<Set<UserDTO>>(HttpStatus.OK);
 		 if(course.isPresent()) {
 				log.info("findUserByid users found "+ id);
-				Set<User> usersCourse=userService.findUsersByCourse(id);
-				Set<UserDTO> usersCourseList=userMapper.modelToDto(usersCourse);
+				Set<UserDTO> usersCourseList=userMapper.modelToDto(course.get().getUser());
 		    	respEnt=new ResponseEntity<Set<UserDTO>>(usersCourseList,HttpStatus.OK);
 		    }
 		    else respEnt=new ResponseEntity<Set<UserDTO>>(HttpStatus.NOT_FOUND);
@@ -94,22 +94,36 @@ public class CourseController {
 		
 	}
 	
+	@ResponseBody	
+	@RequestMapping(path="/{id}/user",method = RequestMethod.POST)
+	public ResponseEntity<CourseDTO>  addUserCouse(@PathVariable("user") Integer idUser,@PathVariable("id") Integer id){
+		
+		Optional <Course>  courseUser=courseService.findById(id);
+		if (courseUser.isPresent()) {
+				Optional <User> user=userService.findById(idUser);
+				courseUser.get().getUser().add(user.get());
+				courseService.update(courseUser.get());
+				return new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
+		}
+		else return new ResponseEntity<CourseDTO>(HttpStatus.NOT_FOUND);
+			
+		
+	}
 
 	/************************************HTTP METHOD PUT *************************************/
 	
 	@ResponseBody
-	@RequestMapping(value="/{id}/user",method = {RequestMethod.PUT,RequestMethod.POST})
+	@RequestMapping(value="/{id}/user",method = {RequestMethod.PUT})
 	public ResponseEntity<CourseDTO> updateUserCourse(
 			@PathVariable("id") Integer id,
-			@PathVariable("idUser") Integer idUser) throws NotFoundException,DuplicatedException {
+			@RequestBody UserCourseDTO uDTO) throws NotFoundException,DuplicatedException {
 		
 		ResponseEntity<CourseDTO> respEnt=respEntOK;
 		
 		//Update course object
 		Optional <Course>  courseUser=courseService.findById(id);
 		if (courseUser.isPresent()) {
-			courseService.addUserToCourse(id, idUser);
-			//courseService.update(courseUser.get());
+			courseService.addUserToCourse(id, uDTO.getIdUser());
 			respEnt=new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
 		}
 		else respEnt=respEntNotFound;

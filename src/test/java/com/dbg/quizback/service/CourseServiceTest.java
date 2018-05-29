@@ -20,7 +20,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageRequest;
 
 import com.dbg.quizback.dao.CourseDAO;
+import com.dbg.quizback.dao.UserDAO;
 import com.dbg.quizback.model.Course;
+import com.dbg.quizback.model.User;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,8 +38,14 @@ public class CourseServiceTest {
 	private Course course;
 
 	@Mock
+	private User user;
+	
+	@Mock
 	private CourseDAO courseDAO;
 
+	@Mock
+	private UserDAO userDAO;
+	
 	@Before
     public void setUp() throws Exception {
 		course=new Course();
@@ -53,6 +61,13 @@ public class CourseServiceTest {
 		String createdOn="2018-05-13";
 		date = formatter.parse(createdOn);
 		course.setCreatedOn(date);
+		user= new User();
+		user.setEmail("test1@tets.com");
+		user.setId(1);
+		user.setName("TEST1");
+		user.setSurname("SURNAMETEST");
+		userDAO.save(user);
+		
     }
 	
 	@Test
@@ -64,12 +79,19 @@ public class CourseServiceTest {
 	
 	
 	@Test
-	public void testFindAllCourseOK() {
+	public void testFindIdOK() {
 		
-		int page=0;
-		int size=10;
 		Mockito.when(courseDAO.findById(1)).thenReturn(Optional.of(course));
 		Optional<Course> courses= courseService.findById(1);
 		Assert.assertEquals(Optional.of(course),courses);
+	}
+	
+	@Test
+	public void testAddUserCourseOK() {
+		 
+			course.setUser(Collections.singleton(user));
+		//Mockito.when(courseDAO.).thenReturn(Optional.of(course));
+		courseService.addUserToCourse(1, 1);
+		Assert.assertEquals(courseService.findById(1).get().getUser(),course.getUser());
 	}
 }

@@ -71,7 +71,7 @@ public class QuestionnaireController {
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
 	public Set<QuestionnaireDTO>  findAll(
-			@RequestParam(value = "page", defaultValue="1",required = false) Integer page,
+			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
 		Set<Questionnaire> questionnaires=questionnaireService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
 		log.info("findAll questionnaires count is: "+ Integer.toString(questionnaires.size()));
