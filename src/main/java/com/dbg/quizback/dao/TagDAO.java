@@ -9,6 +9,6 @@ import com.dbg.quizback.model.Tag;
 @Repository
 public interface TagDAO extends PagingAndSortingRepository<Tag, Integer >{
 
-	Optional<Tag> findOneByNameOrderByIdDesc(String name);
+	Optional<Tag> findByNameOrderByIdDesc(String name);
 
 }

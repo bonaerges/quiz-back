@@ -10,6 +10,5 @@ import com.dbg.quizback.model.Result;
 @Repository
 public interface ResultDAO extends PagingAndSortingRepository<Result,Integer > {
 
-	Optional<Result> findOneByNameOrderByIdDesc(String name);
 
 }

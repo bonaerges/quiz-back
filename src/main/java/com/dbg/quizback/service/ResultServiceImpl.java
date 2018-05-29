@@ -55,12 +55,6 @@ public class ResultServiceImpl implements ResultService {
 		return resultDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
 	}
 	
-	public Optional<Result> findOneByNameOrderByIdDesc(String name){
-		Optional <Result> resultObject=resultDAO.findOneByNameOrderByIdDesc(name);
-		resultObject.ifPresent(r ->logger.info("Result findOneByNameOrderByIdResultDesc "  + r.toString()));
-		return resultObject;
-		
-	}
-
+	
 	
 }

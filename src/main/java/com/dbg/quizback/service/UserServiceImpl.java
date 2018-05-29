@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public Optional<User> findByEmail(String email) {
-		return userDAO.findOneByEmail(email);
+		return userDAO.findByEmail(email);
 	}
 	
 	@Override
@@ -115,7 +116,7 @@ public class UserServiceImpl implements UserService {
 	 * @throws DuplicatedException
 	 */
 	private boolean isUserOnCourse(final Integer idCourse, final String email) throws NotFoundException, DuplicatedException {
-		Optional<User> user = userDAO.findOneByEmail(email);
+		Optional<User> user = userDAO.findByEmail(email);
         boolean isOnCourse=true;
         if (user.isPresent())
         {
@@ -136,17 +137,10 @@ public class UserServiceImpl implements UserService {
     }
 
 	@Override
-	public Optional<Course> findCourseByEmail(String email,Integer idCourse) throws NotFoundException {
-		Optional<User> user = userDAO.findOneByEmail(email);
-		  if (user.isPresent())
-	        {
-	        	Optional<Course> courseUser = user.get().getCourse()
-			            .stream()
-			            .filter(course -> course.getId() == idCourse)
-			            .findFirst();
-	        	return courseUser;
-	        }
-		  else throw new NotFoundException ("User with mail: '" + email+ "' Not FOUND");
+	public	Set<User> findUsersByCourse(@Param("idCourse")Integer idCourse){
+		Set<User> usersCourse=userDAO.findUsersByCourse(idCourse);
+		return usersCourse;
+	
 	}
 	
 

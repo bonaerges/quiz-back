@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.dbg.quizback.dao.AnswerDAO;
 import com.dbg.quizback.dao.QuestionDAO;
 import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.model.Question;
@@ -22,6 +23,9 @@ public class QuestionServiceImpl implements QuestionService {
 	
 	@Autowired
 	QuestionDAO questionDAO;
+	
+	@Autowired
+	AnswerDAO answerDAO;
  
 	@Override
 	public Question create(Question t) {
@@ -38,8 +42,10 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 	@Override
 	public void delete(Question t) {
+		//Delete answesr linked to question
+		t.getAnswer().forEach(answer ->answerDAO.deleteById(answer.getId()));
 		questionDAO.delete(t);
-		logger.info(" Question delete successfully " + t.toString());
+		logger.info(" Question-Asnwer delete successfully " + t.toString());
 		
 	}
 	@Override
@@ -62,13 +68,20 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionObject;
 		
 	}
-	//TO modify a answer response to a question in case user need to change response
+	//TO modify a the correct answer map to a question in case user need to change response
 	public void updateSelectedAnswer(Question question, Answer answer) {
 		Optional <Question> questionObject=questionDAO.findById(question.getId());
 		if (questionObject.isPresent()) {
 			questionObject.get().setCorrectAnswer(answer);
-			questionDAO.save(question);
+			questionDAO.save(questionObject.get());
 		}
+	}
+
+	@Override
+	public Optional<Question> findByDescription(String name) {
+		Optional <Question> questionObject=questionDAO.findByDescription(name);
+		logger.info(" Question findByDescription successfully " + questionObject.toString());
+		return questionObject;
 	}
 	
 

@@ -111,8 +111,6 @@ public class QuestionnaireController {
 		final Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
 		ResponseEntity<QuestionnaireDTO> respEnt=respEntOK;
 	    if(questionnaireModel.isPresent()) {
-	    	//delete all answers linked to current questionnaire 
-	    	//questionnaireModel.get().getQuestion().forEach((final Question questionMap)->questionService.delete(questionMap));
 	    	questionnaireService.delete(questionnaireMapper.dtoToModel(dto));   
 	    	log.info("Succesfully delete questionnaire " + id + " and answers linked to questionnaire"); 
 	    }

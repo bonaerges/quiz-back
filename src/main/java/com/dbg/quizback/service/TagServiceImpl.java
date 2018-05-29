@@ -56,7 +56,7 @@ public class TagServiceImpl implements TagService {
 	}
 	
 	public Optional<Tag> findOneByNameOrderByIdDesc(String name){
-		Optional <Tag> tagObject=tagDAO.findOneByNameOrderByIdDesc(name);
+		Optional <Tag> tagObject=tagDAO.findByNameOrderByIdDesc(name);
 		tagObject.ifPresent(t ->logger.info("Tag findOneByNameOrderByIdTagDesc "  + t.toString()));
 		return tagObject;
 		

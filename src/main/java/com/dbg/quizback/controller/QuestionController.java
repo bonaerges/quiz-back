@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +22,6 @@ import com.dbg.quizback.component.mapper.answer.AnswerMapper;
 import com.dbg.quizback.component.mapper.question.QuestionMapper;
 import com.dbg.quizback.dto.AnswerDTO;
 import com.dbg.quizback.dto.QuestionDTO;
-import com.dbg.quizback.dto.UserDTO;
 import com.dbg.quizback.exception.NotFoundException;
 import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.model.Question;
@@ -100,6 +97,7 @@ public class QuestionController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	//Only allow create Question not mapped objects
 	public ResponseEntity<QuestionDTO> create(@RequestBody QuestionDTO dto) {
 		Question createQuestion = questionService.create(questionMapper.dtoToModel(dto));		
 		log.info("Question " + createQuestion.getId() + " succesfuly created.");
@@ -111,18 +109,43 @@ public class QuestionController {
 	/************************************HTTP METHOD PUT *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
+	//allow update existing question creating answers, tag and Level
 	ResponseEntity<QuestionDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionDTO dto) {
 
 		Optional<Question> questionModel=questionService.findById(id);
 		ResponseEntity<QuestionDTO> respEnt=respEntOK;
 		if(questionModel.isPresent()) {
 			questionModel.get().setId(id);
+			Question questionModelDTO=questionMapper.dtoToModel(dto);
+			//questionModelDTO.getAnswer().forEach(answer -> answerService.findById(asnwer.get))
+			//questionModel.get().setAnswer(questionModelDTO.getAnswer());
+			//questionModel.get().setTag(questionModelDTO.getTag());
+			//questionModel.get().setLevel(questionModelDTO.getLevel());
 			questionService.update(questionModel.get());  
+			
 			respEnt=new ResponseEntity<QuestionDTO>(dto,HttpStatus.OK);
 		}
 		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}
+	
+//	@ResponseBody
+//	@RequestMapping(value="/{description}",method = RequestMethod.PUT)
+//	ResponseEntity<QuestionDTO> updateByName(@PathVariable("name") String name, @RequestBody QuestionDTO dto) {
+//
+//		Optional<Question> questionModel=questionService.findByDescription(name);
+//		ResponseEntity<QuestionDTO> respEnt=respEntOK;
+//		if(questionModel.isPresent()) {
+//			Question questionModelDTO=questionMapper.dtoToModel(dto);
+//			questionModel.get().setAnswer(questionModelDTO.getAnswer());
+//			questionModel.get().setTag(questionModelDTO.getTag());
+//			questionModel.get().setLevel(questionModelDTO.getLevel());
+//			questionService.update(questionModel.get());  
+//			respEnt=new ResponseEntity<QuestionDTO>(dto,HttpStatus.OK);
+//		}
+//		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+//		return respEnt;
+//	}
 
 	@ResponseBody
 	@RequestMapping(value="/{id}/answer",method = {RequestMethod.PUT,RequestMethod.POST})

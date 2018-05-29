@@ -3,6 +3,7 @@ package com.dbg.quizback.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
@@ -26,12 +27,16 @@ public class QuestionUserAnswerId  implements Serializable {
 	
 	public static final String FIELD_ID_USER= "idUser";
 	
+	 @Column(name = FIELD_ID_QUESTIONNAIRE, nullable = false)
 	private Integer idQuestionnaire;
 	
+	 @Column(name = FIELD_ID_QUESTIONNAIRE, nullable = false)
 	private Integer idUser;
 
+	 @Column(name = FIELD_ID_QUESTION, nullable = false)
 	private Integer idQuestion;
 	
+	 @Column(name = FIELD_ID_ANSWER, nullable = false)
 	private Integer idAnswer;
 	
 	  public boolean equals(Object object) {

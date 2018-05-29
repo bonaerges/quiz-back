@@ -23,8 +23,7 @@ Question Service:
 	create					POST 			Create		/question 									Create a new question
 							POST			Create		/question/(idQuestion)/answer				Create a answer link to question
 							GET 			Read		/question									Return a list of questions with answers
-							GET				Read		/question/(idQuestion)						Return a specific question with answers
-							PUT				Update
+							GET				Read		/question/(idQuestion)						Return answers for a specific question							PUT				Update
 											/Replace	/question/(idQuestion)						Update question
 	updateAnswerQuestion	PUT				Update
 											/Replace	/question/(idQuestion)/answer/(idAnswer)	Update answer of the question

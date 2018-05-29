@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dbg.quizback.dao.CourseDAO;
 import com.dbg.quizback.model.Course;
@@ -25,6 +26,7 @@ public class CourseServiceImpl implements CourseService {
 	CourseDAO courseDAO;
  
 	@Override
+	@Transactional
 	public Course create(Course t) {
 		Course courseObject=courseDAO.save(t);
 		logger.info(" Course create successfully " + t.toString());
@@ -32,6 +34,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
+	@Transactional
 	public void update(Course t) {
 		courseDAO.save(t);
 		logger.info(" Course update successfully " + t.toString());

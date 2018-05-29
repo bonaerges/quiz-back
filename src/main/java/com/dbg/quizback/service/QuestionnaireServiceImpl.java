@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
+import com.dbg.quizback.dao.AnswerDAO;
 import com.dbg.quizback.dao.QuestionDAO;
 import com.dbg.quizback.dao.QuestionnaireDAO;
 import com.dbg.quizback.dao.ResultDAO;
@@ -44,7 +45,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	UserDAO userDAO;
 	
 	@Autowired
-	Answer answerDAO;
+	QuestionDAO questionDAO;
 	
 	@Override
 	public Questionnaire create(Questionnaire t) {
@@ -61,6 +62,8 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	}
 	@Override
 	public void delete(Questionnaire t) {
+		//Delete questions linked to questionnaire
+		t.getQuestion().forEach(question ->questionDAO.deleteById(question.getId()));
 		questionnaireDAO.delete(t);
 		log.info(" Questionnaire delete successfully " + t.toString());
 		
@@ -113,7 +116,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 					if (answerUser.getQuestion().getId() ==	questionFilledQ.getId()) {
 						//Check if answer provide for the question is the correctAnswer to sumarize error or succeed
 						boolean answeredCorrect= Optional.ofNullable(answerUser)
-					    .map(aUser -> aUser.getSelectedAnswer())
+					    .map(aUser -> aUser.getAnswer())
 						.filter(aUser->aUser.getId() == correctAnswer.getId()).isPresent();
 						if (answeredCorrect) {
 							//find user that answer questionnaire for save into result	and update answer OK and KO					

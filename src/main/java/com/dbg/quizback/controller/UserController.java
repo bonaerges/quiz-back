@@ -71,6 +71,8 @@ public class UserController {
 			return respEnt;
 	}
 	
+
+	
 	/************************************HTTP METHOD POST *************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
