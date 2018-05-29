@@ -1,6 +1,7 @@
 package com.dbg.quizback.component.mapper.course;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -23,15 +24,13 @@ public class CourseMapperImpl extends AbstractMapper<Course,CourseDTO> implement
 
 	@Override
 	public List<Course> dtoToModel(List<CourseDTO> dtos) {
-		// TODO Auto-generated method stub
-		return null;
+		return dtos.stream().map(d -> dtoToModel(d)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<CourseDTO> modelToDto(List<Course> models) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		return models.stream().map(d -> modelToDto(d)).collect(Collectors.toList());
+		}
 
 
 }

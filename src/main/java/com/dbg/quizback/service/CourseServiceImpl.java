@@ -26,7 +26,6 @@ public class CourseServiceImpl implements CourseService {
 	CourseDAO courseDAO;
  
 	@Override
-	@Transactional
 	public Course create(Course t) {
 		Course courseObject=courseDAO.save(t);
 		logger.info(" Course create successfully " + t.toString());
@@ -34,7 +33,6 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	@Transactional
 	public void update(Course t) {
 		courseDAO.save(t);
 		logger.info(" Course update successfully " + t.toString());

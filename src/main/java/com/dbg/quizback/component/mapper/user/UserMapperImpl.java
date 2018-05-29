@@ -1,6 +1,7 @@
 package com.dbg.quizback.component.mapper.user;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -25,14 +26,15 @@ public class UserMapperImpl extends AbstractMapper<User,UserDTO> implements User
 	@Override
 	public List<User> dtoToModel(List<UserDTO> dtos) {
 		// TODO Auto-generated method stub
-		return null;
+		return dtos.stream().map(d -> dtoToModel(d)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<UserDTO> modelToDto(List<User> models) {
-		// TODO Auto-generated method stub
-		return null;
+		return models.stream().map(m -> modelToDto(m)).collect(Collectors.toList());
 	}
+
+
 
 
 }

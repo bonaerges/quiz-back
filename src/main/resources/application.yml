@@ -2,6 +2,7 @@ logging:
   level.org.springframework: DEBUG
 spring:
   datasource:
+  
     url: jdbc:hsqldb:mem:dataSource
     username: sa
     password:
@@ -16,7 +17,10 @@ spring:
     password: root
   jpa:
     show-sql: true
+    generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       dialect: org.hibernate.dialect.MySQL5Dialect
+      
+      
       
