@@ -1,28 +1,21 @@
 package com.dbg.quizback.service;
 
-import static org.assertj.core.api.Assertions.filter;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
-import com.dbg.quizback.dao.AnswerDAO;
 import com.dbg.quizback.dao.QuestionDAO;
 import com.dbg.quizback.dao.QuestionnaireDAO;
 import com.dbg.quizback.dao.ResultDAO;
 import com.dbg.quizback.dao.UserDAO;
 import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.model.Question;
-import com.dbg.quizback.model.QuestionUserAnswerId;
 import com.dbg.quizback.model.Questionnaire;
 import com.dbg.quizback.model.QuestionnaireUserAnswer;
 import com.dbg.quizback.model.Result;

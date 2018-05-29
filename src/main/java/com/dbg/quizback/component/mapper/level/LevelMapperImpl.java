@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.dbg.quizback.component.mapper.AbstractMapper;
-import com.dbg.quizback.dto.LevelDTO;
+import com.dbg.quizback.dto.LevelViewDTO;
 import com.dbg.quizback.model.Level;
 
 @Component
-public class LevelMapperImpl extends AbstractMapper<Level,LevelDTO> implements LevelMapper {
+public class LevelMapperImpl extends AbstractMapper<Level,LevelViewDTO> implements LevelMapper {
 
 	@Override
-	public Class<? extends LevelDTO> dtoClazz() {
-		return LevelDTO.class;
+	public Class<? extends LevelViewDTO> dtoClazz() {
+		return LevelViewDTO.class;
 	}
 
 	@Override
@@ -23,12 +23,12 @@ public class LevelMapperImpl extends AbstractMapper<Level,LevelDTO> implements L
 	}
 
 	@Override
-	public List<Level> dtoToModel(List<LevelDTO> dtos) {
+	public List<Level> dtoToModel(List<LevelViewDTO> dtos) {
 		return dtos.stream().map(d -> dtoToModel(d)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<LevelDTO> modelToDto(List<Level> models) {
+	public List<LevelViewDTO> modelToDto(List<Level> models) {
 		return models.stream().map(d -> modelToDto(d)).collect(Collectors.toList());
 	}
 

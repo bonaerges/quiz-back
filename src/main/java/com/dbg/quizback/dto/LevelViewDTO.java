@@ -5,7 +5,7 @@ import com.dbg.quizback.model.Level.LevelValue;
 import lombok.Data;
 
 @Data
-public class LevelDTO {
+public class LevelViewDTO {
 
 	private LevelValue name;
 }

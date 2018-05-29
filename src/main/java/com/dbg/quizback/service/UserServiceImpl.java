@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
 import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +20,12 @@ import com.dbg.quizback.exception.NotFoundException;
 import com.dbg.quizback.model.Course;
 import com.dbg.quizback.model.User;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
-	private static final Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
 	UserDAO userDAO;
@@ -41,26 +41,26 @@ public class UserServiceImpl implements UserService {
 	public User create(User t) {
 		
 		User userObject=userDAO.save(t);
-		logger.info(" User create successfully " + t.toString());
+		log.info(" User create successfully " + t.toString());
 		return userObject;
 	}
 
 	@Override
 	public void update(User t) {
 		userDAO.save(t);
-		logger.info(" User update successfully " + t.toString());
+		log.info(" User update successfully " + t.toString());
 		
 	}
 	@Override
 	public void delete(User t) {
 		userDAO.delete(t);
-		logger.info(" User delete successfully " + t.toString());
+		log.info(" User delete successfully " + t.toString());
 		
 	}
 	@Override
 	public Optional<User> findById(Integer id){	
 		Optional <User> userObject=userDAO.findById(id);		
-		logger.info(" User findById successfully " + userObject.toString());
+		log.info(" User findById successfully " + userObject.toString());
 		return userObject;
 	}
 	
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 	
 	public Optional<User> findOneByNameOrderByIdDesc(String name){
 		Optional <User> userObject=userDAO.findOneByNameOrderByIdDesc(name);
-		userObject.ifPresent(u ->logger.info("User findOneByNameOrderByIdDesc "  + u.toString()));
+		userObject.ifPresent(u ->log.info("User findOneByNameOrderByIdDesc "  + u.toString()));
 		return userObject;
 		
 	}
@@ -93,13 +93,13 @@ public class UserServiceImpl implements UserService {
 		if (courseObject.isPresent()) {
 			belongsCourse=isUserOnCourse(idCourse,userModel.getEmail());
 			if (belongsCourse)
-				logger.warn(" User "+ userModel.getId()+" already was included into course "+ idCourse  );
+				log.warn(" User "+ userModel.getId()+" already was included into course "+ idCourse  );
 			else
 			{
 				userModel.getCourse().add(courseObject.get());
 				userDAO.save(userModel);
 				courseDAO.save(courseObject.get());
-					logger.info(" Add User "+ userModel.getId()+" to course "+ idCourse + " successfully " );
+					log.info(" Add User "+ userModel.getId()+" to course "+ idCourse + " successfully " );
 			}
 		}
 

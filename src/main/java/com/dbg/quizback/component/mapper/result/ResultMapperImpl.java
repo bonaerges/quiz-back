@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.dbg.quizback.component.mapper.AbstractMapper;
-import com.dbg.quizback.dto.ResultDTO;
+import com.dbg.quizback.dto.ResultViewDTO;
 import com.dbg.quizback.model.Result;
 
 @Component
-public class ResultMapperImpl extends AbstractMapper<Result,ResultDTO> implements ResultMapper {
+public class ResultMapperImpl extends AbstractMapper<Result,ResultViewDTO> implements ResultMapper {
 
 	@Override
-	public Class<? extends ResultDTO> dtoClazz() {
-		return ResultDTO.class;
+	public Class<? extends ResultViewDTO> dtoClazz() {
+		return ResultViewDTO.class;
 	}
 
 	@Override
@@ -23,12 +23,12 @@ public class ResultMapperImpl extends AbstractMapper<Result,ResultDTO> implement
 	}
 
 	@Override
-	public List<Result> dtoToModel(List<ResultDTO> dtos) {
+	public List<Result> dtoToModel(List<ResultViewDTO> dtos) {
 		return dtos.stream().map(d -> dtoToModel(d)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ResultDTO> modelToDto(List<Result> models) {
+	public List<ResultViewDTO> modelToDto(List<Result> models) {
 		return models.stream().map(d -> modelToDto(d)).collect(Collectors.toList());
 	}
 

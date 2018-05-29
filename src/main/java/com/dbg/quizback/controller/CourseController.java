@@ -97,24 +97,24 @@ public class CourseController {
 
 	/************************************HTTP METHOD PUT *************************************/
 	
-//	@ResponseBody
-//	@RequestMapping(value="/{id}/user",method = {RequestMethod.PUT,RequestMethod.POST})
-//	public ResponseEntity<CourseDTO> updateUserCourse(
-//			@PathVariable("id") Integer id,
-//			@RequestBody UserDTO dto) throws NotFoundException,DuplicatedException {
-//		
-//		ResponseEntity<CourseDTO> respEnt=respEntOK;
-//		
-//		User userModel = userMapper.dtoToModel(dto) ;
-//		//Update course object
-//		Optional <Course>  courseUser=courseService.findById(id);
-//		if (courseUser.isPresent()) {
-//			courseService.update(courseUser.get());
-//			respEnt=new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
-//		}
-//		else respEnt=respEntNotFound;
-//		return respEnt;
-//	}	
+	@ResponseBody
+	@RequestMapping(value="/{id}/user",method = {RequestMethod.PUT,RequestMethod.POST})
+	public ResponseEntity<CourseDTO> updateUserCourse(
+			@PathVariable("id") Integer id,
+			@PathVariable("idUser") Integer idUser) throws NotFoundException,DuplicatedException {
+		
+		ResponseEntity<CourseDTO> respEnt=respEntOK;
+		
+		//Update course object
+		Optional <Course>  courseUser=courseService.findById(id);
+		if (courseUser.isPresent()) {
+			courseService.addUserToCourse(id, idUser);
+			//courseService.update(courseUser.get());
+			respEnt=new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
+		}
+		else respEnt=respEntNotFound;
+		return respEnt;
+	}	
 	
 	/************************************HTTP METHOD DELETE *************************************/
 	

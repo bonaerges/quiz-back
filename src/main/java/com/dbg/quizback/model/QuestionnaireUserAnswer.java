@@ -34,10 +34,10 @@ public class QuestionnaireUserAnswer {
 	 @JoinColumn(name=User.FIELD_ID, insertable = false, updatable = false)
 	 private User user;
 
-	 @MapsId(QuestionUserAnswerId.FIELD_ID_QUESTIONNAIRE) // maps questionnaire attribute of embedded id
-	 @OneToOne
-	 @JoinColumn(name=Questionnaire.FIELD_ID, insertable = false, updatable = false)
-	 private Questionnaire questionnaire;
+//	 @MapsId(QuestionUserAnswerId.FIELD_ID_QUESTIONNAIRE) // maps questionnaire attribute of embedded id
+//	 @ManyToOne
+//	 @JoinColumn(name=Questionnaire.FIELD_ID, insertable = false, updatable = false)
+//	 private Questionnaire questionnaire;
 
 
 }

@@ -14,40 +14,47 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dbg.quizback.dao.CourseDAO;
+import com.dbg.quizback.dao.UserDAO;
 import com.dbg.quizback.model.Course;
 import com.dbg.quizback.model.User;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class CourseServiceImpl implements CourseService {
 
-	private static final Logger logger= LoggerFactory.getLogger(CourseServiceImpl.class);
+	
 	
 	@Autowired
 	CourseDAO courseDAO;
+	
+	@Autowired
+	UserDAO userDAO;
  
 	@Override
 	public Course create(Course t) {
 		Course courseObject=courseDAO.save(t);
-		logger.info(" Course create successfully " + t.toString());
+		log.info(" Course create successfully " + t.toString());
 		return courseObject;
 	}
 
 	@Override
 	public void update(Course t) {
 		courseDAO.save(t);
-		logger.info(" Course update successfully " + t.toString());
+		log.info(" Course update successfully " + t.toString());
 		
 	}
 	@Override
 	public void delete(Course t) {
 		courseDAO.delete(t);
-		logger.info(" Course delete successfully " + t.toString());
+		log.info(" Course delete successfully " + t.toString());
 		
 	}
 	@Override
 	public Optional<Course> findById(Integer id){	
 		Optional <Course> courseObject=courseDAO.findById(id);		
-		logger.info(" Course findById successfully " + courseObject.toString());
+		log.info(" Course findById successfully " + courseObject.toString());
 		return courseObject;
 	}
 	
@@ -60,13 +67,13 @@ public class CourseServiceImpl implements CourseService {
 	
 	public Optional<Course> findOneByDescription(String name){
 		Optional <Course> courseObject=courseDAO.findOneByDescription(name);
-		courseObject.ifPresent(c ->logger.info("Course findOneByDescription "  + c.toString()));
+		courseObject.ifPresent(c ->log.info("Course findOneByDescription "  + c.toString()));
 		return courseObject;
 		
 	}
 	public Optional<Course> findOneByDescriptionOrderByIdDesc(String name){
 		Optional <Course> courseObject=courseDAO.findOneByDescriptionOrderByIdDesc(name);
-		courseObject.ifPresent(t ->logger.info("Course findOneByDescriptionOrderByIdDesc "  + t.toString()));
+		courseObject.ifPresent(t ->log.info("Course findOneByDescriptionOrderByIdDesc "  + t.toString()));
 		return courseObject;
 		
 	}
@@ -80,6 +87,45 @@ public class CourseServiceImpl implements CourseService {
 		}
 		return usersByCourse;
 	}
+
+	@Override
+	public void addUserToCourse(Integer idCourse, Integer idUser) {
+		Optional <Course> courseObject=courseDAO.findById(idCourse);	
+		Optional <User> userObject=userDAO.findById(idCourse);	
+		if (courseObject.isPresent()) {
+			userObject.ifPresent(u ->{
+			 courseObject.get().getUser().stream().collect(Collectors.toList()).add(u);
+			 courseDAO.save(courseObject.get());
+			});
+		
+		}
+		
+	}
+
+	@Override
+	public void deleteUserFromCourse(Integer idCourse, Integer idUser) {
+		Optional <Course> courseObject=courseDAO.findById(idCourse);	
+		Optional <User> userObject=userDAO.findById(idCourse);	
+		if (courseObject.isPresent()) {
+			userObject.ifPresent(u -> {
+			 
+			 Optional<User> optUser =courseObject.get().getUser().stream().collect(Collectors.toList()).stream()
+					    .filter(s -> idUser.equals(s.getId()))
+					    .findFirst();
+			 if (optUser.isPresent())
+			 {
+				 courseObject.get().getUser().remove(optUser.get()); 
+			 }
+			});
+			 courseDAO.save(courseObject.get());
+		
+		
+		}
+		
+		
+	}
+	
+	
 
 
 	

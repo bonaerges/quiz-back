@@ -14,10 +14,13 @@ import org.springframework.stereotype.Service;
 import com.dbg.quizback.dao.TagDAO;
 import com.dbg.quizback.model.Tag;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class TagServiceImpl implements TagService {
 
-	private static final Logger logger= LoggerFactory.getLogger(TagServiceImpl.class);
+	
 	
 	@Autowired
 	TagDAO tagDAO;
@@ -25,26 +28,26 @@ public class TagServiceImpl implements TagService {
 	@Override
 	public Tag create(Tag t) {
 		Tag tagObject=tagDAO.save(t);
-		logger.info(" Tag create successfully " + t.toString());
+		log.info(" Tag create successfully " + t.toString());
 		return tagObject;
 	}
 
 	@Override
 	public void update(Tag t) {
 		tagDAO.save(t);
-		logger.info(" Tag update successfully " + t.toString());
+		log.info(" Tag update successfully " + t.toString());
 		
 	}
 	@Override
 	public void delete(Tag t) {
 		tagDAO.delete(t);
-		logger.info(" Tag delete successfully " + t.toString());
+		log.info(" Tag delete successfully " + t.toString());
 		
 	}
 	@Override
 	public Optional<Tag> findById(Integer id){	
 		Optional <Tag> tagObject=tagDAO.findById(id);		
-		logger.info(" Tag findById successfully " + tagObject.toString());
+		log.info(" Tag findById successfully " + tagObject.toString());
 		return tagObject;
 	}
 	
@@ -57,7 +60,7 @@ public class TagServiceImpl implements TagService {
 	
 	public Optional<Tag> findOneByNameOrderByIdDesc(String name){
 		Optional <Tag> tagObject=tagDAO.findByNameOrderByIdDesc(name);
-		tagObject.ifPresent(t ->logger.info("Tag findOneByNameOrderByIdTagDesc "  + t.toString()));
+		tagObject.ifPresent(t ->log.info("Tag findOneByNameOrderByIdTagDesc "  + t.toString()));
 		return tagObject;
 		
 	}
