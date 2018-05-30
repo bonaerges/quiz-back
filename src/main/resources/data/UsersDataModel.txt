@@ -1,0 +1,6 @@
+{"name":"test1", "surname":"surname1", "email":"test1@quizback.com"}
+{"name":"test2", "surname":"surname2", "email":"test2@quizback.com"}
+{"name":"test3", "surname":"surname3", "email":"test3@quizback.com"}
+{"name":"test4", "surname":"surname4", "email":"test3@quizback.com"}
+{"name":"test5", "surname":"surname5", "email":"test4@quizback.com"}
+/all users[    {        "email": "test4@quizback.com",        "name": "test4"    },    {        "email": "test2@quizback.com",        "name": "test2"    },    {        "email": "test5@quizback.com",        "name": "test5"    },    {        "email": "test1@quizback.com",        "name": "test1"    },    {        "email": "test3@quizback.com",        "name": "test3"    }]

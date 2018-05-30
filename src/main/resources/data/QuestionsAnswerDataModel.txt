@@ -1,0 +1,48 @@
+METHOD GET
+http://localhost:8080/question
+
+METHOD POST, ADD QUESTIONS
+
+http://localhost:8080/question
+{ "description": "Question1"}
+{ "description": "Question2"}
+{ "description": "Question3"}
+
+METHOD POST,  ADD ANSWERS TO QUESTIONS
+
+http://localhost:8080/question/1/answer
+{"description": "answer1.1", "isCorrect":"false"}
+{"description": "answer1.2", "isCorrect":"false"}
+{"description": "answer1.3", "isCorrect":"true"}
+
+http://localhost:8080/question/2/answer
+{"description": "answer2.1", "isCorrect":"false"}
+{"description": "answer2.2", "isCorrect":"true"}
+{"description": "answer2.3" "isCorrect":"false"}
+
+http://localhost:8080/question/3/answer
+{"description": "answer3.1", "isCorrect":"true"}
+{"description": "answer3.2", "isCorrect":"false"}
+{"description": "answer3.3", "isCorrect":"false"}
+
+METHOD GET , GET QUESTIONS AND ANSWER QUESTION 1
+
+http://localhost:8080/question/1/
+{
+    "description": "Question1",
+    "answer": [
+        {
+            "description": "answer1.1",
+            "isCorrect": false
+        },
+        {
+            "description": "answer1.2",
+            "isCorrect": false
+        },
+        {
+            "description": "answer1.3",
+            "isCorrect": true
+        }
+    ],
+    "idLevel": null
+}

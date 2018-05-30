@@ -17,7 +17,6 @@ Main Goal and responsabilities requested:
  
  + COURSE CREATION (USER + QUESTIONNARIE + COURSE). DO ALSO MOCKITO TEST FOR COURSE LAYERS
  
- 
  + GET THE RESULS FILTER BY COURSE
  
  + GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
@@ -26,6 +25,7 @@ Main Goal and responsabilities requested:
  
  + GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)
  
+ C
  
 -------------------------------------------------------------------------------------------------------------------------
 CONTAINS OF APLICATION DETAILS
