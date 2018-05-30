@@ -161,7 +161,7 @@ public class CourseController {
 	}
 	
 	@ResponseBody	
-	@RequestMapping(path="/{id}/user/{idU}",method = RequestMethod.PUT)
+	@RequestMapping(path="/{id}/user/{idU}",method = RequestMethod.DELETE)
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<CoursePostDTO>  deleteUserCouse(@PathVariable("idU") Integer  idUser,@PathVariable("id") Integer id) throws NotFoundException  {
 		ResponseEntity<CoursePostDTO> respEnt;
@@ -181,7 +181,7 @@ public class CourseController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/{id}/questionnaire/{idQ}",method = {RequestMethod.PUT})
+	@RequestMapping(value="/{id}/questionnaire/{idQ}",method = {RequestMethod.DELETE})
 	public ResponseEntity<CourseDTO> deleteQuestionnarieCourse(
 			@PathVariable("id") Integer id,
 			@PathVariable("idQ") Integer  idQ) throws NotFoundException,DuplicatedException {
