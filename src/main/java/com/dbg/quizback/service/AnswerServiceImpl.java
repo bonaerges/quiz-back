@@ -42,7 +42,7 @@ public class AnswerServiceImpl implements AnswerService {
 		log.info(" Answer update successfully " + t.toString());
 		
 	}
-	//Link answer to previous existing question
+	//c
 	public void addAnswerQuestion(Answer t,Integer idQuestion) {
 		Optional<Question> question=questionDAO.findById(idQuestion);
 		Answer answerObject=t;

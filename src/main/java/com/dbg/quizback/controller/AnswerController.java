@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dbg.quizback.component.mapper.answer.AnswerMapper;
 import com.dbg.quizback.dto.AnswerDTO;
+import com.dbg.quizback.dto.AnswerUpdateDTO;
 import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.service.AnswerService;
 
@@ -42,7 +42,6 @@ public class AnswerController {
 	/************************************HTTP METHOD GET *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.FOUND)
 	public ResponseEntity<AnswerDTO>  findById(
 			@PathVariable("id") Integer id){
 		Optional<Answer> answerModel=answerService.findById(id);
@@ -57,7 +56,6 @@ public class AnswerController {
 	//answer?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.FOUND)
 	public Set<AnswerDTO>  findAll(
 			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
@@ -70,26 +68,28 @@ public class AnswerController {
 	//answer/ and POST METHOD with body
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	public AnswerDTO create(@RequestBody AnswerDTO dto) {
+	public ResponseEntity<AnswerDTO> create(@RequestBody AnswerDTO dto) {
+		ResponseEntity<AnswerDTO> respEnt;
 		final Answer answer = answerMapper.dtoToModel(dto);
 		final Answer createAnswer = answerService.create(answer);
+		respEnt=new ResponseEntity<AnswerDTO>(dto,HttpStatus.CREATED);
 		log.info("Answer " + createAnswer.getId() + " succesfuly created.");
-		return answerMapper.modelToDto(createAnswer);
+		return respEnt;
 	}
 
 	/************************************HTTP METHOD PUT *************************************/
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
-	ResponseEntity<AnswerDTO> update(@PathVariable("id") Integer id, @RequestBody AnswerDTO dto) {
+	ResponseEntity<AnswerUpdateDTO> update(@PathVariable("id") Integer id, @RequestBody AnswerUpdateDTO dto) {
 		
 		Optional<Answer> answer=answerService.findById(id);
-		ResponseEntity<AnswerDTO> respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.OK);
+		ResponseEntity<AnswerUpdateDTO> respEnt=new ResponseEntity<AnswerUpdateDTO>(HttpStatus.OK);
 	    if(answer.isPresent()) {
-	    	answerService.update(answerMapper.dtoToModel(dto));  
+	    	answer.get().setDescription(dto.getDescription());
+	    	answerService.update(answer.get());  
 	    }
-	    else respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.NOT_FOUND);
+	    else respEnt=new ResponseEntity<AnswerUpdateDTO>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}
 
@@ -98,17 +98,17 @@ public class AnswerController {
 
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
-	ResponseEntity<?> delete(@PathVariable("id") Integer id, @RequestBody AnswerDTO dto) {		
+	ResponseEntity<AnswerUpdateDTO> delete(@PathVariable("id") Integer id) {		
 		Optional<Answer> answer=answerService.findById(id);
-		ResponseEntity<?> respEnt;
+		ResponseEntity<AnswerUpdateDTO> respEnt;
 	     if(!answer.isPresent()) {
-	    	 respEnt=this.respEntNotFound;	 
+	    	 respEnt=new ResponseEntity<AnswerUpdateDTO>(HttpStatus.NOT_FOUND);
 	    	 log.error("Error to deleted answer " + id + " not found");		    	
 	     }
 	     else {
-	    	 	answerService.delete(answerMapper.dtoToModel(dto));
+	    	 	answerService.delete(answer.get());
 		    	log.info("Succesfully delete answer " + id + " and answers linked to answer");
-		    	respEnt=this.respEntOK;
+		    	respEnt=new ResponseEntity<AnswerUpdateDTO>(HttpStatus.OK);
 	     }
 		return respEnt;
 		

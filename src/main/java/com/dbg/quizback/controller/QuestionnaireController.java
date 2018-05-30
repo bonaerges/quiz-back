@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dbg.quizback.component.mapper.questionnaire.QuestionnaireMapper;
 import com.dbg.quizback.dto.AnswerDTO;
+import com.dbg.quizback.dto.CourseDTO;
 import com.dbg.quizback.dto.QuestionnaireDTO;
+import com.dbg.quizback.dto.QuestionnaireUserAnswerDTO;
 import com.dbg.quizback.model.Answer;
+import com.dbg.quizback.model.Course;
 import com.dbg.quizback.model.Question;
 import com.dbg.quizback.model.Questionnaire;
 import com.dbg.quizback.model.User;
@@ -102,6 +105,24 @@ public class QuestionnaireController {
 	    }
 	    else respEnt=respEntNotFound;
 		return respEnt;
+	}
+	
+	@ResponseBody	
+	@RequestMapping(path="/{id}/saveAnswer",method = RequestMethod.PUT)
+	public ResponseEntity<AnswerDTO>  saveAnswer(@PathVariable("user") Integer idUser,@PathVariable("id") Integer id,
+			QuestionnaireUserAnswerDTO qUADTO){
+		
+//		Optional <Course>  courseUser=courseService.findById(id);
+//		if (courseUser.isPresent()) {
+//				Optional <User> user=userService.findById(idUser);
+//				courseUser.get().getUser().add(user.get());
+//				courseService.update(courseUser.get());
+//				return new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
+//		}
+//		else 
+		return new ResponseEntity<AnswerDTO>(HttpStatus.NOT_FOUND);
+			
+		
 	}
 
 	/************************************HTTP METHOD DELETE *************************************/

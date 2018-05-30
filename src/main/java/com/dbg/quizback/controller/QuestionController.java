@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dbg.quizback.component.mapper.answer.AnswerMapper;
 import com.dbg.quizback.component.mapper.question.QuestionMapper;
+import com.dbg.quizback.component.mapper.question.QuestionUpdateDTOMapper;
 import com.dbg.quizback.dto.AnswerDTO;
 import com.dbg.quizback.dto.QuestionDTO;
+import com.dbg.quizback.dto.QuestionUpdateDTO;
 import com.dbg.quizback.exception.NotFoundException;
 import com.dbg.quizback.model.Answer;
 import com.dbg.quizback.model.Question;
@@ -47,6 +49,9 @@ public class QuestionController {
 	@Autowired
 	QuestionMapper questionMapper;
 
+	@Autowired
+	QuestionUpdateDTOMapper questionUpdateDTOMapper;
+	
 	@Autowired
 	AnswerMapper answerMapper;
 
@@ -79,7 +84,6 @@ public class QuestionController {
 	}
 
 	@RequestMapping(value = "/{id}/showCorrectAnswer", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<AnswerDTO> getCorrectAnswer(@PathVariable Integer idQuestion) {
 		Optional<Question> question = questionService.findById(idQuestion);
 		ResponseEntity<AnswerDTO> respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.OK);
@@ -96,13 +100,12 @@ public class QuestionController {
 	/************************************HTTP METHOD POST *************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	//Only allow create Question not mapped objects
-	public ResponseEntity<QuestionDTO> create(@RequestBody QuestionDTO dto) {
-		Question createQuestion = questionService.create(questionMapper.dtoToModel(dto));		
+	public ResponseEntity<QuestionUpdateDTO> create(@RequestBody QuestionUpdateDTO dto) {
+		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));		
 		log.info("Question " + createQuestion.getId() + " succesfuly created.");
 		log.warn("Pending to create answers linked to question");
-		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(createQuestion),HttpStatus.OK);
+		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion),HttpStatus.OK);
 	}
 	// url-->/question/(idQuestion)/answer/(idAnswer)
 
@@ -110,43 +113,21 @@ public class QuestionController {
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
 	//allow update existing question creating answers, tag and Level
-	ResponseEntity<QuestionDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionDTO dto) {
+	ResponseEntity<QuestionUpdateDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionUpdateDTO dto) {
 
 		Optional<Question> questionModel=questionService.findById(id);
-		ResponseEntity<QuestionDTO> respEnt=respEntOK;
+		ResponseEntity<QuestionUpdateDTO> respEnt=new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
 		if(questionModel.isPresent()) {
 			questionModel.get().setId(id);
-			Question questionModelDTO=questionMapper.dtoToModel(dto);
-			//questionModelDTO.getAnswer().forEach(answer -> answerService.findById(asnwer.get))
-			//questionModel.get().setAnswer(questionModelDTO.getAnswer());
-			//questionModel.get().setTag(questionModelDTO.getTag());
-			//questionModel.get().setLevel(questionModelDTO.getLevel());
+			Question questionModelDTO=questionUpdateDTOMapper.dtoToModel(dto);
 			questionService.update(questionModel.get());  
 			
-			respEnt=new ResponseEntity<QuestionDTO>(dto,HttpStatus.OK);
+			respEnt=new ResponseEntity<QuestionUpdateDTO>(dto,HttpStatus.OK);
 		}
-		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+		else respEnt=new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}
 	
-//	@ResponseBody
-//	@RequestMapping(value="/{description}",method = RequestMethod.PUT)
-//	ResponseEntity<QuestionDTO> updateByName(@PathVariable("name") String name, @RequestBody QuestionDTO dto) {
-//
-//		Optional<Question> questionModel=questionService.findByDescription(name);
-//		ResponseEntity<QuestionDTO> respEnt=respEntOK;
-//		if(questionModel.isPresent()) {
-//			Question questionModelDTO=questionMapper.dtoToModel(dto);
-//			questionModel.get().setAnswer(questionModelDTO.getAnswer());
-//			questionModel.get().setTag(questionModelDTO.getTag());
-//			questionModel.get().setLevel(questionModelDTO.getLevel());
-//			questionService.update(questionModel.get());  
-//			respEnt=new ResponseEntity<QuestionDTO>(dto,HttpStatus.OK);
-//		}
-//		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
-//		return respEnt;
-//	}
-
 	@ResponseBody
 	@RequestMapping(value="/{id}/answer",method = {RequestMethod.PUT,RequestMethod.POST})
 	public ResponseEntity<QuestionDTO> updateAnswerQuestion(
@@ -162,18 +143,6 @@ public class QuestionController {
 		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(answerModel.getQuestion()),HttpStatus.OK);
 	}	
 	
-	@RequestMapping(value = "/updateQuestions", method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
-	public void updateQuestions(@RequestBody List<QuestionDTO> questions) {
-		List<Question> itemQuestions=questionMapper.dtoToModel(questions);
-		itemQuestions.forEach(qItem -> {
-			
-			Optional<Question> questionModel=questionService.findById(qItem.getId());
-			if (questionModel.isPresent()) {
-				questionService.update(questionModel.get());
-			}
-		});
-	}
 	/************************************HTTP METHOD DELETE *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
@@ -183,7 +152,7 @@ public class QuestionController {
 		if(question.isPresent()) {
 			//delete all answers linked to current question 
 			question.get().getAnswer().forEach((final Answer answerLink)->answerService.delete(answerLink));
-			questionService.delete(questionMapper.dtoToModel(dto));   
+			questionService.delete(question.get());   
 			respEnt=new ResponseEntity<QuestionDTO>(dto,HttpStatus.OK);
 			log.info("Succesfully delete question " + id + " and answers linked to question"); 
 		}

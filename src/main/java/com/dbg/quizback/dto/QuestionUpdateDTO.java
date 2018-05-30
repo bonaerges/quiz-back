@@ -7,5 +7,6 @@ public class QuestionUpdateDTO {
 
 	private String description;
 
+	private Integer idLevel;
 
 }

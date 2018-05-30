@@ -1,5 +1,6 @@
 package com.dbg.quizback.model;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +17,10 @@ import lombok.Setter;
 @Getter
 public class QuestionnaireUserAnswer {
 
-	 @EmbeddedId 
+	 public static final String FIELD_ID = "questionUserAnswerId";
+
+	@EmbeddedId 
+	@Column(name=FIELD_ID)
 	 public QuestionUserAnswerId id;
 	 
 	 @MapsId(QuestionUserAnswerId.FIELD_ID_QUESTION) // maps questionId attribute of embedded id
@@ -34,10 +38,11 @@ public class QuestionnaireUserAnswer {
 	 @JoinColumn(name=User.FIELD_ID, insertable = false, updatable = false)
 	 private User user;
 
-//	 @MapsId(QuestionUserAnswerId.FIELD_ID_QUESTIONNAIRE) // maps questionnaire attribute of embedded id
-//	 @ManyToOne
-//	 @JoinColumn(name=Questionnaire.FIELD_ID, insertable = false, updatable = false)
-//	 private Questionnaire questionnaire;
+	 
+	 @ManyToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = Questionnaire.FIELD_ID)
+		private Questionnaire questionary;
 
+	
 
 }

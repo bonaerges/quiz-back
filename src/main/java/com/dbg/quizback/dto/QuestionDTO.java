@@ -13,7 +13,6 @@ public class QuestionDTO {
 	private String description;
 	
 	private List<AnswerDTO> answer;
-	
-	private Integer idLevel;
+
 
 }

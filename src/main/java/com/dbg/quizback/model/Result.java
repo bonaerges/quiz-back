@@ -51,6 +51,7 @@ public class Result {
 	@JoinColumn(name = Questionnaire.FIELD_ID)
 	private Questionnaire questionary;
 
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = FIELD_USER)
 	private User user;

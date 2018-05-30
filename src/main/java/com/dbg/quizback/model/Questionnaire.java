@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -56,6 +57,9 @@ public class Questionnaire {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = COURSE_FIELD)
 	private Course course;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "questionary")
+	private List<QuestionnaireUserAnswer> questionnaireUserAnswer;
 	
 	@Override
 	public String toString() {
