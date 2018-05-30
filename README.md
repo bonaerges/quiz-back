@@ -142,8 +142,24 @@ a) AnswerDAO access to Repository map to Answer Entity mainly.
 	delete					DELETE			Delete		/answer/(idAnswer)							Remove answer completly
 	
 
+**************************************************************************************************************************
+* COURSE CREATION (USER + QUESTIONNARIE + COURSE). DO ALSO MOCKITO TEST FOR COURSE LAYERS
+**************************************************************************************************************************
+File src\main\resources\data\CourseDataModel.txt contaisn data tets for course to be added and tets controller
 
+Course Controller:	Below is the mapping can be used on Course Controller 
+	
+	Service Method  		HTTP method 	CRUD 		URI 										Description
+	create					POST 			Create		/course										Create a new course given a CourseDTO object
 
+	findAll					GET 			Read		/course										Return a list of courses paginate.Default pagination page=0 y size 10
+	findById				GET				Read		/course/(idCourse)							Return course details for a specific course id							
+	
+	update					PUT				Update
+											/Replace	/course/(idCourse)							Update details fields for course(description, start date..)
+										
+	delete					DELETE			Delete		/course/(idCourse)							Remove course and questionarios compltl
+	
 *******************************************************
 + RECUPERACION DE RESULTADOS DEL CURSO
 *******************************************************
