@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.AnswerDAO;
 import com.bonaerges.quizback.dao.QuestionDAO;
-import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 
@@ -55,7 +54,7 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 	
 	//Link answer to previous existing question
-	public void updatedAnswerQuestion(Answer t,Integer idAnswer,Integer idQuestion) throws NotFoundException {
+	public void updatedAnswerQuestion(Answer t,Integer idAnswer,Integer idQuestion) {
 	Optional<Question> question=questionDAO.findById(idQuestion);
 	Answer answerObject=t;
 	if (question.isPresent()) {
@@ -74,7 +73,7 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 	
 	//Delete and answer mapped to an existing question
-	 public void deleteAnswerQuestion(Integer idQuestion, Integer idAnswer) throws NotFoundException {
+	 public void deleteAnswerQuestion(Integer idQuestion, Integer idAnswer)  {
 	        if (isAnswerMapToQuestion(idQuestion, idAnswer))
 	        	answerDAO.deleteById(idAnswer);
 	  }
@@ -106,7 +105,7 @@ public class AnswerServiceImpl implements AnswerService {
 		return answerDAO.findAll();		
 	}
 
-	private boolean isAnswerMapToQuestion(Integer idQuestion, Integer idAnswer) throws NotFoundException {
+	private boolean isAnswerMapToQuestion(Integer idQuestion, Integer idAnswer) {
         Optional<Answer> answer = answerDAO.findById(idAnswer);
         boolean isMapped=false;
         if (answer.isPresent())
@@ -114,7 +113,7 @@ public class AnswerServiceImpl implements AnswerService {
         	if (Objects.equals(idQuestion, answer.get().getQuestion().getId()))  
         		isMapped=true;
         	else  {
-        		throw new NotFoundException ("Question with ID: '" + idQuestion + "' does not contain answer with ID: '" + idAnswer+ "'");}
+        		log.error ("Question with ID: '" + idQuestion + "' does not contain answer with ID: '" + idAnswer+ "'");}
         	}
         
 		return isMapped;

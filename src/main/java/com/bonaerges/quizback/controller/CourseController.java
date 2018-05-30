@@ -23,6 +23,7 @@ import com.bonaerges.quizback.component.mapper.course.CoursePostDTOMapper;
 import com.bonaerges.quizback.component.mapper.user.UserMapper;
 import com.bonaerges.quizback.dto.CourseDTO;
 import com.bonaerges.quizback.dto.CoursePostDTO;
+import com.bonaerges.quizback.dto.UserCourseDTO;
 import com.bonaerges.quizback.dto.UserDTO;
 import com.bonaerges.quizback.exception.DuplicatedException;
 import com.bonaerges.quizback.exception.NotFoundException;
@@ -76,17 +77,20 @@ public class CourseController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(path="/{id}/",method=RequestMethod.GET)
-	public ResponseEntity<Set<UserDTO>> getUserCourseById(@PathVariable("id") Integer id)
+	@RequestMapping(path="/{id}/user",method=RequestMethod.GET)
+	public ResponseEntity<UserCourseDTO> getUsersCourseById(@PathVariable("id") Integer id)
 			{
 		Optional<Course> course=courseService.findById(id);
-		ResponseEntity<Set<UserDTO>> respEnt=new ResponseEntity<Set<UserDTO>>(HttpStatus.OK);
+		ResponseEntity<UserCourseDTO> respEnt=new ResponseEntity<UserCourseDTO>(HttpStatus.OK);
 		 if(course.isPresent()) {
 				log.info("findUserByid users found "+ id);
 				Set<UserDTO> usersCourseList=userMapper.modelToDto(course.get().getUser());
-		    	respEnt=new ResponseEntity<Set<UserDTO>>(usersCourseList,HttpStatus.OK);
+				UserCourseDTO courseUser=new UserCourseDTO();
+				courseUser.setUsers(usersCourseList);
+				courseUser.setCourse(courseMapper.modelToDto(course.get()));
+		    	respEnt=new ResponseEntity<UserCourseDTO>(courseUser,HttpStatus.OK);
 		    }
-		    else respEnt=new ResponseEntity<Set<UserDTO>>(HttpStatus.NOT_FOUND);
+		    else respEnt=new ResponseEntity<UserCourseDTO>(HttpStatus.NOT_FOUND);
 			return respEnt;
 	}
 	/************************************HTTP METHOD POST *************************************/

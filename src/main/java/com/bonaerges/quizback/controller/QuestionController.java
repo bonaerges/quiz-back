@@ -129,7 +129,7 @@ public class QuestionController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/{id}/answer",method = {RequestMethod.PUT,RequestMethod.POST})
+	@RequestMapping(value="/{id}/answer",method = {RequestMethod.PUT})
 	public ResponseEntity<QuestionDTO> updateAnswerQuestion(
 			@PathVariable("id") Integer id,
 			@RequestBody AnswerDTO dto) throws NotFoundException {
@@ -143,17 +143,36 @@ public class QuestionController {
 		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(answerModel.getQuestion()),HttpStatus.OK);
 	}	
 	
+	@ResponseBody
+	@RequestMapping(value="/{id}/answers",method = {RequestMethod.PUT})
+	public ResponseEntity<List<AnswerDTO>> updateAnswersQuestion(
+			@PathVariable("id") Integer id,
+			@RequestBody List<AnswerDTO> dto) throws NotFoundException {
+
+		List<Answer> answerModel = answerMapper.dtoToModel(dto) ;
+		//For idQuestion  save new answer, then, update question
+		answerModel.forEach(ans -> {
+			answerService.addAnswerQuestion(ans,id);
+			ans.getQuestion().setId(id);
+			//Update question object
+			questionService.update(ans.getQuestion()); 
+		});
+	
+		
+		return new ResponseEntity<List<AnswerDTO>>(dto,HttpStatus.OK);
+	}	
+	
 	/************************************HTTP METHOD DELETE *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
-	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id, @RequestBody QuestionDTO dto) {		
+	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id) {		
 		Optional<Question> question=questionService.findById(id);
 		ResponseEntity<QuestionDTO> respEnt=respEntOK;
 		if(question.isPresent()) {
 			//delete all answers linked to current question 
 			question.get().getAnswer().forEach((final Answer answerLink)->answerService.delete(answerLink));
 			questionService.delete(question.get());   
-			respEnt=new ResponseEntity<QuestionDTO>(dto,HttpStatus.OK);
+			respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.OK);
 			log.info("Succesfully delete question " + id + " and answers linked to question"); 
 		}
 		else {
@@ -176,6 +195,27 @@ public class QuestionController {
 			log.info("Succesfully delete answer "+ idA + " linked to question " + id ); 
 		}
 		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+		return respEnt;
+	}	
+	
+	@ResponseBody
+	@RequestMapping(value="/{id}/answers",method = {RequestMethod.DELETE})
+	public ResponseEntity<List<QuestionDTO>> deleteAnswersQuestion(
+			@PathVariable("id") Integer id) throws NotFoundException {
+		Optional<Question> question=questionService.findById(id);
+		ResponseEntity<List<QuestionDTO>> respEnt;
+		if (question.isPresent()) {
+			//For idQuestion  save new answer, then, update question
+			question.get().getAnswer().forEach(ans -> {
+				answerService.deleteAnswerQuestion(ans.getId(),id);
+				ans.getQuestion().setId(id);
+				//Update question object
+				questionService.update(ans.getQuestion()); 
+			});
+			respEnt=new ResponseEntity<List<QuestionDTO>>(HttpStatus.OK);
+			log.info("Succesfully delete answers linked to question " + id ); 
+		}
+		else respEnt=new ResponseEntity<List<QuestionDTO>>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}	
 }
