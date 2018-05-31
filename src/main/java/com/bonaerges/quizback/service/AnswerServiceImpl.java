@@ -41,27 +41,37 @@ public class AnswerServiceImpl implements AnswerService {
 		log.info(" Answer update successfully " + t.toString());
 		
 	}
-	//c
+	//Add answer to question if asnwer wasn not already linked to question
 	public void addAnswerQuestion(Answer t,Integer idQuestion) {
-		Optional<Question> question=questionDAO.findById(idQuestion);
-		Answer answerObject=t;
-		
-		question.ifPresent(questionObj -> {
-			answerObject.setQuestion(questionObj);
-			answerDAO.save(answerObject);});			
-		log.info(" Add Answer to question successfully " + answerObject.toString());
+		Optional<Question> question=questionDAO.findById(idQuestion);		
+		Optional <Answer> answerLink=answerDAO.findById(t.getId());	
+		if (answerLink.isPresent()) {
+		 if (isAnswerMapToQuestion(idQuestion,answerLink.get().getId())) {
+			 log.error ("Question with ID: '" + idQuestion + "' already map to answer with ID: '" + answerLink.get().getId()+ "'");
+		 }
+		 else {
+			 answerLink.get().setQuestion(question.get());
+			 answerDAO.save(answerLink.get());
+			 log.info(" Add Answer to question successfully " + answerLink.get().toString());
+		 }
+		}
+		else {
+			 log.error ("Answer not found linked to question id " + idQuestion);
+		}
 		
 	}
 	
-	//Link answer to previous existing question
+	//Link an update answer to previous existing question
 	public void updatedAnswerQuestion(Answer t,Integer idAnswer,Integer idQuestion) {
 	Optional<Question> question=questionDAO.findById(idQuestion);
-	Answer answerObject=t;
+	Optional <Answer> answerLink=answerDAO.findById(t.getId());	
+
 	if (question.isPresent()) {
 	 if (isAnswerMapToQuestion(idQuestion,idAnswer)) {
-		   answerObject.setId(idAnswer);
-			answerDAO.save(answerObject);
-			log.info(" Add Answer " + idAnswer + " to question " + idQuestion + " successfully " + answerObject.toString());
+		 	answerLink.get().setDescription(t.getDescription());
+		 	answerLink.get().setIsCorrect(t.getIsCorrect());
+			answerDAO.save(answerLink.get());
+			log.info(" Add Update Answer " + idAnswer + " to question " + idQuestion + " successfully " + answerLink.toString());
 	 	}
 	}	
 	}

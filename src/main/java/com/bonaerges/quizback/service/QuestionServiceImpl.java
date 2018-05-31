@@ -68,7 +68,7 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionObject;
 		
 	}
-	//TO modify a the correct answer map to a question in case user need to change response
+	//TO modify  the correct answer map to a question in case user need to change response
 	public void updateSelectedAnswer(Question question, Answer answer) {
 		Optional <Question> questionObject=questionDAO.findById(question.getId());
 		if (questionObject.isPresent()) {

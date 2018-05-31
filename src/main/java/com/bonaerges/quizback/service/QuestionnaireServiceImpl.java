@@ -83,64 +83,6 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	}
 	
 
-	@Override
-	public Result validateQuestionAnswers(Questionnaire questionnaire, List<QuestionnaireUserAnswer> resultsQuestionAnswer) {
-	
-		//Get all questions from questionnaire
-		List<Question> questionsQuiz=questionnaire.getQuestion();
-		 
-		Result resultUser=new Result();
-		double averageNote;
-	
-		
-		//From the filled quiz , for each answer given to question, select the correct answer and compare with answer provide by user
-		questionsQuiz.forEach(questionFilledQ -> {
-			Answer correctAnswer=questionFilledQ.getCorrectAnswer();
-			//get answer provide by user
-			resultsQuestionAnswer.forEach(answerUser ->  {
-				
-				int countCorrect=resultUser.getTotalAnswerOK();
-				int countIncorrect=resultUser.getTotalAnswerKO();
-				int toalQuestions=resultUser.getTotalQuestions();
-				boolean answerSelected=false;
-				Optional<User> userAnswer=userDAO.findById(answerUser.getUser().getId());
-				if (userAnswer.isPresent()) {
-					//Compare if question answer from questionnaire is the same question answered
-					if (answerUser.getQuestion().getId() ==	questionFilledQ.getId()) {
-						//Check if answer provide for the question is the correctAnswer to sumarize error or succeed
-						boolean answeredCorrect= Optional.ofNullable(answerUser)
-					    .map(aUser -> aUser.getAnswer())
-						.filter(aUser->aUser.getId() == correctAnswer.getId()).isPresent();
-						if (answeredCorrect) {
-							//find user that answer questionnaire for save into result	and update answer OK and KO					
-								countCorrect++;
-								answerSelected=true;
-						}
-						else {
-							countIncorrect++;
-						}
-					}
-								
-				}
-				if (answerSelected) {
-					resultUser.setTotalAnswerOK(countCorrect);
-					resultUser.setTotalAnswerKO(countIncorrect);
-					resultUser.setTotalQuestions(toalQuestions+1);
-					resultUser.setUser(userAnswer.get());
-				}	
-				else {
-					resultUser.setTotalAnswerOK(0);
-					resultUser.setTotalAnswerKO(countIncorrect);
-					resultUser.setTotalQuestions(toalQuestions+1);
-					resultUser.setUser(userAnswer.get());
-				}
-				
-				});
-			} );
-		
-
-		return resultUser;
-	}
 
 	
 }

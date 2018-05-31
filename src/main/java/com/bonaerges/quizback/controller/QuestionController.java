@@ -152,6 +152,7 @@ public class QuestionController {
 		List<Answer> answerModel = answerMapper.dtoToModel(dto) ;
 		//For idQuestion  save new answer, then, update question
 		answerModel.forEach(ans -> {
+			
 			answerService.addAnswerQuestion(ans,id);
 			ans.getQuestion().setId(id);
 			//Update question object

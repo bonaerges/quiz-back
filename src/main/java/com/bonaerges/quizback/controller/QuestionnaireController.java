@@ -20,6 +20,7 @@ import com.bonaerges.quizback.component.mapper.questionnaire.QuestionnaireMapper
 import com.bonaerges.quizback.dto.AnswerDTO;
 import com.bonaerges.quizback.dto.CourseDTO;
 import com.bonaerges.quizback.dto.QuestionnaireDTO;
+import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.dto.QuestionnaireUserAnswerDTO;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Course;
@@ -49,6 +50,8 @@ public class QuestionnaireController {
 	@Autowired
 	QuestionnaireMapper questionnaireMapper;
 	
+	@Autowired
+	QuestionnaireMapper questionMapper;
 	
 	final ResponseEntity<QuestionnaireDTO> respEntOK=new ResponseEntity<QuestionnaireDTO>(HttpStatus.OK);
 	final ResponseEntity<QuestionnaireDTO> respEntNotFound=new ResponseEntity<QuestionnaireDTO>(HttpStatus.NOT_FOUND);
@@ -58,28 +61,32 @@ public class QuestionnaireController {
 	//questionnaire/id
 	@ResponseBody
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public ResponseEntity<QuestionnaireDTO>  findById(@PathVariable("id") Integer id)
+	public ResponseEntity<QuestionnaireQADTO>  findById(@PathVariable("id") Integer id)
 	{
 		Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
-		ResponseEntity<QuestionnaireDTO> respEnt=respEntOK;
+		ResponseEntity<QuestionnaireQADTO> respEnt=new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK) ;
 		if(questionnaireModel.isPresent()) {
+			QuestionnaireQADTO quizQ= new QuestionnaireQADTO();
+			
+			//quizQ.setQuestion(questoinMappe);
 			log.info("Questionnaire " + id + " found");
-			respEnt=new ResponseEntity<QuestionnaireDTO>(questionnaireMapper.modelToDto(questionnaireModel.get()),HttpStatus.OK);
+			respEnt=new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
 		}
-		else respEnt=respEntNotFound;
+		//else respEnt=";
 		return respEnt;
 	}
 	
 	//questionnaire?page=X&size=X
-	@ResponseBody
-	@RequestMapping(method=RequestMethod.GET)
-	public Set<QuestionnaireDTO>  findAll(
-			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
-			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
-		Set<Questionnaire> questionnaires=questionnaireService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
-		log.info("findAll questionnaires count is: "+ Integer.toString(questionnaires.size()));
-		return questionnaireMapper.modelToDto(questionnaires);
-	}
+//	@ResponseBody
+//	@RequestMapping(method=RequestMethod.GET)
+//	public QuestionnaireQADTO>  findAll(
+//			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
+//			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
+//		Set<Questionnaire> questionnaires=questionnaireService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
+//		QuestionnaireQADTO
+//		log.info("findAll questionnaires count is: "+ Integer.toString(questionnaires.size()));
+//		return questionnaireMapper.modelToDto(questionnaires);
+//	}
 	
 	/************************************HTTP METHOD POST *************************************/
 	//questionnaire
