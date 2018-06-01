@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,10 +51,10 @@ public class TagServiceImpl implements TagService {
 	}
 	
 	@Override
-	public Set<Tag> findAll(Pageable p){	
+	public List<Tag> findAll(Pageable p){	
 		int page=p.getPageNumber();
 		int size=p.getPageSize();
-		return tagDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
+		return tagDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());		
 	}
 	
 	public Optional<Tag> findOneByNameOrderByIdDesc(String name){

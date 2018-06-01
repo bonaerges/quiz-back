@@ -8,5 +8,7 @@ public class QuestionnaireUserAnswerDTO {
 	private Integer iduser;
 	
 	private Integer idAnswer;
+	
+	private Integer idQuestionnaire;
 
 }

@@ -5,7 +5,7 @@ import com.bonaerges.quizback.model.Answer;
 public interface AnswerService extends AbstractCrossService<Answer,Integer> {
 
 	Iterable<Answer> findAll();
-	void addAnswerQuestion(Answer t, Integer idQuestion);
+	Answer addAnswerQuestion(Answer t, Integer idQuestion);
 	void deleteAnswerQuestion(Integer idA, Integer id) ;
 	
 }

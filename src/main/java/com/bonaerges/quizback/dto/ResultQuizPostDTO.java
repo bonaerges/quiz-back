@@ -1,7 +1,5 @@
 package com.bonaerges.quizback.dto;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +7,10 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class UserCourseDTO {
+public class ResultQuizPostDTO {
+
+	private Integer questionnaireId;
 	
-	private CourseDTO course;
+	private Integer courseId;
 	
-	private List<UserDTO> users;
 }

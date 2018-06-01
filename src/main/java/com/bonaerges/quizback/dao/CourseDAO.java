@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.dao;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public interface CourseDAO extends PagingAndSortingRepository<Course, Integer> {
 
 	Optional<Course> findOneByDescription(String name);
 	
-	Set <Course> findAllByDescription(String name);
+	List<Course> findAllByDescription(String name);
 	
 	Optional<Course> findOneByDescriptionOrderByIdDesc(String name);
 

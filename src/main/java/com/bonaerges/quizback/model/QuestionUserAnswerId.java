@@ -27,8 +27,9 @@ public class QuestionUserAnswerId  implements Serializable {
 	
 	public static final String FIELD_ID_USER= "idUser";
 	
-//	 @Column(name = FIELD_ID_QUESTIONNAIRE, nullable = false)
-//	private Integer idQuestionnaire;
+	 @Column(name = FIELD_ID_QUESTIONNAIRE, nullable = false)
+	 
+	private Integer idQuestionnaire;
 	
 	 @Column(name = FIELD_ID_USER, nullable = false)
 	private Integer idUser;
@@ -42,7 +43,7 @@ public class QuestionUserAnswerId  implements Serializable {
 	  public boolean equals(Object object) {
 	        if (object instanceof QuestionUserAnswerId) {
 	        	QuestionUserAnswerId pk = (QuestionUserAnswerId)object;
-	        	return  pk.idUser == idUser && pk.idQuestion == idQuestion && pk.idAnswer==idAnswer;
+	        	return  pk.idQuestionnaire == idQuestionnaire && pk.idUser == idUser && pk.idQuestion == idQuestion && pk.idAnswer==idAnswer;
 	        } else {
 	            return false;
 	        }

@@ -1,11 +1,9 @@
 package com.bonaerges.quizback.service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +11,16 @@ import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.AnswerDAO;
 import com.bonaerges.quizback.dao.QuestionDAO;
+import com.bonaerges.quizback.exception.DuplicatedException;
+import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class QuestionServiceImpl implements QuestionService {
-
-	private static final Logger logger= LoggerFactory.getLogger(QuestionServiceImpl.class);
 	
 	@Autowired
 	QuestionDAO questionDAO;
@@ -30,41 +31,41 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public Question create(Question t) {
 		Question questionObject=questionDAO.save(t);
-		logger.info(" Question create successfully " + t.toString());
+		log.info(" Question create successfully " + t.toString());
 		return questionObject;
 	}
 
 	@Override
 	public void update(Question t) {
 		questionDAO.save(t);
-		logger.info(" Question update successfully " + t.toString());
+		log.info(" Question update successfully " + t.toString());
 		
 	}
 	@Override
 	public void delete(Question t) {
-		//Delete answesr linked to question
+		//Delete answer linked to question
 		t.getAnswer().forEach(answer ->answerDAO.deleteById(answer.getId()));
 		questionDAO.delete(t);
-		logger.info(" Question-Asnwer delete successfully " + t.toString());
+		log.info(" Question-Asnwer delete successfully " + t.toString());
 		
 	}
 	@Override
 	public Optional<Question> findById(Integer id){	
 		Optional <Question> questionObject=questionDAO.findById(id);		
-		logger.info(" Question findById successfully " + questionObject.toString());
+		log.info(" Question findById successfully " + questionObject.toString());
 		return questionObject;
 	}
 	
 	@Override
-	public Set<Question> findAll(Pageable p){	
+	public List<Question> findAll(Pageable p){	
 		int page=p.getPageNumber();
 		int size=p.getPageSize();
-		return questionDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
+		return (List<Question>) questionDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());		
 	}
 	
 	public Optional<Question> findOneByDescriptionOrderByIdDesc(String name){
 		Optional <Question> questionObject=questionDAO.findOneByDescriptionOrderByIdDesc(name);
-		questionObject.ifPresent(q ->logger.info("Question findOneByDescriptionOrderByIdDesc "  + q.toString()));
+		questionObject.ifPresent(q ->log.info("Question findOneByDescriptionOrderByIdDesc "  + q.toString()));
 		return questionObject;
 		
 	}
@@ -80,10 +81,62 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public Optional<Question> findByDescription(String name) {
 		Optional <Question> questionObject=questionDAO.findByDescription(name);
-		logger.info(" Question findByDescription successfully " + questionObject.toString());
+		log.info(" Question findByDescription successfully " + questionObject.toString());
 		return questionObject;
 	}
+
+	@Override
 	
+	public void addAnswerQuestion(Answer answerModel, Integer id) {
+		Optional<Question> question=questionDAO.findById(id);
+		if(question.isPresent()) {
+			//add answers linked to current question 
+			question.get().getAnswer().forEach((final Answer answerLink)->answerDAO.save(answerLink));
+			questionDAO.save(question.get());   
+			log.info("Succesfully add question " + id + " and answers linked to question"); 
+		}
+		//else throw new NotFoundException("Question id "+ id + " Not found");
+		
+	}
+
+	@Override
+	//Delete answer linked to question
+	public void deleteAnswerQuestion(Integer idA, Integer id) {
+		Optional<Question> question=questionDAO.findById(id);
+		if(question.isPresent()) {
+			//delete all answers linked to current question 
+			boolean existMatchAnswer = question.get().getAnswer().stream().anyMatch(answerLink -> answerLink.getId() == idA);
+			if (existMatchAnswer) {
+				log.error("Answer id "+ idA + " already linked to question id "+ id); 
+			}
+			else {	
+					Optional<Answer> answer=answerDAO.findById(idA);
+					question.get().getAnswer().remove(answer.get());
+					questionDAO.save(question.get());
+					log.info("Succesfully delete answer " + idA+ " linked to question id "+ id); 
+			}
+		}
+		
+		
+	}
+	@Override
+	//Add answer linked to question
+	public void addAnswerQuestion(Integer idA, Integer id) {
+		Optional<Question> question=questionDAO.findById(id);
+		if(question.isPresent()) {
+			//delete all answers linked to current question 
+			boolean existMatchAnswer = question.get().getAnswer().stream().anyMatch(answerLink -> answerLink.getId() == idA);
+			if (existMatchAnswer) {
+				log.error("Answer id "+ idA + " already linked to question id "+ id); 
+			}
+			else {	
+					Optional<Answer> answer=answerDAO.findById(idA);
+					question.get().getAnswer().add(answer.get());
+					questionDAO.save(question.get());
+					log.info("Succesfully add answer " + idA+ " linked to question id "+ id); 
+			}
+		}
+	}
 
 	
 }

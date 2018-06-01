@@ -1,7 +1,7 @@
 package com.bonaerges.quizback.controller;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,7 @@ import com.bonaerges.quizback.dto.UserDTO;
 import com.bonaerges.quizback.exception.DuplicatedException;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
-import com.bonaerges.quizback.model.Questionnaire;
-import com.bonaerges.quizback.model.User;
 import com.bonaerges.quizback.service.CourseService;
-import com.bonaerges.quizback.service.QuestionnaireService;
-import com.bonaerges.quizback.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,12 +46,6 @@ public class CourseController {
 	CourseService courseService;
 	
 	@Autowired
-	UserService userService;
-	
-	@Autowired
-	QuestionnaireService questionnaireService;
-	
-	@Autowired
 	CourseMapper courseMapper;
 	
 	@Autowired
@@ -68,10 +58,10 @@ public class CourseController {
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.FOUND)
-	public Set<CourseDTO>  findAll(
+	public List<CourseDTO>  findAll(
 			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
-		Set<Course> course=courseService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
+		List<Course> course=(List<Course>) courseService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());
 		log.info("findAll course count is: "+ Integer.toString(course.size()));
 		return courseMapper.modelToDto(course);
 	}
@@ -84,7 +74,7 @@ public class CourseController {
 		ResponseEntity<UserCourseDTO> respEnt=new ResponseEntity<UserCourseDTO>(HttpStatus.OK);
 		 if(course.isPresent()) {
 				log.info("findUserByid users found "+ id);
-				Set<UserDTO> usersCourseList=userMapper.modelToDto(course.get().getUser());
+				List<UserDTO> usersCourseList=userMapper.modelToDto(course.get().getUser());
 				UserCourseDTO courseUser=new UserCourseDTO();
 				courseUser.setUsers(usersCourseList);
 				courseUser.setCourse(courseMapper.modelToDto(course.get()));
@@ -108,20 +98,8 @@ public class CourseController {
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<CoursePostDTO>  addUserCouse(@PathVariable("idU") Integer  idUser,@PathVariable("id") Integer id) throws NotFoundException  {
 		ResponseEntity<CoursePostDTO> respEnt;
-		Optional <Course>  courseUser=courseService.findById(id);
-		if (courseUser.isPresent()) {
-				Optional <User> user=userService.findById(idUser);
-				if (!courseService.belongsUserToCourse(id, idUser)) {
-					courseUser.get().getUser().add(user.get());
-					courseService.update(courseUser.get());
-					respEnt=new ResponseEntity<CoursePostDTO>(coursePostDTOMapper.modelToDto(courseUser.get()),HttpStatus.OK);
-				}
-				else throw new NotFoundException("User with id: "+ idUser + " already belong to course id: "+ id );
-		}
-		else return new ResponseEntity<CoursePostDTO>(HttpStatus.NOT_FOUND);
-		return respEnt;
-			
-		
+		courseService.addUserToCourse(id, idUser);
+		return new ResponseEntity<CoursePostDTO>(HttpStatus.OK);
 	}
 
 	
@@ -133,16 +111,8 @@ public class CourseController {
 		
 		ResponseEntity<CourseDTO> respEnt=respEntOK;
 		
-		//Update course object
-		Optional <Course>  courseUser=courseService.findById(id);
-		final Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
-		if (courseUser.isPresent() && questionnaireModel.isPresent()) {
-			courseUser.get().getQuestionnaire().add(questionnaireModel.get());
-			courseService.update(courseUser.get());
-			respEnt=new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
-		}
-		else respEnt=respEntNotFound;
-		return respEnt;
+		courseService.addQuestionnarieCourse(id, idQ);
+		return new ResponseEntity<CourseDTO>(HttpStatus.OK);
 	}	
 	
 	/************************************HTTP METHOD DELETE *************************************/
@@ -152,8 +122,6 @@ public class CourseController {
 		Optional<Course> course=courseService.findById(idCourse);
 		ResponseEntity<CourseDTO> respEnt=respEntOK;
 		if(course.isPresent()) {
-			//delete all answers linked to current question 
-			course.get().getQuestionnaire().forEach((final Questionnaire questLink)->questionnaireService.delete(questLink));
 			courseService.delete(course.get());   
 			respEnt=new ResponseEntity<CourseDTO>(HttpStatus.OK);
 			log.info("Succesfully delete course " + idCourse + " and questioannaries linked to course"); 
@@ -169,19 +137,9 @@ public class CourseController {
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<CoursePostDTO>  deleteUserCouse(@PathVariable("idU") Integer  idUser,@PathVariable("id") Integer id) throws NotFoundException  {
 		ResponseEntity<CoursePostDTO> respEnt;
-		Optional <Course>  courseUser=courseService.findById(id);
-		if (courseUser.isPresent()) {
-				Optional <User> user=userService.findById(idUser);
-				if (courseService.belongsUserToCourse(id, idUser)) {
-					courseUser.get().getUser().remove(user.get());
-					courseService.update(courseUser.get());
-					respEnt=new ResponseEntity<CoursePostDTO>(coursePostDTOMapper.modelToDto(courseUser.get()),HttpStatus.OK);
-				}
-				else throw new NotFoundException("User with id: "+ idUser + " does ot belong to course id: "+ id );
-		}
-		else return new ResponseEntity<CoursePostDTO>(HttpStatus.NOT_FOUND);
-		return respEnt;
-		
+		courseService.deleteUserCouse(id,idUser);
+		return new ResponseEntity<CoursePostDTO>(HttpStatus.NOT_FOUND);
+			
 	}
 	
 	@ResponseBody
@@ -190,17 +148,10 @@ public class CourseController {
 			@PathVariable("id") Integer id,
 			@PathVariable("idQ") Integer  idQ) throws NotFoundException,DuplicatedException {
 		
-		ResponseEntity<CourseDTO> respEnt=respEntOK;
-		
+		ResponseEntity<CourseDTO> respEnt=respEntOK;		
 		//Update course object to remove questionnarie mapped
-		Optional <Course>  courseUser=courseService.findById(id);
-		final Optional<Questionnaire> questionnaireModel=questionnaireService.findById(id);
-		if (courseUser.isPresent() && questionnaireModel.isPresent()) {
-			courseUser.get().getQuestionnaire().remove(questionnaireModel.get());
-			courseService.update(courseUser.get());
-			respEnt=new ResponseEntity<CourseDTO>(courseMapper.modelToDto(courseUser.get()),HttpStatus.OK);
-		}
-		else respEnt=respEntNotFound;
+		courseService.deleteQuestionnarieCourse(id, idQ);
+		respEnt=new ResponseEntity<CourseDTO>(HttpStatus.OK);
 		return respEnt;
 	}	
 	

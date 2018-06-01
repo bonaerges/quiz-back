@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,10 +50,10 @@ public class ResultServiceImpl implements ResultService {
 	}
 	
 	@Override
-	public Set<Result> findAll(Pageable p){	
+	public List<Result> findAll(Pageable p){	
 		int page=p.getPageNumber();
 		int size=p.getPageSize();
-		return resultDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
+		return resultDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());		
 	}
 	
 	

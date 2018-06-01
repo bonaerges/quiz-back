@@ -2,20 +2,19 @@ package com.bonaerges.quizback.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
@@ -27,7 +26,6 @@ import com.bonaerges.quizback.dto.QuestionUpdateDTO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
-import com.bonaerges.quizback.service.AnswerService;
 import com.bonaerges.quizback.service.QuestionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +40,6 @@ public class QuestionController {
 	
 	@Autowired
 	QuestionService questionService;
-
-	@Autowired
-	AnswerService answerService;
 
 	@Autowired
 	QuestionMapper questionMapper;
@@ -75,15 +70,15 @@ public class QuestionController {
 
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
-	public Set<QuestionDTO>  findAll(
+	public List<QuestionDTO>  findAll(
 			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
-		Set<Question> questions=questionService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
+		List<Question> questions=(List<Question>) questionService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());
 		log.info("findAll questions count is: "+ Integer.toString(questions.size()));
 		return questionMapper.modelToDto(questions);
 	}
 
-	@RequestMapping(value = "/{id}/showCorrectAnswer", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/showCorrect", method = RequestMethod.GET)
 	public ResponseEntity<AnswerDTO> getCorrectAnswer(@PathVariable Integer idQuestion) {
 		Optional<Question> question = questionService.findById(idQuestion);
 		ResponseEntity<AnswerDTO> respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.OK);
@@ -133,28 +128,30 @@ public class QuestionController {
 	public ResponseEntity<QuestionDTO> updateAnswerQuestion(
 			@PathVariable("id") Integer id,
 			@RequestBody AnswerDTO dto) throws NotFoundException {
-
+		
 		Answer answerModel = answerMapper.dtoToModel(dto) ;
 		//For idQuestion  save new answer, then, update question
-		answerService.addAnswerQuestion(answerModel,id);
-		answerModel.getQuestion().setId(id);
+		questionService.addAnswerQuestion(answerModel,id);
+		//answerModel.getQuestion().setId(id);
 		//Update question object
 		questionService.update(answerModel.getQuestion()); 
 		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(answerModel.getQuestion()),HttpStatus.OK);
 	}	
 	
+	//Update a question with a  list of new answers
 	@ResponseBody
 	@RequestMapping(value="/{id}/answers",method = {RequestMethod.PUT})
+	@ExceptionHandler({ NotFoundException.class })
 	public ResponseEntity<List<AnswerDTO>> updateAnswersQuestion(
 			@PathVariable("id") Integer id,
-			@RequestBody List<AnswerDTO> dto) throws NotFoundException {
+			@RequestBody List<AnswerDTO> dto) {
 
 		List<Answer> answerModel = answerMapper.dtoToModel(dto) ;
 		//For idQuestion  save new answer, then, update question
 		answerModel.forEach(ans -> {
-			
-			answerService.addAnswerQuestion(ans,id);
+		
 			ans.getQuestion().setId(id);
+			questionService.addAnswerQuestion(ans,id);
 			//Update question object
 			questionService.update(ans.getQuestion()); 
 		});
@@ -163,60 +160,65 @@ public class QuestionController {
 		return new ResponseEntity<List<AnswerDTO>>(dto,HttpStatus.OK);
 	}	
 	
-	/************************************HTTP METHOD DELETE *************************************/
+	/************************************HTTP METHOD DELETE 
+	 * @throws NotFoundException *************************************/
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
-	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id) {		
+	@ExceptionHandler(NotFoundException.class)
+	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id) throws NotFoundException {		
 		Optional<Question> question=questionService.findById(id);
 		ResponseEntity<QuestionDTO> respEnt=respEntOK;
 		if(question.isPresent()) {
-			//delete all answers linked to current question 
-			question.get().getAnswer().forEach((final Answer answerLink)->answerService.delete(answerLink));
 			questionService.delete(question.get());   
 			respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.OK);
 			log.info("Succesfully delete question " + id + " and answers linked to question"); 
 		}
 		else {
-			respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+			 throw new NotFoundException("Question id "+ id + "  not found");
 		}
 		return respEnt;
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}/answer/{idA}",method = {RequestMethod.DELETE})
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<QuestionDTO> deleteAnswerQuestion(
 			@PathVariable("id") Integer id,
 			@PathVariable("idA") Integer idA) throws NotFoundException {
 		Optional<Question> question=questionService.findById(id);
 		ResponseEntity<QuestionDTO> respEnt=respEntOK;
 		if (question.isPresent()) {
-			answerService.deleteAnswerQuestion(idA,id);
+			questionService.deleteAnswerQuestion(idA,id);
 			questionService.update(question.get());
 			respEnt=new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(question.get()),HttpStatus.OK);
 			log.info("Succesfully delete answer "+ idA + " linked to question " + id ); 
 		}
-		else respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+		else throw new NotFoundException("Question id "+ id + "  not found");
 		return respEnt;
 	}	
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}/answers",method = {RequestMethod.DELETE})
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<List<QuestionDTO>> deleteAnswersQuestion(
-			@PathVariable("id") Integer id) throws NotFoundException {
+			@PathVariable("id") Integer id) throws NotFoundException  {
 		Optional<Question> question=questionService.findById(id);
 		ResponseEntity<List<QuestionDTO>> respEnt;
 		if (question.isPresent()) {
 			//For idQuestion  save new answer, then, update question
-			question.get().getAnswer().forEach(ans -> {
-				answerService.deleteAnswerQuestion(ans.getId(),id);
+			if (!question.get().getAnswer().isEmpty() || question.get().getAnswer().size() >0) {
+				question.get().getAnswer().forEach(ans -> {
+				questionService.deleteAnswerQuestion(ans.getId(),id);
 				ans.getQuestion().setId(id);
 				//Update question object
 				questionService.update(ans.getQuestion()); 
 			});
+			}
 			respEnt=new ResponseEntity<List<QuestionDTO>>(HttpStatus.OK);
 			log.info("Succesfully delete answers linked to question " + id ); 
 		}
-		else respEnt=new ResponseEntity<List<QuestionDTO>>(HttpStatus.NOT_FOUND);
+		else throw new NotFoundException("Question id "+ id + " has not been found");
 		return respEnt;
+		
 	}	
 }

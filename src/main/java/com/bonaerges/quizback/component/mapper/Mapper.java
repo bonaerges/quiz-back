@@ -9,10 +9,6 @@ public interface Mapper<M, D> {
 
 	D modelToDto(M model);
 
-	Set<M> dtoToModel(Set<D> dtos);
-
-	Set<D> modelToDto(Set<M> models);
-	
 	List<M> dtoToModel(List<D> dtos);
 
 	List<D> modelToDto(List<M> models);

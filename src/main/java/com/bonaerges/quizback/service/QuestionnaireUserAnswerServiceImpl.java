@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bonaerges.quizback.dao.QuestionDAO;
 import com.bonaerges.quizback.dao.QuestionnaireDAO;
 import com.bonaerges.quizback.dao.QuestionnaireUserAnswerDAO;
 import com.bonaerges.quizback.dao.ResultDAO;
@@ -41,8 +40,6 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 	@Autowired
 	UserDAO userDAO;
 	
-	@Autowired
-	QuestionDAO questionDAO;
 	
 	@Override
 	public QuestionnaireUserAnswer create(QuestionnaireUserAnswer t) {
@@ -72,10 +69,10 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 	}
 
 	@Override
-	public Set<QuestionnaireUserAnswer> findAll(Pageable p) {
+	public List<QuestionnaireUserAnswer> findAll(Pageable p) {
 		int page=p.getPageNumber();
 		int size=p.getPageSize();
-		return questionnaireuserAnswerDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());	
+		return questionnaireuserAnswerDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());	
 	}
 
 	@Override
@@ -98,14 +95,13 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 					int countIncorrect=resultUser.getTotalAnswerKO();
 					int toalQuestions=resultUser.getTotalQuestions();
 					boolean answerSelected=false;
-					Optional<User> userAnswer=userDAO.findById(answerUser.getUser().getId());
+					Optional<User> userAnswer=userDAO.findById(answerUser.getId().getIdUser());
 					if (userAnswer.isPresent()) {
-						//Compare if question answer from questionnaire is the same question answered
-						if (answerUser.getQuestion().getId() ==	questionFilledQ.getId()) {
+						//Compare if question answer from questionnaire is correct one for question answered
+						if (answerUser.getId().getIdQuestion() == questionFilledQ.getId()) {
 							//Check if answer provide for the question is the correctAnswer to sumarize error or succeed
 							boolean answeredCorrect= Optional.ofNullable(answerUser)
-						    .map(aUser -> aUser.getAnswer())
-							.filter(aUser->aUser.getId() == correctAnswer.getId()).isPresent();
+							.filter(aUser->aUser.getId().getIdAnswer() == correctAnswer.getId()).isPresent();
 							if (answeredCorrect) {
 								//find user that answer questionnaire for save into result	and update answer OK and KO					
 									countCorrect++;

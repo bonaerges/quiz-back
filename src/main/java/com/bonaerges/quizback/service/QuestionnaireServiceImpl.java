@@ -69,10 +69,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	}
 	
 	@Override
-	public Set<Questionnaire> findAll(Pageable p){	
+	public List<Questionnaire> findAll(Pageable p){	
 		int page=p.getPageNumber();
 		int size=p.getPageSize();
-		return questionnaireDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
+		return questionnaireDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());		
 	}
 	
 	public Optional<Questionnaire> findOneByDescriptionOrderByIdDesc(String name){

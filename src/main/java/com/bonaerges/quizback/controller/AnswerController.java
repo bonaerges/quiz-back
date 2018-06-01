@@ -1,7 +1,7 @@
 package com.bonaerges.quizback.controller;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +56,10 @@ public class AnswerController {
 	//answer?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
-	public Set<AnswerDTO>  findAll(
+	public List<AnswerDTO>  findAll(
 			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
-		Set<Answer> answers=answerService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
+		List<Answer> answers=answerService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());
 		log.info("findAll answers count is: "+ Integer.toString(answers.size()));
 		return answerMapper.modelToDto(answers);
 	}

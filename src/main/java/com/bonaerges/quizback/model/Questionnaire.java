@@ -32,7 +32,7 @@ public class Questionnaire {
 	public static final String COURSE_FIELD = "course";
 	public static final String TABLE_QUESTIONNAIRE_TAG = "questionnaireTag";
 	public static final String TABLE_QUESTIONNAIRE_QUESTION = "questionnaireQuestion";
-	
+	public static final String QUESTIONNAIRE_FIELD = "questionnaire";
 	//TABLE FIELDS
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -42,24 +42,12 @@ public class Questionnaire {
 	@Column(nullable = false,unique=true)
 	private String description;
 	
-//	@Temporal(TemporalType.TIMESTAMP)
-//	private Date update;
-	
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-      name=TABLE_QUESTIONNAIRE_QUESTION,
-      joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
-      inverseJoinColumns=@JoinColumn(name=Question.FIELD_ID, referencedColumnName=Question.FIELD_ID))
+	@OneToMany(mappedBy = QUESTIONNAIRE_FIELD, fetch = FetchType.LAZY)
 	private List<Question> question;
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = COURSE_FIELD)
 	private Course course;
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "questionary")
-	private List<QuestionnaireUserAnswer> questionnaireUserAnswer;
 	
 	@Override
 	public String toString() {

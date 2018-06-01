@@ -58,13 +58,13 @@ public class Course {
 	//FOREIGN KEYS
 	//COURSE (1) --> (M) QUESTIONNAIRE
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = Questionnaire.COURSE_FIELD)
-	private Set<Questionnaire> questionnaire;
+	private List<Questionnaire> questionnaire;
 
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name=TABLE_COURSE_USER, 
 	joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
 	inverseJoinColumns=@JoinColumn(name=User.FIELD_ID, referencedColumnName=User.FIELD_ID))
-	private Set<User> user;
+	private List<User> user;
 	
 //
 	

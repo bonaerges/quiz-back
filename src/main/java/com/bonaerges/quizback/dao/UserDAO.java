@@ -1,14 +1,13 @@
 package com.bonaerges.quizback.dao;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.User;
 
 @Repository
@@ -20,7 +19,7 @@ public interface UserDAO extends PagingAndSortingRepository<User, Integer>{
 	Optional<User> findByEmail(@Param("email")String email);
 	
 	@Query("SELECT u FROM Course c,User u WHERE c.id = :idCourse  ")
-	Set<User> findUsersByCourse(@Param("idCourse")Integer idCourse);
+	List<User> findUsersByCourse(@Param("idCourse")Integer idCourse);
 	
 	long countByName(String name);
 	 

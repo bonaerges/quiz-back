@@ -50,15 +50,15 @@ a) UserDAO access to Repository map to User Entity mainly.
 	
 	e)User Controller:	Below is the mapping can be used on User Rest Controller 
 	
-	Service Method  	HTTP method 	CRUD 		URI 		Description
-	create					POST 			Create		/user 		Create a new user given a UserDTO object
-	findAll				GET 			Read		/user		Return a list of users paginate.
-																	Default pagination page=0 y size 10
-	getUserById			GET				Read		/user/(idUser)	Return user details for a specific user id							
+	Service Method  HTTP method CRUD 	URI 			Description
+	create			POST 		Create	/user 			Create a new user given a UserDTO object
+	findAll			GET 		Read	/user			Return a list of users paginate.
+														Default pagination page=0 y size 10
+	getUserById		GET			Read	/user/(idUser)	Return user details for a specific user id							
 	
-	update					PUT				Update					/Replace	/user/(idUser)	Update user 																	email, name, surname 	and /or password
+	update			PUT			Update	/user/(idUser)	Update user,mail, name, surname and /or password
 										
-	delete					DELETE			Delete		/user/(idUser)	Remove user completely
+	delete			DELETE		Delete	/user/(idUser)	Remove user completely
 	
 
 **************************************************************************************************************************
@@ -82,18 +82,18 @@ QUESTION
 	
 	e)Question Controller:	Below is the mapping can be used on Question Rest Controller 
 	
-	Service Method  		HTTP method 	CRUD 		URI 						Description
-	create					POST 			Create		/question 					Create a new question
-							POST			Create		/question/(idQuestion)/answer		Create a answer link to question
-	findAll					GET 			Read		/question								Return a list of questions with answers
-	findById				GET				Read		/question/(idQuestion)						Return answers for a specific question							
-	getCorrectAnswer		GET				Read		/question/(IdQuestion)/showCorrectAnswer	Return the corect answer for given quetsion id
-	update					PUT				Update
-											/Replace	/question/(idQuestion)						Update question
-	updateAnswerQuestion	PUT				Update
-											/Replace	/question/(idQuestion)/answer/(idAnswer)	Update answer of the existing question
-	deleteAnswer			DELETE			Delete		/question/(idQuestion)						Remove question
-	deleteAnswerQuestion	DELETE			Delete		/question/(idQuestion)/answer/(idAnswer)	Remove answer of the existing question
+	Service Method  	HTTP method CRUD 		URI 							Description
+	create				POST 		Create		/question 						Create a new question
+						POST		Create		/question/(idQ)/answer			Create a answer link to question
+	findAll				GET 		Read		/question						Return a list of questions with answers
+	findById			GET			Read		/question/(idQ)					Return answers for a specific question							
+	getCorrectAnswer	GET			Read		/question/(IdQ)/showCorrect		Return the corect answer for given quetsion id
+	update				PUT			Update
+									/Replace	/question/(idQ)					Update question
+	updateAnswerQuestionPUT			Update
+									/Replace	/question/(idQ)/answer/(idA)	Update answer of the existing question
+	deleteAnswer		DELETE		Delete		/question/(idQ)					Remove question
+	deleteAnswerQuestionDELETE		Delete		/question/(idQ)/answer/(idA)	Remove answer of the existing question
 	
 	
 	And Validation method:

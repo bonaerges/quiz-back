@@ -38,9 +38,6 @@ public class Question {
 	@Column(nullable = false,unique = true)
 	private String description;
 
-//	@Temporal(TemporalType.TIMESTAMP)
-//	private Date update;
-	
 	 //FOREIGN KEYS
 	 
 	//QUESTION (1) --> (M) ANSWER
@@ -49,6 +46,10 @@ public class Question {
 	
 	@OneToOne
 	private Answer correctAnswer;
+
+	@ManyToOne
+	private Questionnaire questionnaire;
+	
 	
 	//QUESTION (N) <-- (1) LEVEL
 	@JoinColumn(name = Level.FIELD_ID)
@@ -60,8 +61,8 @@ public class Question {
 	@JoinTable(name=TABLE_NAME_QUESTION_TAG,
      joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
      inverseJoinColumns=@JoinColumn(name=Tag.FIELD_ID, referencedColumnName=Tag.FIELD_ID))
-	private Set<Tag> tag;
-
+	private List<Tag> tag;
+	
 	@Override
 	public String toString() {
 		return "Question id= " + id + " , description= "+ description;

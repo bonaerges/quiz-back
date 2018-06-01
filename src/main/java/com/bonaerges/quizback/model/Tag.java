@@ -1,6 +1,6 @@
 package com.bonaerges.quizback.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +37,7 @@ public class Tag {
 	//FOREIGN KEY
 	//QUESTION (N) <--> (M) TAG
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy=FIELD)
-	private Set<Question> question;
+	private List<Question> question;
 	
 	@Override
 	public String toString() {

@@ -1,8 +1,8 @@
 package com.bonaerges.quizback.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,23 +42,18 @@ public class AnswerServiceImpl implements AnswerService {
 		
 	}
 	//Add answer to question if asnwer wasn not already linked to question
-	public void addAnswerQuestion(Answer t,Integer idQuestion) {
-		Optional<Question> question=questionDAO.findById(idQuestion);		
-		Optional <Answer> answerLink=answerDAO.findById(t.getId());	
-		if (answerLink.isPresent()) {
-		 if (isAnswerMapToQuestion(idQuestion,answerLink.get().getId())) {
-			 log.error ("Question with ID: '" + idQuestion + "' already map to answer with ID: '" + answerLink.get().getId()+ "'");
+	public Answer addAnswerQuestion(Answer t,Integer idQuestion) {
+		Optional<Question> question=questionDAO.findById(idQuestion);	
+		Answer saveAnswer =null;
+		if (question.isPresent()) {
+			 t.setQuestion(question.get());
+			 saveAnswer=create(t);
+			 log.info(" Add Answer to question successfully " + t.toString());
 		 }
-		 else {
-			 answerLink.get().setQuestion(question.get());
-			 answerDAO.save(answerLink.get());
-			 log.info(" Add Answer to question successfully " + answerLink.get().toString());
-		 }
-		}
 		else {
-			 log.error ("Answer not found linked to question id " + idQuestion);
+			 log.error ("Not found question id " + idQuestion);
 		}
-		
+		return saveAnswer;
 	}
 	
 	//Link an update answer to previous existing question
@@ -96,10 +91,10 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 	
 	@Override
-	public Set<Answer> findAll(Pageable p){	
+	public List<Answer> findAll(Pageable p){	
 		int page=p.getPageNumber();
 		int size=p.getPageSize();
-		return answerDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());		
+		return (List<Answer>) answerDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());		
 	}
 	
 	public Optional<Answer> findOneByDescriptionOrderByIdDesc(String name){
@@ -120,11 +115,17 @@ public class AnswerServiceImpl implements AnswerService {
         boolean isMapped=false;
         if (answer.isPresent())
         {
-        	if (Objects.equals(idQuestion, answer.get().getQuestion().getId()))  
-        		isMapped=true;
-        	else  {
-        		log.error ("Question with ID: '" + idQuestion + "' does not contain answer with ID: '" + idAnswer+ "'");}
+        	if (answer.get() != null && answer.get().getQuestion() != null) {
+        		if (Objects.equals(idQuestion, answer.get().getQuestion().getId()))  
+        			isMapped=true;
+        		else  {
+        			log.error ("Question with ID: '" + idQuestion + "' does not contain answer with ID: '" + idAnswer+ "'");
+        		}
         	}
+        	else {
+        		log.error ("Answer with id " + idAnswer+ " not found");
+        	}
+        }
         
 		return isMapped;
         

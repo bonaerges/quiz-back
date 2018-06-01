@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,12 +41,12 @@ public class UserController {
 	//user?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
-	public Set<UserDTO>  findAll(
+	public List<UserDTO>  findAll(
 			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
 		
 		
-		Set<User> users=userService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toSet());
+		List<User> users=(List<User>) userService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());
 		log.info("findAll users count is: "+ Integer.toString(users.size()));
 		return userMapper.modelToDto(users);
 	}

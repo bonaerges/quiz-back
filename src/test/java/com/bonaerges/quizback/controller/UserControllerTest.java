@@ -30,7 +30,7 @@ public class UserControllerTest {
    
    // @Test
 //    public void test_get_all_success() throws Exception {
-//        Set<User> users=userService.findAll(PageRequest.of(1, 10));
+//        List<User> users=userService.findAll(PageRequest.of(1, 10));
 //        User mockUser=new User();
 //        mockUser.setEmail("test1@quizback.com");
 //        mockUser.setName("Test1");

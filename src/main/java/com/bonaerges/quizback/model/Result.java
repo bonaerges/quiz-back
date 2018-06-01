@@ -1,6 +1,7 @@
 package com.bonaerges.quizback.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,7 +26,7 @@ public class Result {
 
 	public static final String FIELD_USER = "user";
 	public static final String FIELD_ID = "idUser";
-	public static final String FIELD_ID_FK = "idResult";
+	public static final String FIELD_ID_PK = "idResult";
 
 	//TABLE FIELDS
 	@Id
@@ -55,4 +58,18 @@ public class Result {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = FIELD_USER)
 	private User user;
+	
+	//RESULT (N) <-- (1) QUESTIONNAIREUSERANSWE
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = QuestionnaireUserAnswer.TABLE_QA_NAME,
+			joinColumns = {
+					@JoinColumn(name = FIELD_ID_PK, nullable = false, updatable = false)
+			}, 
+			inverseJoinColumns = { 
+				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_ANSWER, nullable = false, updatable = false),
+				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_QUESTION, nullable = false, updatable = false),
+				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_QUESTIONNAIRE, nullable = false, updatable = false),
+				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_USER, nullable = false, updatable = false) 
+			})
+	private List<QuestionnaireUserAnswer> questionnaireUserAnswer;
 }
