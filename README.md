@@ -50,16 +50,15 @@ a) UserDAO access to Repository map to User Entity mainly.
 	
 	e)User Controller:	Below is the mapping can be used on User Rest Controller 
 	
-	Service Method  		HTTP method 	CRUD 		URI 										Description
-	create					POST 			Create		/user 										Create a new user given a UserDTO object
-
-	findAll					GET 			Read		/user										Return a list of users paginate.Default pagination page=0 y size 10
-	getUserById				GET				Read		/user/(idUser)								Return user details for a specific user id							
+	Service Method  	HTTP method 	CRUD 		URI 		Description
+	create					POST 			Create		/user 		Create a new user given a UserDTO object
+	findAll				GET 			Read		/user		Return a list of users paginate.
+																	Default pagination page=0 y size 10
+	getUserById			GET				Read		/user/(idUser)	Return user details for a specific user id							
 	
-	update					PUT				Update
-											/Replace	/user/(idUser)								Update user email, name, surname and /or password
+	update					PUT				Update					/Replace	/user/(idUser)	Update user 																	email, name, surname 	and /or password
 										
-	delete					DELETE			Delete		/user/(idUser)								Remove user completly
+	delete					DELETE			Delete		/user/(idUser)	Remove user completely
 	
 
 **************************************************************************************************************************
@@ -83,10 +82,10 @@ QUESTION
 	
 	e)Question Controller:	Below is the mapping can be used on Question Rest Controller 
 	
-	Service Method  		HTTP method 	CRUD 		URI 										Description
-	create					POST 			Create		/question 									Create a new question
-							POST			Create		/question/(idQuestion)/answer				Create a answer link to question
-	findAll					GET 			Read		/question									Return a list of questions with answers
+	Service Method  		HTTP method 	CRUD 		URI 						Description
+	create					POST 			Create		/question 					Create a new question
+							POST			Create		/question/(idQuestion)/answer		Create a answer link to question
+	findAll					GET 			Read		/question								Return a list of questions with answers
 	findById				GET				Read		/question/(idQuestion)						Return answers for a specific question							
 	getCorrectAnswer		GET				Read		/question/(IdQuestion)/showCorrectAnswer	Return the corect answer for given quetsion id
 	update					PUT				Update
@@ -122,7 +121,7 @@ a) AnswerDAO access to Repository map to Answer Entity mainly.
 		
 	c) DTO and Mapper
 	
-		-AnswerUpdateDTO purporse is for RequestBody  update/post controller contains Description + isAnswerCorrect
+		-AnswerUpdateDTO purpose is for RequestBody  update/post controller contains Description + isAnswerCorrect
 		-AnswerDTO purporse is for HTTP Get methods on controller to show only user data required without password.
 		
 	d) Mapper:
@@ -130,16 +129,15 @@ a) AnswerDAO access to Repository map to Answer Entity mainly.
 	
 	e)Answer Controller:	Below is the mapping can be used on Answer Rest Controller 
 	
-	Service Method  		HTTP method 	CRUD 		URI 										Description
-	create					POST 			Create		/answer										Create a new aswer given a AnswerDTO object
+Service Method  	HTTP method 	CRUD 	URI 		Description
+create	   	POST 	Create		/answer		Create a new answer given a 									AnswerDTO object
 
-	findAll					GET 			Read		/answer										Return a list of answers paginate.Default pagination page=0 y size 10
-	findById				GET				Read		/answer/(idAnswer)							Return answer details for a specific answer id							
+findAll	GET 	Read		/answer		Return a list of answers 										paginate. Default pagination 									page=0 y size 10
+findById	GET	Read		/answer/(idAnswer)	Return answer details for a 									specific answer id							
 	
-	update					PUT				Update
-											/Replace	/answer/(idAnswer)							Update description for answer
+update		PUT	Update/Repl  /answer/(idAnswer)	Update description for answer
 										
-	delete					DELETE			Delete		/answer/(idAnswer)							Remove answer completly
+delete		DELETE	Delete		/answer/(idAnswer)	Remove answer completely
 	
 
 **************************************************************************************************************************
@@ -149,13 +147,13 @@ File src\main\resources\data\CourseDataModel.txt contaisn data tets for course t
 
 Course Controller:	Below is the mapping can be used on Course Controller 
 	
-	Service Method  		HTTP method 	CRUD 		URI 										Description
-	create					POST 			Create		/course										Create a new course given a CourseDTO object
+Service Method  		HTTP method 	CRUD 		URI 										Description
+create					POST 			Create		/course										Create a new course given a CourseDTO object
 
-	findAll					GET 			Read		/course										Return a list of courses paginate.Default pagination page=0 y size 10
-	findById				GET				Read		/course/(idCourse)							Return course details for a specific course id							
+findAll					GET 			Read		/course										Return a list of courses paginate.Default pagination page=0 y size 10
+	findById				GET				Read	/course/(idCourse)							Return course details for a specific course id							
 	
-	update					PUT				Update
+update					PUT				Update
 											/Replace	/course/(idCourse)							Update details fields for course(description, start date..)
 										
 	delete					DELETE			Delete		/course/(idCourse)							Remove course and questionarios compltl
