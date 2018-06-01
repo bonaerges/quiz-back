@@ -50,15 +50,13 @@ a) UserDAO access to Repository map to User Entity mainly.
 	
 	e)User Controller:	Below is the mapping can be used on User Rest Controller 
 	
-	Service Method  HTTP method CRUD 	URI 			Description
-	create			POST 		Create	/user 			Create a new user given a UserDTO object
-	findAll			GET 		Read	/user			Return a list of users paginate.
-														Default pagination page=0 y size 10
-	getUserById		GET			Read	/user/(idUser)	Return user details for a specific user id							
-	
-	update			PUT			Update	/user/(idUser)	Update user,mail, name, surname and /or password
-										
-	delete			DELETE		Delete	/user/(idUser)	Remove user completely
+	Service Method  HTTP method CRUD 	URI 		Description
+	create			POST 		Create	/user 		Create a new user given a UserDTO object
+	findAll			GET 		Read	/user		Return a list of users paginate.
+													Default pagination page=0 y size 10
+	getUserById		GET			Read	/user/(idU)	Return user details for a specific user id							
+	update			PUT			Update	/user/(idU)	Update user,mail, name, surname and /or password
+	delete			DELETE		Delete	/user/(idU)	Remove user completely
 	
 
 **************************************************************************************************************************
