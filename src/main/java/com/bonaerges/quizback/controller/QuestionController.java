@@ -150,7 +150,6 @@ public class QuestionController {
 		//For idQuestion  save new answer, then, update question
 		answerModel.forEach(ans -> {
 		
-			ans.getQuestion().setId(id);
 			questionService.addAnswerQuestion(ans,id);
 			//Update question object
 			questionService.update(ans.getQuestion()); 
@@ -160,8 +159,8 @@ public class QuestionController {
 		return new ResponseEntity<List<AnswerDTO>>(dto,HttpStatus.OK);
 	}	
 	
-	/************************************HTTP METHOD DELETE 
-	 * @throws NotFoundException *************************************/
+	/************************************HTTP METHOD DELETE  *************************************/
+	
 	@ResponseBody
 	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
 	@ExceptionHandler(NotFoundException.class)

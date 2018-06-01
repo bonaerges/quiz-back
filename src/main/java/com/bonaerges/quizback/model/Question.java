@@ -1,7 +1,6 @@
 package com.bonaerges.quizback.model;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

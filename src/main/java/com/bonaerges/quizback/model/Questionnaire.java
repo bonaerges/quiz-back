@@ -9,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -46,7 +44,7 @@ public class Questionnaire {
 	private List<Question> question;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = COURSE_FIELD)
+	@JoinColumn(name = COURSE_FIELD,nullable=false)
 	private Course course;
 	
 	@Override

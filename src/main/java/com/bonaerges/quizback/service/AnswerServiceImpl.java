@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.AnswerDAO;
-import com.bonaerges.quizback.dao.QuestionDAO;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 
@@ -26,7 +25,7 @@ public class AnswerServiceImpl implements AnswerService {
 	AnswerDAO answerDAO;
 
 	@Autowired
-	QuestionDAO questionDAO;
+	QuestionService questionService;
 	
 	@Override
 	public Answer create(Answer t) {
@@ -43,7 +42,7 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 	//Add answer to question if asnwer wasn not already linked to question
 	public Answer addAnswerQuestion(Answer t,Integer idQuestion) {
-		Optional<Question> question=questionDAO.findById(idQuestion);	
+		Optional<Question> question=questionService.findById(idQuestion);	
 		Answer saveAnswer =null;
 		if (question.isPresent()) {
 			 t.setQuestion(question.get());
@@ -58,7 +57,7 @@ public class AnswerServiceImpl implements AnswerService {
 	
 	//Link an update answer to previous existing question
 	public void updatedAnswerQuestion(Answer t,Integer idAnswer,Integer idQuestion) {
-	Optional<Question> question=questionDAO.findById(idQuestion);
+	Optional<Question> question=questionService.findById(idQuestion);
 	Optional <Answer> answerLink=answerDAO.findById(t.getId());	
 
 	if (question.isPresent()) {

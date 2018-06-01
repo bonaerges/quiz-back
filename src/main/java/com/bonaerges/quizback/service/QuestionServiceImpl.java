@@ -9,10 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bonaerges.quizback.dao.AnswerDAO;
+import com.bonaerges.quizback.service.AnswerService;
 import com.bonaerges.quizback.dao.QuestionDAO;
-import com.bonaerges.quizback.exception.DuplicatedException;
-import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 
@@ -26,7 +24,7 @@ public class QuestionServiceImpl implements QuestionService {
 	QuestionDAO questionDAO;
 	
 	@Autowired
-	AnswerDAO answerDAO;
+	AnswerService answerService;
  
 	@Override
 	public Question create(Question t) {
@@ -44,7 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public void delete(Question t) {
 		//Delete answer linked to question
-		t.getAnswer().forEach(answer ->answerDAO.deleteById(answer.getId()));
+		t.getAnswer().forEach(answer ->answerService.delete(answer));
 		questionDAO.delete(t);
 		log.info(" Question-Asnwer delete successfully " + t.toString());
 		
@@ -86,13 +84,16 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	
+	//iT IS ALLOWED TO CREATE ANSWER IF THIS DOES NOT EXIST LINKED TO QUESTION EXISTING
 	public void addAnswerQuestion(Answer answerModel, Integer id) {
 		Optional<Question> question=questionDAO.findById(id);
+		final Answer answerCreate;
 		if(question.isPresent()) {
 			//add answers linked to current question 
-			question.get().getAnswer().forEach((final Answer answerLink)->answerDAO.save(answerLink));
-			questionDAO.save(question.get());   
+			answerModel.setQuestion(question.get());
+			answerCreate=answerService.create(answerModel);
+			question.get().getAnswer().add(answerCreate);
+			//questionDAO.save(question.get());   
 			log.info("Succesfully add question " + id + " and answers linked to question"); 
 		}
 		//else throw new NotFoundException("Question id "+ id + " Not found");
@@ -110,9 +111,9 @@ public class QuestionServiceImpl implements QuestionService {
 				log.error("Answer id "+ idA + " already linked to question id "+ id); 
 			}
 			else {	
-					Optional<Answer> answer=answerDAO.findById(idA);
+					Optional<Answer> answer=answerService.findById(idA);
 					question.get().getAnswer().remove(answer.get());
-					questionDAO.save(question.get());
+					//questionDAO.save(question.get());
 					log.info("Succesfully delete answer " + idA+ " linked to question id "+ id); 
 			}
 		}
@@ -130,7 +131,7 @@ public class QuestionServiceImpl implements QuestionService {
 				log.error("Answer id "+ idA + " already linked to question id "+ id); 
 			}
 			else {	
-					Optional<Answer> answer=answerDAO.findById(idA);
+					Optional<Answer> answer=answerService.findById(idA);
 					question.get().getAnswer().add(answer.get());
 					questionDAO.save(question.get());
 					log.info("Succesfully add answer " + idA+ " linked to question id "+ id); 

@@ -2,7 +2,6 @@ package com.bonaerges.quizback.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bonaerges.quizback.dao.QuestionnaireDAO;
 import com.bonaerges.quizback.dao.QuestionnaireUserAnswerDAO;
-import com.bonaerges.quizback.dao.ResultDAO;
-import com.bonaerges.quizback.dao.UserDAO;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.QuestionUserAnswerId;
@@ -29,16 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnswerService {
 
 	@Autowired
-	QuestionnaireDAO questionnaireDAO;
+	QuestionnaireService questionnaireService;
 	
 	@Autowired
 	QuestionnaireUserAnswerDAO questionnaireuserAnswerDAO;
 	
 	@Autowired
-	ResultDAO resultDAO;
+	ResultService resultService;
 	
 	@Autowired
-	UserDAO userDAO;
+	UserService userService;
 	
 	
 	@Override
@@ -95,7 +91,7 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 					int countIncorrect=resultUser.getTotalAnswerKO();
 					int toalQuestions=resultUser.getTotalQuestions();
 					boolean answerSelected=false;
-					Optional<User> userAnswer=userDAO.findById(answerUser.getId().getIdUser());
+					Optional<User> userAnswer=userService.findById(answerUser.getId().getIdUser());
 					if (userAnswer.isPresent()) {
 						//Compare if question answer from questionnaire is correct one for question answered
 						if (answerUser.getId().getIdQuestion() == questionFilledQ.getId()) {
@@ -131,7 +127,7 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 				} );
 			
 			resultUser.setQuestionary(questionnaire);
-			resultDAO.save(resultUser);
+			resultService.create(resultUser);
 		
 		}
 

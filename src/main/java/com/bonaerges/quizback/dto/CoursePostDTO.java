@@ -12,4 +12,6 @@ import lombok.Setter;
 public class CoursePostDTO extends CourseDTO {
 	
 	private List<UserDTO> users;
+	
+	private String questionnaireDecs;
 }

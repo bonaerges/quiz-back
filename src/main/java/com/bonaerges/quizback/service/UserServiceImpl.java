@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.bonaerges.quizback.dao.CourseDAO;
+
 import com.bonaerges.quizback.dao.UserDAO;
 import com.bonaerges.quizback.exception.DuplicatedException;
 import com.bonaerges.quizback.exception.NotFoundException;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 	UserDAO userDAO;
  
 	@Autowired
-	CourseDAO courseDAO;
+	CourseService courseService;
 	
 	@Autowired
 	DozerBeanMapper dozerBean;
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 	 * 
 	 */
 	public void addUserCourse(User userModel, Integer idCourse) throws NotFoundException, DuplicatedException {
-		Optional<Course> courseObject=courseDAO.findById(idCourse);
+		Optional<Course> courseObject=courseService.findById(idCourse);
 		boolean belongsCourse=false;
 		if (courseObject.isPresent()) {
 			belongsCourse=isUserOnCourse(idCourse,userModel.getEmail());
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 			{
 				userModel.getCourse().add(courseObject.get());
 				userDAO.save(userModel);
-				courseDAO.save(courseObject.get());
+				courseService.update(courseObject.get());
 					log.info(" Add User "+ userModel.getId()+" to course "+ idCourse + " successfully " );
 			}
 		}

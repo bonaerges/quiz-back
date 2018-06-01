@@ -25,12 +25,13 @@ Main Goal and responsabilities requested:
  
  + GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)
  
- C
+ 
  
 -------------------------------------------------------------------------------------------------------------------------
 CONTAINS OF APLICATION DETAILS
 
 **************************************************************************************************************************
++ COMPLETE AT LEAST 3 CRUDS (QUESTION, USER, QUESTIONNAIRE). DETAILS
 ***************************************************  USER  ***************************************************************
 **************************************************************************************************************************
 a) UserDAO access to Repository map to User Entity mainly. 
@@ -54,6 +55,7 @@ a) UserDAO access to Repository map to User Entity mainly.
 	create			POST 		Create	/user 		Create a new user given a UserDTO object
 	findAll			GET 		Read	/user		Return a list of users paginate.
 													Default pagination page=0 y size 10
+	
 	getUserById		GET			Read	/user/(idU)	Return user details for a specific user id							
 	update			PUT			Update	/user/(idU)	Update user,mail, name, surname and /or password
 	delete			DELETE		Delete	/user/(idU)	Remove user completely
@@ -141,7 +143,7 @@ delete		DELETE	Delete		/answer/(idAnswer)	Remove answer completely
 **************************************************************************************************************************
 * COURSE CREATION (USER + QUESTIONNARIE + COURSE). DO ALSO MOCKITO TEST FOR COURSE LAYERS
 **************************************************************************************************************************
-File src\main\resources\data\CourseDataModel.txt contaisn data tets for course to be added and tets controller
+File src\main\resources\data\CourseDataModel.txt contains data tets for course to be added and tets controller
 
 Course Controller:	Below is the mapping can be used on Course Controller 
 	
@@ -156,6 +158,16 @@ update					PUT				Update
 										
 	delete					DELETE			Delete		/course/(idCourse)							Remove course and questionarios compltl
 	
+	Usage Examples tested with filew txt:
+	PUT -->http://localhost:8080/course/1/user/1-->This links user 1 with course 1
+	PUT -->http://localhost:8080/course/1/user/2-->This links user 2 with course 1
+	PUT -->http://localhost:8080/course/1/user/3-->This links user 3 with course 1
+	PUT -->http://localhost:8080/course/2/user/1-->This links user 1 with course 1
+	PUT -->http://localhost:8080/course/2/user/2-->This links user 2 with course 2
+	GET -->http://localhost:8080/course/1/users -->THsi show Course 1 Description + List of Users belong to course 1
+
+
+	MOCKITO TESTS:
 *******************************************************
 + RECUPERACION DE RESULTADOS DEL CURSO
 *******************************************************

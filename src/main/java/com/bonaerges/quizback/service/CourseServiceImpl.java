@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.CourseDAO;
-import com.bonaerges.quizback.dao.QuestionnaireDAO;
-import com.bonaerges.quizback.dao.UserDAO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Questionnaire;
@@ -28,10 +26,10 @@ public class CourseServiceImpl implements CourseService {
 	CourseDAO courseDAO;
 
 	@Autowired
-	QuestionnaireDAO questionnaiereDAO;
+	QuestionnaireService questionnaireService;
 
 	@Autowired
-	UserDAO userDAO;
+	UserService userService;
 
 	@Override
 	public Course create(Course t) {
@@ -50,7 +48,7 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	//Deleet course and questionnaire linked so qustionnaire has no sense without course
 	public void delete(Course t) {
-		t.getQuestionnaire().forEach((final Questionnaire questLink)->questionnaiereDAO.delete(questLink));
+		t.getQuestionnaire().forEach((final Questionnaire questLink)->questionnaireService.delete(questLink));
 		courseDAO.delete(t);
 		log.info(" Course delete successfully " + t.toString());
 
@@ -97,11 +95,10 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public void addUserToCourse(Integer idCourse, Integer idUser) {
 		Optional<Course> courseObject = courseDAO.findById(idCourse);
-		Optional<User> userObject = userDAO.findById(idUser);
+		Optional<User> userObject = userService.findById(idUser);
 		if (courseObject.isPresent()) {
 			userObject.ifPresent(u -> {
 				courseObject.get().getUser().add(u);
-
 				courseDAO.save(courseObject.get());
 			});
 
@@ -112,7 +109,7 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public void deleteUserFromCourse(Integer idCourse, Integer idUser) {
 		Optional<Course> courseObject = courseDAO.findById(idCourse);
-		Optional<User> userObject = userDAO.findById(idUser);
+		Optional<User> userObject = userService.findById(idUser);
 		if (courseObject.isPresent()) {
 			userObject.ifPresent(u -> {
 				Optional<User> optUser = courseObject.get().getUser().stream().collect(Collectors.toList()).stream()
@@ -130,7 +127,7 @@ public class CourseServiceImpl implements CourseService {
 	public boolean belongsUserToCourse(Integer idUser, Integer idCourse) {
 		boolean belongsToCourse = false;
 		Optional<Course> courseObject = courseDAO.findById(idCourse);
-		Optional<User> userObject = userDAO.findById(idUser);
+		Optional<User> userObject = userService.findById(idUser);
 		if (userObject.isPresent()) {
 			belongsToCourse = courseObject.get().getUser().stream().collect(Collectors.toList()).stream()
 					.filter(s -> idUser.equals(s.getId())).findFirst().isPresent();
@@ -178,8 +175,20 @@ public class CourseServiceImpl implements CourseService {
 		if (courseUser.isPresent()) {
 			courseUser.get().getQuestionnaire().forEach(quest -> {
 				if (quest.getId() == idQuestionnaire) {
-					courseUser.get().getQuestionnaire().add(quest);
-					courseDAO.save(courseUser.get());
+					log.error("Questionaire id " + idQuestionnaire + " already linked to course id "+ idCourse );
+				}
+				else {
+					Optional<Questionnaire> questCourse = questionnaireService.findById(idQuestionnaire);
+					if (questCourse.isPresent())
+					{
+						courseUser.get().getQuestionnaire().add(questCourse.get());
+						courseDAO.save(courseUser.get());
+					}
+					else {
+						log.warn("Questionaire id " + idQuestionnaire + " not created so has been created and lined to course id "+ idCourse );
+						questCourse.get().setCourse(courseUser.get());
+						questionnaireService.create(questCourse.get());
+					}
 				}
 			});
 		}
