@@ -15,7 +15,7 @@ public interface UserDAO extends PagingAndSortingRepository<User, Integer>{
 
 	Optional<User> findOneByNameOrderByIdDesc(String name);
 
-	@Query("SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+	@Query("SELECT u FROM User u WHERE LOWER(u.email) = LOWER(':email')")
 	Optional<User> findByEmail(@Param("email")String email);
 	
 	@Query("SELECT u FROM Course c,User u WHERE c.id = :idCourse  ")

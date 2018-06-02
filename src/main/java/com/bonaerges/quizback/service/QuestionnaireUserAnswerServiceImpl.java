@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.QuestionnaireUserAnswerDAO;
@@ -26,114 +28,140 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 
 	@Autowired
 	QuestionnaireService questionnaireService;
-	
+
 	@Autowired
 	QuestionnaireUserAnswerDAO questionnaireuserAnswerDAO;
-	
+
 	@Autowired
 	ResultService resultService;
-	
+
 	@Autowired
 	UserService userService;
-	
-	
+
 	@Override
 	public QuestionnaireUserAnswer create(QuestionnaireUserAnswer t) {
-		QuestionnaireUserAnswer qUAObj= questionnaireuserAnswerDAO.save(t);
-		log.info(" Questionnaire User Answer create successfully " + t.toString());
+		//Create result adn then linked to answer
+		Result res=new Result();
+		QuestionnaireUserAnswer qUAObj=new QuestionnaireUserAnswer();
+		Optional <User> userAnswer= userService.findById(t.getId().getIdUser());
+		Optional <Questionnaire> quiz= questionnaireService.findById(t.getId().getIdQuestionnaire());
+		if (userAnswer.isPresent() && quiz.isPresent()) {
+			res.setUser(userAnswer.get());
+			res.setDate(new Date());
+			res.setQuestionary(quiz.get());
+			res.setAverageNote(0);
+			res.setTotalAnswerKO(0);
+			res.setTotalAnswerOK(0);
+			res.setTotalQuestions(1);
+			resultService.create(res);
+			qUAObj = questionnaireuserAnswerDAO.save(t);
+			log.info(" Questionnaire User Answer create successfully " + t.toString());	
+		}
+		else log.error(" Resul User Answer does not saved user or questionary not found ");
 		return qUAObj;
 	}
 
 	@Override
 	public void update(QuestionnaireUserAnswer t) {
-		questionnaireuserAnswerDAO.save(t);
-		log.info(" Questionnaire User Answer save successfully " + t.toString());		
+			t.setDate(new Date());
+			questionnaireuserAnswerDAO.save(t);	
+		
+		log.info(" Questionnaire User Answer save successfully " + t.toString());
 	}
 
 	@Override
 	public void delete(QuestionnaireUserAnswer t) {
 		questionnaireuserAnswerDAO.delete(t);
-		log.info(" Questionnaire User Answer delete successfully " + t.toString());		
-		
+		log.info(" Questionnaire User Answer delete successfully " + t.toString());
+
 	}
 
 	@Override
 	public Optional<QuestionnaireUserAnswer> findById(QuestionUserAnswerId id) {
-		Optional <QuestionnaireUserAnswer> qUAOb=questionnaireuserAnswerDAO.findById(id);	
+		Optional<QuestionnaireUserAnswer> qUAOb = questionnaireuserAnswerDAO.findById(id);
 		log.info(" Questionnaire findById successfully " + qUAOb.toString());
 		return qUAOb;
 	}
 
 	@Override
 	public List<QuestionnaireUserAnswer> findAll(Pageable p) {
-		int page=p.getPageNumber();
-		int size=p.getPageSize();
-		return questionnaireuserAnswerDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());	
+		int page = p.getPageNumber();
+		int size = p.getPageSize();
+		return questionnaireuserAnswerDAO.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());
 	}
 
 	@Override
 	public void validateQuestionAnswers(Questionnaire questionnaire,
 			List<QuestionnaireUserAnswer> resultsQuestionAnswer) {
-			//Get all questions from questionnaire
-			List<Question> questionsQuiz=questionnaire.getQuestion();
-			 
-			Result resultUser=new Result();
-			double averageNote;
-		
-			
-			//From the filled quiz , for each answer given to question, select the correct answer and compare with answer provide by user
-			questionsQuiz.forEach(questionFilledQ -> {
-				Answer correctAnswer=questionFilledQ.getCorrectAnswer();
-				//get answer provide by user
-				resultsQuestionAnswer.forEach(answerUser ->  {
-					
-					int countCorrect=resultUser.getTotalAnswerOK();
-					int countIncorrect=resultUser.getTotalAnswerKO();
-					int toalQuestions=resultUser.getTotalQuestions();
-					boolean answerSelected=false;
-					Optional<User> userAnswer=userService.findById(answerUser.getId().getIdUser());
-					if (userAnswer.isPresent()) {
-						//Compare if question answer from questionnaire is correct one for question answered
-						if (answerUser.getId().getIdQuestion() == questionFilledQ.getId()) {
-							//Check if answer provide for the question is the correctAnswer to sumarize error or succeed
-							boolean answeredCorrect= Optional.ofNullable(answerUser)
-							.filter(aUser->aUser.getId().getIdAnswer() == correctAnswer.getId()).isPresent();
-							if (answeredCorrect) {
-								//find user that answer questionnaire for save into result	and update answer OK and KO					
-									countCorrect++;
-									answerSelected=true;
-							}
-							else {
-								countIncorrect++;
-							}
-						}
-									
-					}
-					if (answerSelected) {
-						resultUser.setTotalAnswerOK(countCorrect);
-						resultUser.setTotalAnswerKO(countIncorrect);
-						resultUser.setTotalQuestions(toalQuestions+1);
-						resultUser.setUser(userAnswer.get());
-					}	
-					else {
-						resultUser.setTotalAnswerOK(0);
-						resultUser.setTotalAnswerKO(countIncorrect);
-						resultUser.setTotalQuestions(toalQuestions+1);
-						resultUser.setUser(userAnswer.get());
-					}
-					
-					});
-				
-				} );
-			
-			resultUser.setQuestionary(questionnaire);
-			resultService.create(resultUser);
-		
-		}
+		// Get all questions from questionnaire
+		List<Question> questionsQuiz = questionnaire.getQuestion();
 
+		Result resultUser = new Result();
+		double averageNote;
+
+		// From the filled quiz , for each answer given to question, select the correct
+		// answer and compare with answer provide by user
+		questionsQuiz.forEach(questionFilledQ -> {
+			Answer correctAnswer = questionFilledQ.getCorrectAnswer();
+			// get answer provide by user
+			resultsQuestionAnswer.forEach(answerUser -> {
+
+				int countCorrect = resultUser.getTotalAnswerOK();
+				int countIncorrect = resultUser.getTotalAnswerKO();
+				int toalQuestions = resultUser.getTotalQuestions();
+				boolean answerSelected = false;
+				
+				Optional<User> userAnswer = userService.findById(answerUser.getId().getIdUser());
+				if (userAnswer.isPresent()) {
+					// Compare if question answer from questionnaire is correct one for question
+					// answered
+					if (answerUser.getId().getIdQuestion() == questionFilledQ.getId()) {
+						// Check if answer provide for the question is the correctAnswer to sumarize
+						// error or succeed
+						boolean answeredCorrect = Optional.ofNullable(answerUser)
+								.filter(aUser -> aUser.getId().getIdAnswer() == correctAnswer.getId()).isPresent();
+						if (answeredCorrect) {
+							// find user that answer questionnaire for save into result and update answer OK
+							// and KO
+							countCorrect++;
+							answerSelected = true;
+						} else {
+							countIncorrect++;
+						}
+					}
+
+				}
+				if (answerSelected) {
+					resultUser.setTotalAnswerOK(countCorrect);
+					resultUser.setTotalAnswerKO(countIncorrect);
+					resultUser.setTotalQuestions(toalQuestions + 1);
+					resultUser.setUser(userAnswer.get());
+				} else {
+					resultUser.setTotalAnswerOK(0);
+					resultUser.setTotalAnswerKO(countIncorrect);
+					resultUser.setTotalQuestions(toalQuestions + 1);
+					resultUser.setUser(userAnswer.get());
+				}
+
+			});
+
+		});
+
+		resultUser.setQuestionary(questionnaire);
+		resultService.update(resultUser);
+
+	}
 	
+	@Override
+	public void validateUserQuestionAnswers(Integer idQuestionnaire,Integer idUser) {
+		// Get all questions from questionnaire
+		Optional <User> userAnswer= userService.findById(idUser);
+		Optional <Questionnaire> quiz= questionnaireService.findById(idQuestionnaire);
+		//resultService.findAllByQuestionnarie(idQuest)
+		
 	}
 
-
-
-
+	public List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer IdU){
+		return questionnaireuserAnswerDAO.findUsersAnswerByQuestionnarie(idQ, IdU);
+	}
+}

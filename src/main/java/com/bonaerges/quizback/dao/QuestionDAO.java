@@ -6,7 +6,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import com.bonaerges.quizback.model.Question;
-import com.bonaerges.quizback.model.User;
 
 @Repository
 public interface QuestionDAO extends PagingAndSortingRepository<Question, Integer> {

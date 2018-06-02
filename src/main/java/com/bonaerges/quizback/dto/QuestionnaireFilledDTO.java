@@ -7,11 +7,8 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class QuestionnaireDTO {
+public class QuestionnaireFilledDTO  extends QuestionnaireQADTO {
 
-	private String description;
+	private AnswerDTO correctAnswer;
 	
-	//private Integer idCourse;
-	
-	//private List<QuestionDTO> question;
 }

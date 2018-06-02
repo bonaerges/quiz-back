@@ -1,39 +1,51 @@
 QUIZ BACK APPLICATION  (SPRING 5 COURSE AT ATSISTEMAS)
 
-The main goal of this application is provide a way to add user, course and questionanrie for course .
-The model take into account next entiies: 
+The main goal of this application is provide to users in a course a way to make course quiz providing a administration service such as
+add user, course and questionanrie for course. It also save the responses for each quuestionnaire for each course and user 
+.
+The model take into account next entities: 
 
-*  User for provide alumns  personal details(name, email,..) to be regsitated on Course
+*  User for provide alumns  personal details(name, email,..) to be registrated on Course
 *  Course with the name of course and start and en date of it
 *  Questionnarie for a course to provide questions and answer to be filled by users.
-*  Question that will be part of quetsionnarie adn that have linked one or more answers. ONly one is the correct
+*  Question that will be part of questionnarie and that have linked one or more answers. Only one is assumed to be the correct
 *  Answer mapped to Question
 *  Result of a questionarie that will contain for each course, questionarie and user uses response with moptes
 *  Also Questionarie and Question could be contains Tga and search questionarie and question y tag
 
-Main Goal and responsabilities requested:
+   Main Goal and responsabilities requested:
 
- + COMPLETE AT LEAST 3 CRUDS (QUESTION, USER, QUESTIONNAIRE)
+ 	+ COMPLETE AT LEAST 3 CRUDS (QUESTION, USER, QUESTIONNAIRE)
  
- + COURSE CREATION (USER + QUESTIONNARIE + COURSE). DO ALSO MOCKITO TEST FOR COURSE LAYERS
+ 	+ COURSE CREATION (USER + QUESTIONNARIE + COURSE). DO ALSO MOCKITO TEST FOR COURSE LAYERS
  
- + GET THE RESULS FILTER BY COURSE
+ 	+ GET THE RESULS FILTER BY COURSE
  
- + GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
+ 	+ GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
  
- + GET THE QUESTIONNARIE REQUESTING AND SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE.. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
+ 	+ GET THE QUESTIONNARIE SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
  
- + GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)
+ 	+ GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)	
  
- 
- 
+ ************************************************
+ ASUMPTIONS NOTE OF MY QUIZ BACK APP
+
++ IF QUESTIONNAIRE DOES NOT EXIST IT IS ALLOWED TO CREATE  IT WHEN COURSE IS TRYING TO ADD A NEW QUESTIONNAIRE TO COURSE
++ IF AN ANSWER DOES NOT EXIST IT IS ALLOWED TO CREATED ON FLY ANSWER WHEN QUESTION IS ADDING A NEW ANSWER.
++ FOR A QUESTION, SUITABLES ANSWERS ONLY ONE IS THE CORRECT ONE. NOT ALLOWED MULTIPLES ANSWERS
++ WHEN AN USER IT ADDED TO A COURSE IS NOT ALLOWED TO CREATE USERS ON THE FLY IF USER PREVIOUSLY USER DOES NOT EXIST 
++ WHEN A QUESTIONNARIE IS DELETED LINKED QUESTIONS AND ANSWERS WILL NOT BE DELETED TO BE REUSABLE FOR OTHER QUESTIONNARIES
+************************************************
+
 -------------------------------------------------------------------------------------------------------------------------
 CONTAINS OF APLICATION DETAILS
+-------------------------------------------------------------------------------------------------------------------------
 
 **************************************************************************************************************************
 + COMPLETE AT LEAST 3 CRUDS (QUESTION, USER, QUESTIONNAIRE). DETAILS
-***************************************************  USER  ***************************************************************
 **************************************************************************************************************************
+
+***********  USER  ********************************************
 a) UserDAO access to Repository map to User Entity mainly. 
 	-Create(C)	
 	-Read(R)
@@ -62,10 +74,9 @@ a) UserDAO access to Repository map to User Entity mainly.
 	
 
 **************************************************************************************************************************
-QUESTION
-**************************************************************************************************************************	
+**********  QUESTION  *******************************************************	
 
-	a) QuestionDAO access to Repository map to Questiob Entity mainly. 
+	a) QuestionDAO access to Repository map to Question Entity mainly. 
 		-Create(C)	
 		-Read(R)
 		-Update(C)
@@ -100,8 +111,7 @@ QUESTION
 	isAnswerMapToQuestion(Integer idQuestion, Integer idAnswer) - check if specific Answer belongs to the specific Question
 
 **************************************************************************************************************************
-***************************************************  ANSWER  *************************************************************
-**************************************************************************************************************************
+*****************  ANSWER  *************************************
 a) AnswerDAO access to Repository map to Answer Entity mainly. 
 	-Create(C)	
 	-Read(R)
@@ -143,20 +153,19 @@ delete		DELETE	Delete		/answer/(idAnswer)	Remove answer completely
 **************************************************************************************************************************
 * COURSE CREATION (USER + QUESTIONNARIE + COURSE). DO ALSO MOCKITO TEST FOR COURSE LAYERS
 **************************************************************************************************************************
-File src\main\resources\data\CourseDataModel.txt contains data tets for course to be added and tets controller
+File src\main\resources\data\CourseDataModel.txt contains data test for course to be added and tets controller
 
 Course Controller:	Below is the mapping can be used on Course Controller 
 	
-Service Method  		HTTP method 	CRUD 		URI 										Description
-create					POST 			Create		/course										Create a new course given a CourseDTO object
+Service Method  		HTTP method 	CRUD 		URI 			Description
+create					POST 			Create		/course			Create a new course given a CourseDTO object
 
-findAll					GET 			Read		/course										Return a list of courses paginate.Default pagination page=0 y size 10
-	findById				GET				Read	/course/(idCourse)							Return course details for a specific course id							
+findAll					GET 			Read		/course			Return a list of courses paginate.Default pagination page=0 y size 10
+findById				GET				Read		/course/(idC)	Return course details for a specific course id							
 	
-update					PUT				Update
-											/Replace	/course/(idCourse)							Update details fields for course(description, start date..)
+update					PUT				Update	    /course/(idC)   Update details fields for course(description, start date..)
 										
-	delete					DELETE			Delete		/course/(idCourse)							Remove course and questionarios compltl
+delete					DELETE			Delete		/course/(idC)	Remove course and linked questionnarie
 	
 	Usage Examples tested with filew txt:
 	PUT -->http://localhost:8080/course/1/user/1-->This links user 1 with course 1
@@ -174,3 +183,10 @@ update					PUT				Update
 Controller 
 /course/(id)/questionarie/(id)/result
 	
+
++ GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
+ 
++ GET THE QUESTIONNARIE SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
+ 
++ GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)	
+ 

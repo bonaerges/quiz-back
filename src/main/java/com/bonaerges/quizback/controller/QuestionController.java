@@ -32,12 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping(value="/question")
+@RequestMapping(value = "/question")
 public class QuestionController {
 
-	final ResponseEntity<QuestionDTO> respEntOK=new ResponseEntity<QuestionDTO>(HttpStatus.OK);
-	final ResponseEntity<QuestionDTO> respEntNotFound=new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
-	
+	final ResponseEntity<QuestionDTO> respEntOK = new ResponseEntity<QuestionDTO>(HttpStatus.OK);
+	final ResponseEntity<QuestionDTO> respEntNotFound = new ResponseEntity<QuestionDTO>(HttpStatus.NOT_FOUND);
+
 	@Autowired
 	QuestionService questionService;
 
@@ -46,178 +46,178 @@ public class QuestionController {
 
 	@Autowired
 	QuestionUpdateDTOMapper questionUpdateDTOMapper;
-	
+
 	@Autowired
 	AnswerMapper answerMapper;
 
-
-	/************************************HTTP METHOD GET *************************************/
+	/************************************
+	 * HTTP METHOD GET
+	 *************************************/
 
 	@ResponseBody
-	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public ResponseEntity<QuestionDTO>  findById(
-			@PathVariable("id") Integer id){
-		Optional<Question> questionModel=questionService.findById(id);
-		ResponseEntity<QuestionDTO> respEnt=respEntOK;
-		if(questionModel.isPresent()) {
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<QuestionDTO> findById(@PathVariable("id") Integer id) {
+		Optional<Question> questionModel = questionService.findById(id);
+		ResponseEntity<QuestionDTO> respEnt = respEntOK;
+		if (questionModel.isPresent()) {
 			log.info("Question " + id + " found");
-			respEnt=new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(questionModel.get()),HttpStatus.OK);
-		}
-		else respEnt=respEntNotFound;
+			respEnt = new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(questionModel.get()), HttpStatus.OK);
+		} else
+			respEnt = respEntNotFound;
 		return respEnt;
 	}
 
-
 	@ResponseBody
-	@RequestMapping(method=RequestMethod.GET)
-	public List<QuestionDTO>  findAll(
-			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
-			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
-		List<Question> questions=(List<Question>) questionService.findAll(PageRequest.of(page, size)).stream().collect(Collectors.toList());
-		log.info("findAll questions count is: "+ Integer.toString(questions.size()));
+	@RequestMapping(method = RequestMethod.GET)
+	public List<QuestionDTO> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size) {
+		List<Question> questions = (List<Question>) questionService.findAll(PageRequest.of(page, size)).stream()
+				.collect(Collectors.toList());
+		log.info("findAll questions count is: " + Integer.toString(questions.size()));
 		return questionMapper.modelToDto(questions);
 	}
 
 	@RequestMapping(value = "/{id}/showCorrect", method = RequestMethod.GET)
 	public ResponseEntity<AnswerDTO> getCorrectAnswer(@PathVariable Integer idQuestion) {
 		Optional<Question> question = questionService.findById(idQuestion);
-		ResponseEntity<AnswerDTO> respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.OK);
+		ResponseEntity<AnswerDTO> respEnt = new ResponseEntity<AnswerDTO>(HttpStatus.OK);
 		if (question.isPresent()) {
-			Answer answerCorrect=
-					 question.get().getAnswer().stream()
-					 .filter(ans->ans.getIsCorrect() == true).findFirst().get();
-			 	log.info("Answer Correct " + answerCorrect.getDescription() + " found for question id "+ idQuestion);
-				respEnt=new ResponseEntity<AnswerDTO>(answerMapper.modelToDto(answerCorrect),HttpStatus.OK);
-		}
-		else respEnt=new ResponseEntity<AnswerDTO>(HttpStatus.NOT_FOUND);
+			Answer answerCorrect = question.get().getAnswer().stream().filter(ans -> ans.getIsCorrect() == true)
+					.findFirst().get();
+			log.info("Answer Correct " + answerCorrect.getDescription() + " found for question id " + idQuestion);
+			respEnt = new ResponseEntity<AnswerDTO>(answerMapper.modelToDto(answerCorrect), HttpStatus.OK);
+		} else
+			respEnt = new ResponseEntity<AnswerDTO>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}
-	/************************************HTTP METHOD POST *************************************/
+
+	/************************************
+	 * HTTP METHOD POST
+	 *************************************/
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.POST)	
-	//Only allow create Question not mapped objects
+	@RequestMapping(method = RequestMethod.POST)
+	// Only allow create Question not mapped objects
 	public ResponseEntity<QuestionUpdateDTO> create(@RequestBody QuestionUpdateDTO dto) {
-		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));		
+		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));
 		log.info("Question " + createQuestion.getId() + " succesfuly created.");
 		log.warn("Pending to create answers linked to question");
-		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion),HttpStatus.OK);
+		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion), HttpStatus.OK);
 	}
 	// url-->/question/(idQuestion)/answer/(idAnswer)
 
-	/************************************HTTP METHOD PUT *************************************/
+	/************************************
+	 * HTTP METHOD PUT
+	 *************************************/
 	@ResponseBody
-	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
-	//allow update existing question creating answers, tag and Level
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	// allow update existing question creating answers, tag and Level
 	ResponseEntity<QuestionUpdateDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionUpdateDTO dto) {
 
-		Optional<Question> questionModel=questionService.findById(id);
-		ResponseEntity<QuestionUpdateDTO> respEnt=new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
-		if(questionModel.isPresent()) {
+		Optional<Question> questionModel = questionService.findById(id);
+		ResponseEntity<QuestionUpdateDTO> respEnt = new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
+		if (questionModel.isPresent()) {
 			questionModel.get().setId(id);
-			Question questionModelDTO=questionUpdateDTOMapper.dtoToModel(dto);
-			questionService.update(questionModel.get());  
-			
-			respEnt=new ResponseEntity<QuestionUpdateDTO>(dto,HttpStatus.OK);
-		}
-		else respEnt=new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
+			Question questionModelDTO = questionUpdateDTOMapper.dtoToModel(dto);
+			questionService.update(questionModel.get());
+
+			respEnt = new ResponseEntity<QuestionUpdateDTO>(dto, HttpStatus.OK);
+		} else
+			respEnt = new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}
-	
+
 	@ResponseBody
-	@RequestMapping(value="/{id}/answer",method = {RequestMethod.PUT})
-	public ResponseEntity<QuestionDTO> updateAnswerQuestion(
-			@PathVariable("id") Integer id,
-			@RequestBody AnswerDTO dto) throws NotFoundException {
-		
-		Answer answerModel = answerMapper.dtoToModel(dto) ;
-		//For idQuestion  save new answer, then, update question
-		questionService.addAnswerQuestion(answerModel,id);
-		//answerModel.getQuestion().setId(id);
-		//Update question object
-		questionService.update(answerModel.getQuestion()); 
-		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(answerModel.getQuestion()),HttpStatus.OK);
-	}	
-	
-	//Update a question with a  list of new answers
+	@RequestMapping(value = "/{id}/answer", method = { RequestMethod.PUT })
+	public ResponseEntity<QuestionDTO> updateAnswerQuestion(@PathVariable("id") Integer id, @RequestBody AnswerDTO dto)
+			throws NotFoundException {
+
+		Answer answerModel = answerMapper.dtoToModel(dto);
+		// For idQuestion save new answer, then, update question
+		questionService.addAnswerQuestion(answerModel, id);
+		// answerModel.getQuestion().setId(id);
+		// Update question object
+		questionService.update(answerModel.getQuestion());
+		return new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(answerModel.getQuestion()), HttpStatus.OK);
+	}
+
+	// Update a question with a list of new answers
 	@ResponseBody
-	@RequestMapping(value="/{id}/answers",method = {RequestMethod.PUT})
+	@RequestMapping(value = "/{id}/answers", method = { RequestMethod.PUT })
 	@ExceptionHandler({ NotFoundException.class })
-	public ResponseEntity<List<AnswerDTO>> updateAnswersQuestion(
-			@PathVariable("id") Integer id,
+	public ResponseEntity<List<AnswerDTO>> updateAnswersQuestion(@PathVariable("id") Integer id,
 			@RequestBody List<AnswerDTO> dto) {
 
-		List<Answer> answerModel = answerMapper.dtoToModel(dto) ;
-		//For idQuestion  save new answer, then, update question
+		List<Answer> answerModel = answerMapper.dtoToModel(dto);
+		// For idQuestion save new answer, then, update question
 		answerModel.forEach(ans -> {
-		
-			questionService.addAnswerQuestion(ans,id);
-			//Update question object
-			questionService.update(ans.getQuestion()); 
+
+			questionService.addAnswerQuestion(ans, id);
+			// Update question object
+			questionService.update(ans.getQuestion());
 		});
-	
-		
-		return new ResponseEntity<List<AnswerDTO>>(dto,HttpStatus.OK);
-	}	
-	
-	/************************************HTTP METHOD DELETE  *************************************/
-	
+
+		return new ResponseEntity<List<AnswerDTO>>(dto, HttpStatus.OK);
+	}
+
+	/************************************
+	 * HTTP METHOD DELETE
+	 *************************************/
+
 	@ResponseBody
-	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ExceptionHandler(NotFoundException.class)
-	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id) throws NotFoundException {		
-		Optional<Question> question=questionService.findById(id);
-		ResponseEntity<QuestionDTO> respEnt=respEntOK;
-		if(question.isPresent()) {
-			questionService.delete(question.get());   
-			respEnt=new ResponseEntity<QuestionDTO>(HttpStatus.OK);
-			log.info("Succesfully delete question " + id + " and answers linked to question"); 
-		}
-		else {
-			 throw new NotFoundException("Question id "+ id + "  not found");
+	ResponseEntity<QuestionDTO> delete(@PathVariable("id") Integer id) throws NotFoundException {
+		Optional<Question> question = questionService.findById(id);
+		ResponseEntity<QuestionDTO> respEnt = respEntOK;
+		if (question.isPresent()) {
+			questionService.delete(question.get());
+			respEnt = new ResponseEntity<QuestionDTO>(HttpStatus.OK);
+			log.info("Succesfully delete question " + id + " and answers linked to question");
+		} else {
+			throw new NotFoundException("Question id " + id + "  not found");
 		}
 		return respEnt;
 	}
-	
+
 	@ResponseBody
-	@RequestMapping(value="/{id}/answer/{idA}",method = {RequestMethod.DELETE})
+	@RequestMapping(value = "/{id}/answer/{idA}", method = { RequestMethod.DELETE })
 	@ExceptionHandler(NotFoundException.class)
-	public ResponseEntity<QuestionDTO> deleteAnswerQuestion(
-			@PathVariable("id") Integer id,
+	public ResponseEntity<QuestionDTO> deleteAnswerQuestion(@PathVariable("id") Integer id,
 			@PathVariable("idA") Integer idA) throws NotFoundException {
-		Optional<Question> question=questionService.findById(id);
-		ResponseEntity<QuestionDTO> respEnt=respEntOK;
+		Optional<Question> question = questionService.findById(id);
+		ResponseEntity<QuestionDTO> respEnt = respEntOK;
 		if (question.isPresent()) {
-			questionService.deleteAnswerQuestion(idA,id);
+			questionService.deleteAnswerQuestion(idA, id);
 			questionService.update(question.get());
-			respEnt=new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(question.get()),HttpStatus.OK);
-			log.info("Succesfully delete answer "+ idA + " linked to question " + id ); 
-		}
-		else throw new NotFoundException("Question id "+ id + "  not found");
+			respEnt = new ResponseEntity<QuestionDTO>(questionMapper.modelToDto(question.get()), HttpStatus.OK);
+			log.info("Succesfully delete answer " + idA + " linked to question " + id);
+		} else
+			throw new NotFoundException("Question id " + id + "  not found");
 		return respEnt;
-	}	
-	
+	}
+
 	@ResponseBody
-	@RequestMapping(value="/{id}/answers",method = {RequestMethod.DELETE})
+	@RequestMapping(value = "/{id}/answers", method = { RequestMethod.DELETE })
 	@ExceptionHandler(NotFoundException.class)
-	public ResponseEntity<List<QuestionDTO>> deleteAnswersQuestion(
-			@PathVariable("id") Integer id) throws NotFoundException  {
-		Optional<Question> question=questionService.findById(id);
+	public ResponseEntity<List<QuestionDTO>> deleteAnswersQuestion(@PathVariable("id") Integer id)
+			throws NotFoundException {
+		Optional<Question> question = questionService.findById(id);
 		ResponseEntity<List<QuestionDTO>> respEnt;
 		if (question.isPresent()) {
-			//For idQuestion  save new answer, then, update question
-			if (!question.get().getAnswer().isEmpty() || question.get().getAnswer().size() >0) {
+			// For idQuestion save new answer, then, update question
+			if (!question.get().getAnswer().isEmpty() || question.get().getAnswer().size() > 0) {
 				question.get().getAnswer().forEach(ans -> {
-				questionService.deleteAnswerQuestion(ans.getId(),id);
-				ans.getQuestion().setId(id);
-				//Update question object
-				questionService.update(ans.getQuestion()); 
-			});
+					questionService.deleteAnswerQuestion(ans.getId(), id);
+					ans.getQuestion().setId(id);
+					// Update question object
+					questionService.update(ans.getQuestion());
+				});
 			}
-			respEnt=new ResponseEntity<List<QuestionDTO>>(HttpStatus.OK);
-			log.info("Succesfully delete answers linked to question " + id ); 
-		}
-		else throw new NotFoundException("Question id "+ id + " has not been found");
+			respEnt = new ResponseEntity<List<QuestionDTO>>(HttpStatus.OK);
+			log.info("Succesfully delete answers linked to question " + id);
+		} else
+			throw new NotFoundException("Question id " + id + " has not been found");
 		return respEnt;
-		
-	}	
+
+	}
 }

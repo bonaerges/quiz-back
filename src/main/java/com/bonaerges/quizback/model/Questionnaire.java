@@ -21,10 +21,6 @@ import lombok.Setter;
 public class Questionnaire {
 
 	public static final String FIELD_ID = "idQuestionnaire";
-	//public static final String FIELD_ID_FK_TAG = "idQuestionnaireTag";
-	//public static final String FIELD_ID_FK_QUESTION = "idQuestionnaireQuestion";
-	//public static final String FIELD_ID_FK_COURSE="idQuestionnaireCourse";
-	//public static final String FIELD_ID_FK_RESULT = "idQuestionnaireResult";
 	public static final String TAG_FIELD = "tag";
 	public static final String QUESTION_FIELD = "question";
 	public static final String COURSE_FIELD = "course";
@@ -37,14 +33,14 @@ public class Questionnaire {
 	@Column(name=FIELD_ID)
 	private Integer id;
 
-	@Column(nullable = false,unique=true)
-	private String description;
+	@Column(nullable = true,unique=true)
+	private String description="DEFAULT QUIZ";
 	
 	@OneToMany(mappedBy = QUESTIONNAIRE_FIELD, fetch = FetchType.LAZY)
 	private List<Question> question;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = COURSE_FIELD,nullable=false)
+	@JoinColumn(name = COURSE_FIELD,nullable=true)
 	private Course course;
 	
 	@Override

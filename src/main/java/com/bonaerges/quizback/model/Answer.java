@@ -33,9 +33,6 @@ public class Answer {
 	
 	private Boolean isCorrect;
 	
-//	@Temporal(TemporalType.TIMESTAMP)
-//	private Date update;
-	
 	 //FOREIGN KEYS
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = FIELD)

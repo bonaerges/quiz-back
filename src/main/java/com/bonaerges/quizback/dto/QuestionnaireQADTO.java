@@ -1,5 +1,7 @@
 package com.bonaerges.quizback.dto;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +15,9 @@ public class QuestionnaireQADTO {
 	
 	private String courseDescription;
 	
-	private QuestionDTO question;
+	private List<QuestionDTO> question;
 	
-	private AnswerDTO selectAnswer;
+	private Integer answerIdSelected;
 	
 	
 }

@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.CourseDAO;
-import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.model.User;
@@ -46,9 +45,10 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	//Deleet course and questionnaire linked so qustionnaire has no sense without course
+	// Deleet course and questionnaire linked so qustionnaire has no sense without
+	// course
 	public void delete(Course t) {
-		t.getQuestionnaire().forEach((final Questionnaire questLink)->questionnaireService.delete(questLink));
+		t.getQuestionnaire().forEach((final Questionnaire questLink) -> questionnaireService.delete(questLink));
 		courseDAO.delete(t);
 		log.info(" Course delete successfully " + t.toString());
 
@@ -107,6 +107,10 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
+	/**
+	 * WHEN AN USER IT ADDED TO A COURSE IS NOT ALLOWED TO CREATE USERS ON THE FLY
+	 * IF USER PREVIOUSLY USER DOES NOT EXIST
+	 */
 	public void deleteUserFromCourse(Integer idCourse, Integer idUser) {
 		Optional<Course> courseObject = courseDAO.findById(idCourse);
 		Optional<User> userObject = userService.findById(idUser);
@@ -140,6 +144,10 @@ public class CourseServiceImpl implements CourseService {
 
 	}
 
+	/**
+	 * WHEN A QUESTIONNARIE IS DELETED LINKED QUESTIONS AND ANSWERS WILL NOT BE
+	 * DELETED TO BE REUSABLE FOR OTHER QUESTIONNARIES
+	 */
 	public void deleteQuestionnarieCourse(Integer idCourse, Integer idQuestionnaire) {
 		// Update course object to remove questionnarie mapped
 		Optional<Course> courseUser = courseDAO.findById(idCourse);
@@ -168,32 +176,6 @@ public class CourseServiceImpl implements CourseService {
 			});
 		}
 	}
-	
-	public void addQuestionnarieCourse(Integer idCourse, Integer idQuestionnaire) throws NotFoundException {
-		// Update course object to remove questionnarie mapped
-		Optional<Course> courseUser = courseDAO.findById(idCourse);
-		if (courseUser.isPresent()) {
-			courseUser.get().getQuestionnaire().forEach(quest -> {
-				if (quest.getId() == idQuestionnaire) {
-					log.error("Questionaire id " + idQuestionnaire + " already linked to course id "+ idCourse );
-				}
-				else {
-					Optional<Questionnaire> questCourse = questionnaireService.findById(idQuestionnaire);
-					if (questCourse.isPresent())
-					{
-						courseUser.get().getQuestionnaire().add(questCourse.get());
-						courseDAO.save(courseUser.get());
-					}
-					else {
-						log.warn("Questionaire id " + idQuestionnaire + " not created so has been created and lined to course id "+ idCourse );
-						questCourse.get().setCourse(courseUser.get());
-						questionnaireService.create(questCourse.get());
-					}
-				}
-			});
-		}
-		else throw new NotFoundException("");
 
-	}
 
 }

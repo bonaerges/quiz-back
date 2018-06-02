@@ -2,7 +2,6 @@ package com.bonaerges.quizback.model;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,9 +49,6 @@ public class Course {
 	 
 	@Column(nullable = true)
 	private String createdBy; 
-	 
-//	@Temporal(TemporalType.TIMESTAMP)
-//	private Date update;
 	 
 	//FOREIGN KEYS
 	//COURSE (1) --> (M) QUESTIONNAIRE

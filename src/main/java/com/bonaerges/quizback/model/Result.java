@@ -42,12 +42,9 @@ public class Result {
 			
 	private  int totalQuestions=0;
 	
-	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
-	
-//	@Temporal(TemporalType.TIMESTAMP)
-//	private Date update;
+
 	
 	//FOREIGN KEYS
 	@ManyToOne(fetch = FetchType.LAZY)

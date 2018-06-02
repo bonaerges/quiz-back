@@ -1,0 +1,15 @@
+METHOD GET
+http://localhost:8080/questionnarie
+
+
+METHOD POST, ADD QUESTIONNARIE
+
+{"description": "SpringQuiz", "idCourse": "1"}
+{"description": "JavaQuiz" , "idCourse": "1"}
+{"description": "JavaQuiz" , "idCourse": "2"}
+{"description": "MongoDBQuiz" , "idCourse": "2"}
+
+METHOD PUT LINK QUESTIONNARIE TO COURSE
+	POST -->http://localhost:8080/course/1/questionnarie/1-->This links questionnarie  1 with course 1
+	
+	GET -->http://localhost:8080/course/1/users -->THsi show Course 1 Description + List of Users belong to course 1

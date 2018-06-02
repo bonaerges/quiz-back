@@ -8,7 +8,7 @@ c
 { "description": "Question2"}
 { "description": "Question3"}
 
-METHOD POST,  ADD ANSWERS TO QUESTIONS
+METHOD POST,  ADD ANSWERS LIST TO QUESTIONS
 
 http://localhost:8080/question/1/answer
 [{"description": "answer1.1", "isCorrect":"false"},
@@ -27,7 +27,7 @@ http://localhost:8080/question/3/answer
 
 METHOD GET , GET QUESTIONS AND ANSWER QUESTION 1
 
-http://localhost:8080/question/1/
+http://localhost:8080/question/1/answers
 {
     "description": "Question1",
     "answer": [
@@ -44,5 +44,3 @@ http://localhost:8080/question/1/
             "isCorrect": true
         }
     ],
-    "idLevel": null
-}

@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.service;
 
+
 import static org.junit.Assert.assertNotNull;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +42,11 @@ public class CourseServiceTest {
 
 	@Mock
 	private UserDAO userDAO;
-	
+
+
+			
+		
+
 	@Before
     public void setUp() throws Exception {
 		course=new Course();
@@ -65,6 +70,7 @@ public class CourseServiceTest {
 		userDAO.save(user);
 		
     }
+
 	
 	@Test
 	public void testMockCreation() {
@@ -82,15 +88,19 @@ public class CourseServiceTest {
 	}
 	
 	@Test
-	public void testUpdateOK() {
+	public void testUpdateOK() throws Exception {
+		
 		course.setDescription("New Course");
 		Mockito.when(courseDAO.save(course)).thenReturn(course);
-		Optional<Course> courseUpdate= courseService.findById(1);
-		courseUpdate.get().setDescription("New Course");		
-		courseService.update(courseUpdate.get());
-		assertNotNull(courseUpdate);
-		assertNotNull(courseUpdate.get());
-		Assert.assertEquals(course.getDescription(),courseUpdate.get().getDescription());
+		Course courseUpdate=courseService.create(course);
+		courseUpdate.setDescription("New Course");
+		courseService.update(courseUpdate);
+		Optional<Course> courseUpdateS= courseService.findById(courseUpdate.getId());
+		courseService.update(courseUpdateS.get());
+		assertNotNull(courseUpdateS);
+		assertNotNull(courseUpdateS);
+		//Mockito.verify(courseService.update(courseUpdateS.get()).update(courseUpdate));
+		Assert.assertEquals(course.getDescription(),courseUpdateS.get().getDescription());
 	}
 	
 	@Test
@@ -119,14 +129,16 @@ public class CourseServiceTest {
 	}
 	
 	@Test
-	public void testfindAllUserById() {
-//		  Mockito.when(courseDAO.findById(1)).thenReturn(Optional.of(course));
-//		  Course courseService = courseService
-//		  assertNotNull(course);
-//		  assertEquals(course.getDescription(),);
-//		  assertEquals("Test surname", user.getSurname());
-
-	}
+	public void testfindAllCourses() {
+//		List<Course> courses = new ArrayList<>();
+//		Page<Course> pagedResponse = new PageImpl(courses);
+//		Mockito.when(courseDAO.findAll(any(Predicate.class))).thenReturn(pagedResponse);
+//		  Mockito.when(courseDAO.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(new ArrayList<Course>()));
+//		  List<Course> courses = courseService.findAll(Pageable.unpaged());
+//
+//		  Mockito.verify(courseDAO).findAll(page);
+//		  Assert.assertEquals(0, courses.size());	
+		}
 	@Test
 	public void testDeleteUserFromCourse() {
 		
