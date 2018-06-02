@@ -20,7 +20,7 @@ public class Answer {
 	public static final String FIELD= "question";
 	public static final String FIELD_ID= "idAnswer";
 	public static final String ANSWER_FIELD = "answer";
-	//public static final String FIELD_ID_FK_ANSWER = "idAnswerQuestion";
+
 	
 	//TABLE FIELDS
 	@Id
