@@ -185,8 +185,19 @@ Controller
 	
 
 + GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
- 
+
+<<<<<<<TO DO>>>>>>>>
+  Controller 
+GET -->/questionarie/(id)/onebyone
+
 + GET THE QUESTIONNARIE SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.
  
+ <<<<<<<TO DO>>>>>>>>
+ Controller 
+GET -->/questionarie/(id)/random
+
 + GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)	
  
+ <<<<<<<TO DO>>>>>>>>
+ Controller 
+GET -->/questionarie/(id)

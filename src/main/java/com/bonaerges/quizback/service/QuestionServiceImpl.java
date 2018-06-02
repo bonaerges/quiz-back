@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bonaerges.quizback.dao.QuestionDAO;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
+import com.bonaerges.quizback.model.Questionnaire;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,9 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Autowired
 	AnswerService answerService;
+	
+	@Autowired
+	QuestionnaireService questionnaireService;
 
 	@Override
 	public Question create(Question t) {
@@ -31,6 +35,7 @@ public class QuestionServiceImpl implements QuestionService {
 		log.info(" Question create successfully " + t.toString());
 		return questionObject;
 	}
+	
 
 	@Override
 	public void update(Question t) {
@@ -141,6 +146,12 @@ public class QuestionServiceImpl implements QuestionService {
 				log.info("Succesfully add answer " + idA + " linked to question id " + id);
 			}
 		}
+	}
+	@Override
+	public Optional<Questionnaire> findQuestionnaire(Integer idQuestionnaire) {
+		Optional<Questionnaire> questionObject = questionnaireService.findById(idQuestionnaire);
+		log.info(" Questionnaire findById successfully " + questionObject.toString());
+		return questionObject;
 	}
 
 }

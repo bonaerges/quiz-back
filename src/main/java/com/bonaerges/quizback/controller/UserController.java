@@ -35,9 +35,7 @@ public class UserController {
 	@Autowired
 	UserMapper userMapper;
 
-	/************************************
-	 * HTTP METHOD GET
-	 *************************************/
+	/************************************* HTTP METHOD GET *************************************/
 	// user?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
@@ -79,9 +77,7 @@ public class UserController {
 	// }
 	//
 
-	/************************************
-	 * HTTP METHOD POST
-	 *************************************/
+	/************************************* HTTP METHOD POST *************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<UserDTO> create(@RequestBody UserPostDTO dto) {
@@ -90,9 +86,7 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(userMapper.modelToDto(createUser), HttpStatus.OK);
 	}
 
-	/************************************
-	 * HTTP METHOD PUT
-	 *************************************/
+	/************************************* HTTP METHOD PUT*************************************/
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	ResponseEntity<UserDTO> update(@PathVariable("id") Integer id, @RequestBody UserPostDTO dto) {
@@ -110,9 +104,7 @@ public class UserController {
 		return respEnt;
 	}
 
-	/************************************
-	 * HTTP METHOD DELETE
-	 *************************************/
+	/*************************************HTTP METHOD DELETE *************************************/
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	ResponseEntity<UserDTO> delete(@PathVariable("id") Integer id) {

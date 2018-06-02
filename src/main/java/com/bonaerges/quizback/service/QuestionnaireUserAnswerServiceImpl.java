@@ -3,6 +3,7 @@ package com.bonaerges.quizback.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,11 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 
 	@Override
 	public QuestionnaireUserAnswer create(QuestionnaireUserAnswer t) {
-		//Create result adn then linked to answer
-		Result res=new Result();
-		QuestionnaireUserAnswer qUAObj=new QuestionnaireUserAnswer();
-		Optional <User> userAnswer= userService.findById(t.getId().getIdUser());
-		Optional <Questionnaire> quiz= questionnaireService.findById(t.getId().getIdQuestionnaire());
+		// Create result adn then linked to answer
+		Result res = new Result();
+		QuestionnaireUserAnswer qUAObj = new QuestionnaireUserAnswer();
+		Optional<User> userAnswer = userService.findById(t.getId().getIdUser());
+		Optional<Questionnaire> quiz = questionnaireService.findById(t.getId().getIdQuestionnaire());
 		if (userAnswer.isPresent() && quiz.isPresent()) {
 			res.setUser(userAnswer.get());
 			res.setDate(new Date());
@@ -55,17 +56,17 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 			res.setTotalQuestions(1);
 			resultService.create(res);
 			qUAObj = questionnaireuserAnswerDAO.save(t);
-			log.info(" Questionnaire User Answer create successfully " + t.toString());	
-		}
-		else log.error(" Resul User Answer does not saved user or questionary not found ");
+			log.info(" Questionnaire User Answer create successfully " + t.toString());
+		} else
+			log.error(" Resul User Answer does not saved user or questionary not found ");
 		return qUAObj;
 	}
 
 	@Override
 	public void update(QuestionnaireUserAnswer t) {
-			t.setDate(new Date());
-			questionnaireuserAnswerDAO.save(t);	
-		
+		t.setDate(new Date());
+		questionnaireuserAnswerDAO.save(t);
+
 		log.info(" Questionnaire User Answer save successfully " + t.toString());
 	}
 
@@ -110,7 +111,7 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 				int countIncorrect = resultUser.getTotalAnswerKO();
 				int toalQuestions = resultUser.getTotalQuestions();
 				boolean answerSelected = false;
-				
+
 				Optional<User> userAnswer = userService.findById(answerUser.getId().getIdUser());
 				if (userAnswer.isPresent()) {
 					// Compare if question answer from questionnaire is correct one for question
@@ -151,17 +152,16 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 		resultService.update(resultUser);
 
 	}
-	
+
 	@Override
-	public void validateUserQuestionAnswers(Integer idQuestionnaire,Integer idUser) {
-		// Get all questions from questionnaire
-		Optional <User> userAnswer= userService.findById(idUser);
-		Optional <Questionnaire> quiz= questionnaireService.findById(idQuestionnaire);
-		//resultService.findAllByQuestionnarie(idQuest)
-		
+	public void calculateResultUserQuestionAnswers(Integer idQuestionnaire,Integer idUser) {
+		//Filter form result user idUser from idQuestionarrie to calculate         
+		List<QuestionnaireUserAnswer>  answerUser=questionnaireuserAnswerDAO.findUsersAnswerByQuestionnarie(idQuestionnaire, idUser);
+         }
+	
+	public List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ") Integer idQ,
+			@Param("idU") Integer idU) {
+		return questionnaireuserAnswerDAO.findUsersAnswerByQuestionnarie(idQ, idU);
 	}
 
-	public List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer IdU){
-		return questionnaireuserAnswerDAO.findUsersAnswerByQuestionnarie(idQ, IdU);
-	}
 }

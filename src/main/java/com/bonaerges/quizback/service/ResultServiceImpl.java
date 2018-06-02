@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.component.mapper.questionnaireUserAnswer.QuestionnaireUserAnswerMapper;
@@ -14,6 +15,7 @@ import com.bonaerges.quizback.dao.ResultDAO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Questionnaire;
+import com.bonaerges.quizback.model.QuestionnaireUserAnswer;
 import com.bonaerges.quizback.model.Result;
 
 import lombok.extern.slf4j.Slf4j;
@@ -92,5 +94,7 @@ public class ResultServiceImpl implements ResultService {
 	public List<Result> findAllByQuestionnarie(Integer idQuest) {
 		return resultDAO.findAllByQuestionnarie(idQuest);
 	}
-	
+	public List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer IdU) {
+		return questionnaireUserAnswerService.findUsersAnswerByQuestionnarie(idQ, IdU);
+	}
 }

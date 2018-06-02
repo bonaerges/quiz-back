@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
+import com.bonaerges.quizback.model.Questionnaire;
 
 public interface QuestionService extends AbstractCrossService<Question,Integer> {
 
@@ -14,5 +15,7 @@ public interface QuestionService extends AbstractCrossService<Question,Integer> 
 	void deleteAnswerQuestion(Integer idA, Integer id) ;
 
 	void addAnswerQuestion(Integer idA, Integer id) ;
+
+	Optional<Questionnaire> findQuestionnaire(Integer idQuestionnaire);
 	
 }

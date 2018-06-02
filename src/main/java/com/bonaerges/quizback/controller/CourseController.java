@@ -29,6 +29,7 @@ import com.bonaerges.quizback.dto.UserDTO;
 import com.bonaerges.quizback.exception.DuplicatedException;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
+import com.bonaerges.quizback.model.User;
 import com.bonaerges.quizback.service.CourseService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -128,9 +129,13 @@ public class CourseController {
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<CoursePostDTO>  addUserCouse(@PathVariable("idU") Integer  idUser,@PathVariable("id") Integer id) throws NotFoundException  {
 		ResponseEntity<CoursePostDTO> respEnt;
-		courseService.addUserToCourse(id, idUser);
-		return new ResponseEntity<CoursePostDTO>(HttpStatus.OK);
+		List <User> usersList=courseService.addUserToCourse(id, idUser);
+		CoursePostDTO courseDTO = new CoursePostDTO();
+		courseDTO.setUsers(userMapper.modelToDto(usersList));
+		//courseDTO.setDescription(courseService.findById(id).get().getQuestionnaire());
+		return new ResponseEntity<CoursePostDTO>(courseDTO,HttpStatus.OK);
 	}
+	
 
 
 //	@ResponseBody

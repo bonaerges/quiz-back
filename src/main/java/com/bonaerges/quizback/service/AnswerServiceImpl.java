@@ -40,13 +40,19 @@ public class AnswerServiceImpl implements AnswerService {
 
 	}
 
-	// Add answer to question if asnwer wasn not already linked to question
+	// Add answer to question if answer wasn not already linked to question
 	public Answer addAnswerQuestion(Answer t, Integer idQuestion) {
 		Optional<Question> question = questionService.findById(idQuestion);
 		Answer saveAnswer = null;
 		if (question.isPresent()) {
 			t.setQuestion(question.get());
 			saveAnswer = create(t);
+			if (saveAnswer.getIsCorrect()) {
+				question.get().setCorrectAnswer(saveAnswer);
+				questionService.update(question.get());
+			}
+			
+			
 			log.info(" Add Answer to question successfully " + t.toString());
 		} else {
 			log.error("Not found question id " + idQuestion);
@@ -63,7 +69,12 @@ public class AnswerServiceImpl implements AnswerService {
 			if (isAnswerMapToQuestion(idQuestion, idAnswer)) {
 				answerLink.get().setDescription(t.getDescription());
 				answerLink.get().setIsCorrect(t.getIsCorrect());
-				answerDAO.save(answerLink.get());
+				final Answer newAnswer=answerDAO.save(answerLink.get());
+				if (newAnswer.getIsCorrect()) {
+					question.get().setCorrectAnswer(newAnswer);
+					questionService.update(question.get());
+				}
+				
 				log.info(" Add Update Answer " + idAnswer + " to question " + idQuestion + " successfully "
 						+ answerLink.toString());
 			}

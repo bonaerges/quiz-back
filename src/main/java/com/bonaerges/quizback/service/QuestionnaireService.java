@@ -10,4 +10,5 @@ public interface QuestionnaireService extends AbstractCrossService<Questionnaire
 
 	public Optional<Course> getCourse (Integer idCourse) throws NotFoundException;
 	public void addQuestionnarieCourse(Integer idCourse, Integer idQuestionnaire) throws NotFoundException;
+	public void linkQuestionnarieQuestion(Integer idQuestion, Integer idQuestionnaire) throws NotFoundException ;
 }

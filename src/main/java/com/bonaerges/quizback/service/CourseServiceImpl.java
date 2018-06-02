@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.CourseDAO;
+import com.bonaerges.quizback.dto.UserDTO;
 import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.model.User;
@@ -93,16 +94,18 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public void addUserToCourse(Integer idCourse, Integer idUser) {
+	public List<User> addUserToCourse(Integer idCourse, Integer idUser) {
 		Optional<Course> courseObject = courseDAO.findById(idCourse);
 		Optional<User> userObject = userService.findById(idUser);
 		if (courseObject.isPresent()) {
 			userObject.ifPresent(u -> {
 				courseObject.get().getUser().add(u);
 				courseDAO.save(courseObject.get());
+				
 			});
-
+			return courseObject.get().getUser();
 		}
+		else return new ArrayList<User>();
 
 	}
 

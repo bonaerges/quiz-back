@@ -18,7 +18,8 @@ public interface QuestionnaireUserAnswerDAO extends PagingAndSortingRepository<Q
 	@Query("SELECT u FROM Course c,User u WHERE c.id = :idCourse  ")
 	List<User> findUsersByCourse(@Param("idCourse")Integer idCourse);
 	
-	@Query("SELECT qUA from QuestionnaireUserAnswer qUA WHERE qUA.questionUserAnswerId.idQuestionnaire=:idQ AND UA.questionUserAnswerId.idUser=:idU")
-	List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer IdU);
+	
+	@Query("SELECT qUA from QuestionnaireUserAnswer qUA")
+	List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer idU);
  
 }

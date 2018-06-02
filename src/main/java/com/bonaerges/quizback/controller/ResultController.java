@@ -2,6 +2,7 @@ package com.bonaerges.quizback.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,11 +13,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
 import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
 import com.bonaerges.quizback.component.mapper.questionnaireUserAnswer.QuestionnaireUserAnswerMapper;
+import com.bonaerges.quizback.dto.AnswerDTO;
+import com.bonaerges.quizback.dto.QuestionDTO;
 import com.bonaerges.quizback.dto.QuestionnaireFilledDTO;
+import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.exception.NotFoundException;
+import com.bonaerges.quizback.model.Answer;
+import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.Questionnaire;
+import com.bonaerges.quizback.model.QuestionnaireUserAnswer;
 import com.bonaerges.quizback.model.Result;
 import com.bonaerges.quizback.service.ResultService;
 
@@ -36,6 +44,9 @@ public class ResultController {
 	@Autowired
 	QuestionMapper questionMapper;
 	
+	@Autowired
+	AnswerMapper answerMapper;
+	
 	final ResponseEntity<QuestionnaireFilledDTO> respEntOK=new ResponseEntity<QuestionnaireFilledDTO>(HttpStatus.OK);
 	final ResponseEntity<QuestionnaireFilledDTO> respEntNotFound=new ResponseEntity<QuestionnaireFilledDTO>(HttpStatus.NOT_FOUND);
 	
@@ -49,10 +60,41 @@ public class ResultController {
 	public ResponseEntity<QuestionnaireFilledDTO> findById(@PathVariable("idQuestionnaire") Integer idQuestionnaire) throws NotFoundException {
 		Optional<Questionnaire> quiz = resultService.getQuestionnaire(idQuestionnaire);
 		ResponseEntity<QuestionnaireFilledDTO> respEnt=respEntOK;
+		QuestionnaireFilledDTO qFilled;
 		if (quiz.isPresent()) {
-			quiz.get().getCourse();
-			List<Result> results= resultService.findAllByQuestionnarie(idQuestionnaire);
+			//THIS SHOUlD TO BE DONE IN MAPPER TRY TO DO LATER
+			qFilled= new QuestionnaireFilledDTO();
+			//DTO questionnaireDescription
+			qFilled.setQuestionnaireDescription(quiz.get().getDescription());
+			
+			//DTO courseDescription
+			qFilled.setCourseDescription(quiz.get().getCourse().getDescription());
+			
+			//DTO private List<QuestionDTO> question - anSwer;
+			Optional<Questionnaire> questionsQuiz=quiz.get().getCourse().getQuestionnaire().stream().filter( q -> q.getId() == idQuestionnaire).findFirst();
+			qFilled.setQuestion(questionMapper.modelToDto(questionsQuiz.get().getQuestion()));
+			
+			//DTO AnswerDTO correctAnswer
+			
+		//	Answer answer=questionsQuiz.get().getQuestion().forEach(q -> q.getAnswer());
+			//Answer answerCorrect = questionsQuiz.stream().filter(q -> q.getCorrectAnswer()).get();
+			//qFilled.setCorrectAnswer(correctAnswer);
+			//qFilled.getAnswerIdSelected(answerMapper.modelToDto(answerCorrect));
+						List<Result> results= resultService.findAllByQuestionnarie(idQuestionnaire);
+			
 		}
+		return respEnt;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/{idQuestionnaire}/user/{idUser}", method = RequestMethod.GET)
+	public ResponseEntity<QuestionnaireQADTO> findByUserandQuiz(
+			@PathVariable("idQuestionnaire") Integer idQuestionnaire,
+			@PathVariable("idUser") Integer idUser) throws NotFoundException {
+		ResponseEntity<QuestionnaireQADTO> respEnt=new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
+		List<QuestionnaireUserAnswer> resultUA= resultService.findUsersAnswerByQuestionnarie(idQuestionnaire, idUser);
+		List<QuestionnaireQADTO> answerResult=questionnaireUserAnswerMapper.modelToDto(resultUA);
+		
 		return respEnt;
 	}
 

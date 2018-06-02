@@ -78,7 +78,7 @@ public class QuestionController {
 	}
 
 	@RequestMapping(value = "/{id}/showCorrect", method = RequestMethod.GET)
-	public ResponseEntity<AnswerDTO> getCorrectAnswer(@PathVariable Integer idQuestion) {
+	public ResponseEntity<AnswerDTO> getCorrectAnswer(@PathVariable("id") Integer idQuestion) {
 		Optional<Question> question = questionService.findById(idQuestion);
 		ResponseEntity<AnswerDTO> respEnt = new ResponseEntity<AnswerDTO>(HttpStatus.OK);
 		if (question.isPresent()) {
@@ -95,9 +95,10 @@ public class QuestionController {
 	 * HTTP METHOD POST
 	 *************************************/
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/{idQ}", method = RequestMethod.POST)
 	// Only allow create Question not mapped objects
-	public ResponseEntity<QuestionUpdateDTO> create(@RequestBody QuestionUpdateDTO dto) {
+	public ResponseEntity<QuestionUpdateDTO> addToQuestionnaire(@PathVariable("id") Integer idQuestionnaire,@RequestBody QuestionUpdateDTO dto) {
+		
 		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));
 		log.info("Question " + createQuestion.getId() + " succesfuly created.");
 		log.warn("Pending to create answers linked to question");
@@ -105,6 +106,16 @@ public class QuestionController {
 	}
 	// url-->/question/(idQuestion)/answer/(idAnswer)
 
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.POST)
+	// Only allow create Question not mapped objects
+	public ResponseEntity<QuestionUpdateDTO> create(@RequestBody QuestionUpdateDTO dto) {
+		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));
+		
+		log.info("Question " + createQuestion.getId() + " succesfuly created.");
+		log.warn("Pending to create answers linked to question");
+		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion), HttpStatus.OK);
+	}
 	/************************************
 	 * HTTP METHOD PUT
 	 *************************************/

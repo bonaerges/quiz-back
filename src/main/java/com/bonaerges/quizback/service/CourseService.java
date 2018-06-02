@@ -9,7 +9,7 @@ public interface CourseService extends AbstractCrossService<Course,Integer> {
 	
 	public List<User> findAllUserById(Integer idCourse);
 	
-	public void addUserToCourse(Integer idCourse, Integer idUser);
+	public List<User> addUserToCourse(Integer idCourse, Integer idUser);
 	
 	public void deleteUserFromCourse(Integer idCourse, Integer idUser);
 

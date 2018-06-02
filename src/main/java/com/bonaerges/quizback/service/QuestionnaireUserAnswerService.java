@@ -15,7 +15,7 @@ public interface QuestionnaireUserAnswerService extends AbstractCrossService<Que
 
 	Optional<QuestionnaireUserAnswer> findById(QuestionUserAnswerId id);
 
-	void validateUserQuestionAnswers(Integer idQuestionnaire, Integer idUser);
+	void calculateResultUserQuestionAnswers(Integer idQuestionnaire, Integer idUser);
 
 	List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer IdU);
 }

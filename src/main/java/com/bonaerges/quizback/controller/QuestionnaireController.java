@@ -115,22 +115,26 @@ public class QuestionnaireController {
 	 */
 	// questionnaire
 	@ResponseBody
-	@RequestMapping(value ="/{idCourse}/questionnaire", method=RequestMethod.POST)
-	public ResponseEntity<QuestionnaireDTO> create(@PathVariable("idCourse") Integer idCourse,@RequestBody QuestionnaireDTO dto) throws NotFoundException {
-		
+	@RequestMapping(value = "/{idCourse}/questionnaire", method = RequestMethod.POST)
+	public ResponseEntity<QuestionnaireDTO> create(@PathVariable("idCourse") Integer idCourse,
+			@RequestBody QuestionnaireDTO dto) throws NotFoundException {
+
 		final Questionnaire questionnaireModel = questionnaireMapper.dtoToModel(dto);
-		final Optional<Course> course=questionnaireService.getCourse(idCourse);
+		final Optional<Course> course = questionnaireService.getCourse(idCourse);
 		ResponseEntity<QuestionnaireDTO> respEnt;
 		if (course.isPresent()) {
 			questionnaireModel.setCourse(course.get());
 			final Questionnaire createQuestionnaire = questionnaireService.create(questionnaireModel);
 			log.info("Questionnaire " + createQuestionnaire.getId() + " succesfuly created.");
-			respEnt = new ResponseEntity<QuestionnaireDTO>(questionnaireMapper.modelToDto(createQuestionnaire),HttpStatus.OK) ;
-		}
-		else respEnt=respEntNotFound;
-		
+			respEnt = new ResponseEntity<QuestionnaireDTO>(questionnaireMapper.modelToDto(createQuestionnaire),
+					HttpStatus.OK);
+		} else
+			respEnt = respEntNotFound;
+
 		return respEnt;
 	}
+	
+
 
 	/************************************* HTTP METHOD PUT	 *************************************/
 	@ResponseBody
@@ -147,6 +151,13 @@ public class QuestionnaireController {
 		return respEnt;
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/{idQ}/question/{idQuestion}", method = RequestMethod.PUT)
+	public ResponseEntity<?> linkQuestion(@PathVariable("idQ") Integer idQuestionnaire,@PathVariable("idQuestion") Integer idQuestion) throws NotFoundException {
+		questionnaireService.linkQuestionnarieQuestion(idQuestion, idQuestionnaire);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 	@ResponseBody
 	@RequestMapping(path = "/{id}/saveAnswer", method = RequestMethod.PUT)
 	public ResponseEntity<AnswerDTO> saveAnswer(@PathVariable("user") Integer idUser, @PathVariable("id") Integer id,

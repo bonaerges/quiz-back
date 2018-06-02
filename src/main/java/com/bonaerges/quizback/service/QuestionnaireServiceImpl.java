@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bonaerges.quizback.dao.QuestionnaireDAO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
+import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.Questionnaire;
 
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +107,18 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
 	}
 
+	/**
+	 * LINK Existing question to questionnaire
+	 */
+	public void linkQuestionnarieQuestion(Integer idQuestion, Integer idQuestionnaire) throws NotFoundException {
+		Optional<Question> question = questionService.findById(idQuestion);
+		Optional<Questionnaire> questionnaire = questionnaireDAO.findById(idQuestionnaire);
+		if (question.isPresent() && questionnaire.isPresent()) {
+			questionnaire.get().getQuestion().add(question.get());
+			questionnaireDAO.save(questionnaire.get());
+		} else
+			throw new NotFoundException("Question " + idQuestion + " or Questionnaire " + idQuestionnaire + " NOT FOUND!!!");
+	}
 	@Override
 	/**
 	 * 
