@@ -1,7 +1,6 @@
 package com.bonaerges.quizback.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,15 +25,11 @@ import com.bonaerges.quizback.component.mapper.answer.AnswerUpdateDTOMapper;
 import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
 import com.bonaerges.quizback.component.mapper.questionnaire.QuestionnaireMapper;
 import com.bonaerges.quizback.dto.AnswerDTO;
-import com.bonaerges.quizback.dto.QuestionDTO;
-import com.bonaerges.quizback.dto.QuestionViewDTO;
 import com.bonaerges.quizback.dto.QuestionnaireDTO;
 import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.dto.QuestionnaireUserAnswerDTO;
 import com.bonaerges.quizback.exception.NotFoundException;
-import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Course;
-import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.service.QuestionnaireService;
 
@@ -82,25 +77,13 @@ public class QuestionnaireController {
 		Optional<Questionnaire> questionnaireModel = questionnaireService.findById(id);
 		ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
 		if (questionnaireModel.isPresent()) {
-			QuestionnaireQADTO qADTO= new QuestionnaireQADTO();
-			qADTO.setQuestionnaireDescription(questionnaireModel.get().getDescription());
-			qADTO.setCourseDescription(questionnaireModel.get().getCourse().getDescription());
-			List <Question> questions=questionnaireModel.get().getQuestion();
-			List <QuestionViewDTO> questionView=new ArrayList<QuestionViewDTO>();
-			questions.forEach(qA -> {
-				QuestionViewDTO qdto= new QuestionViewDTO();
-				qdto.setAnswer(answerUpdateDTOMapper.modelToDto(qA.getAnswer()));	
-				qdto.setDescription(qA.getDescription());
-				questionView.add(qdto);
-			});		
-			qADTO.setQuestion(questionView);
-			
+			QuestionnaireQADTO qADTO=questionnaireService.getQuestionnaireContent(questionnaireModel.get());			
 			log.info("Questionnaire " + id + " found");
 			respEnt = new ResponseEntity<QuestionnaireQADTO>(qADTO,HttpStatus.OK);
 		}
 		else {
 		
-			throw new NotFoundException("Must be created questionnaire first");
+			throw new NotFoundException("Questionnaire not found, must be created questionnaire first");
 		}
 		return respEnt;
 	}
@@ -108,9 +91,8 @@ public class QuestionnaireController {
 	// questionnaire?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
-	public List<QuestionnaireDTO> findAll(
-			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size) {
+	public List<QuestionnaireDTO> findAll(@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
+			@RequestParam(value = "size", defaultValue="10",required = false)Integer size) {
 		List<Questionnaire> questionnaires = questionnaireService.findAll(PageRequest.of(page, size)).stream()
 				.collect(Collectors.toList());
 		log.info("findAll questionnaires count is: " + Integer.toString(questionnaires.size()));
@@ -129,18 +111,7 @@ public class QuestionnaireController {
 			List<Questionnaire> quizs=courseModelModel.get().getQuestionnaire();
 			
 			quizs.forEach(q -> {
-				QuestionnaireQADTO qADTO= new QuestionnaireQADTO();
-				qADTO.setQuestionnaireDescription(q.getDescription());
-				qADTO.setCourseDescription(q.getCourse().getDescription());
-				List <Question> questions=q.getQuestion();
-				List <QuestionViewDTO> questionView=new ArrayList<QuestionViewDTO>();
-				questions.forEach(qA -> {
-					QuestionViewDTO qdto= new QuestionViewDTO();
-					qdto.setAnswer(answerUpdateDTOMapper.modelToDto(qA.getAnswer()));	
-					qdto.setDescription(qA.getDescription());
-					questionView.add(qdto);
-				});		
-				qADTO.setQuestion(questionView);
+				QuestionnaireQADTO qADTO=questionnaireService.getQuestionnaireContent(q);
 				allQuiz.add(qADTO);
 			});
 			
@@ -175,6 +146,35 @@ public class QuestionnaireController {
        
         return rv;
 	}
+	
+	// questionnaire?page=X&size=X
+		@ResponseBody
+		@RequestMapping(value="/{id}/next",method = RequestMethod.GET)
+		public List<QuestionnaireDTO> findAllOneByOne(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+				@RequestParam(value = "size", defaultValue = "1", required = false) Integer size) {
+			
+			
+			int currentPage=page;
+			List<Questionnaire> questionnaires = questionnaireService.findAll(PageRequest.of(currentPage, size)).stream()
+					.collect(Collectors.toList());
+			
+			log.info("findAll questionnaires count is: " + Integer.toString(questionnaires.size()));
+			
+			return questionnaireMapper.modelToDto(questionnaires);
+		}
+		
+		@ResponseBody
+		@RequestMapping(value="/{id}/onebyone",method = {RequestMethod.GET})
+		public RedirectView getNext(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = true)Integer page,RedirectAttributes redirectAttributes)  {
+			
+		    RedirectView rv = new RedirectView();
+	        rv.setContextRelative(true);
+	        int newPage=page+1;
+	        rv.addStaticAttribute("page", newPage);
+	        rv.setUrl("/questionnaire/{id}/next?page="+newPage + "&size=1");
+	       
+	        return rv;
+		}
 	/************************************* HTTP METHOD POST	*************************************/
 	/**
 	 * 

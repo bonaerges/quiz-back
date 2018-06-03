@@ -258,18 +258,20 @@ Body: { "id": { "questionnaireId" : "1" , "userId": "1", "questionId": "1", "ans
 [<i>GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION</i>]
  Controller 
 GET -->/questionarie/(id)/onebyone
- <<<<<<<TO DO>>>>>>>>
+
+Redirect to GET -->/questionarie/(id)/next?page=p&size=1
 ---------------------------------------------------------------------------------------------------------------------------
 [<i>GET THE QUESTIONNARIE SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.</i>]
  
  <<<<<<<TO DO>>>>>>>>
+
  Controller 
 GET -->/questionarie/(id)/random
 ---------------------------------------------------------------------------------------------------------------------------
 [<i>GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)</i>]
 
 /questionnaire Controller 
-GET -->/course/(id)/questionarie/(id)-->IT returns a List of question answer without show correctanswer. Redirects to controller
+GET -->/course/(idC)/questionarie/(idQ)-->IT returns a List of question answer without show correctanswer. Redirects to controller
 /questionnaire method /questionnaire/(idC)/getAll
 
 http://localhost:8080/course/1/questionnaire--> 	http://localhost:8080/questionnaire/1/getAll

@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +10,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
+import com.bonaerges.quizback.component.mapper.answer.AnswerUpdateDTOMapper;
+import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
 import com.bonaerges.quizback.dao.QuestionnaireDAO;
+import com.bonaerges.quizback.dto.QuestionViewDTO;
+import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Question;
@@ -35,6 +41,15 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
 	@Autowired
 	QuestionService questionService;
+	
+	@Autowired
+	QuestionMapper questionViewMapper;
+	
+	@Autowired
+	AnswerMapper answerMapper;
+
+	@Autowired
+	AnswerUpdateDTOMapper answerUpdateDTOMapper;
 
 	@Override
 	public Questionnaire create(Questionnaire t) {
@@ -130,5 +145,20 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		return courseUser;
 	}
 	
+	public QuestionnaireQADTO getQuestionnaireContent(Questionnaire questionnaireModel) {
+		QuestionnaireQADTO qADTO= new QuestionnaireQADTO();
+		qADTO.setQuestionnaireDescription(questionnaireModel.getDescription());
+		qADTO.setCourseDescription(questionnaireModel.getCourse().getDescription());
+		List <Question> questions=questionnaireModel.getQuestion();
+		List <QuestionViewDTO> questionView=new ArrayList<QuestionViewDTO>();
+		questions.forEach(qA -> {
+			QuestionViewDTO qdto= new QuestionViewDTO();
+			qdto.setAnswer(answerUpdateDTOMapper.modelToDto(qA.getAnswer()));	
+			qdto.setDescription(qA.getDescription());
+			questionView.add(qdto);
+		});		
+		qADTO.setQuestion(questionView);
+		return qADTO;
+	}
 
 }

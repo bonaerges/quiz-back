@@ -1,6 +1,6 @@
-{"name":"test1", "surname":"surname1", "email":"test1@quizback.com"}
+METHOD POST: Dar alta users : http://localhost:8080/user/{"name":"test1", "surname":"surname1", "email":"test1@quizback.com"}
 {"name":"test2", "surname":"surname2", "email":"test2@quizback.com"}
 {"name":"test3", "surname":"surname3", "email":"test3@quizback.com"}
 {"name":"test4", "surname":"surname4", "email":"test3@quizback.com"}
 {"name":"test5", "surname":"surname5", "email":"test4@quizback.com"}
-/all users[    {        "email": "test4@quizback.com",        "name": "test4"    },    {        "email": "test2@quizback.com",        "name": "test2"    },    {        "email": "test5@quizback.com",        "name": "test5"    },    {        "email": "test1@quizback.com",        "name": "test1"    },    {        "email": "test3@quizback.com",        "name": "test3"    }]
+Method GET: retrieve /all users[    {        "email": "test4@quizback.com",        "name": "test4"    },    {        "email": "test2@quizback.com",        "name": "test2"    },    {        "email": "test5@quizback.com",        "name": "test5"    },    {        "email": "test1@quizback.com",        "name": "test1"    },    {        "email": "test3@quizback.com",        "name": "test3"    }]UPDATE: Link User to course	PUT -->http://localhost:8080/course/1/user/1-->This links user 1 with course 1	PUT -->http://localhost:8080/course/1/user/2-->This links user 2 with course 1	PUT -->http://localhost:8080/course/1/user/3-->This links user 3 with course 1	PUT -->http://localhost:8080/course/2/user/1-->This links user 1 with course 1	PUT -->http://localhost:8080/course/2/user/2-->This links user 2 with course 2

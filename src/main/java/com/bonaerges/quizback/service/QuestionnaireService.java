@@ -2,6 +2,7 @@ package com.bonaerges.quizback.service;
 
 import java.util.Optional;
 
+import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Questionnaire;
@@ -11,5 +12,6 @@ public interface QuestionnaireService extends AbstractCrossService<Questionnaire
 	public Optional<Course> getCourse (Integer idCourse) throws NotFoundException;
 	public void addQuestionnarieCourse(Integer idCourse, Integer idQuestionnaire) throws NotFoundException;
 	public void linkQuestionnarieQuestion(Integer idQuestion, Integer idQuestionnaire) throws NotFoundException ;
+	public QuestionnaireQADTO getQuestionnaireContent(Questionnaire questionnaireModel) ;
 
 }
