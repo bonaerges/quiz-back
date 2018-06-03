@@ -1,6 +1,7 @@
 package com.bonaerges.quizback.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -157,7 +158,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 			qdto.setDescription(qA.getDescription());
 			questionView.add(qdto);
 		});		
-		qADTO.setQuestion(questionView);
+		 qADTO.setQuestion(questionView); 
 		return qADTO;
 	}
 

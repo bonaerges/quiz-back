@@ -147,34 +147,34 @@ public class QuestionnaireController {
         return rv;
 	}
 	
-	// questionnaire?page=X&size=X
+	// questionnaire/1/onebyone?page=X
 		@ResponseBody
-		@RequestMapping(value="/{id}/next",method = RequestMethod.GET)
-		public List<QuestionnaireDTO> findAllOneByOne(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-				@RequestParam(value = "size", defaultValue = "1", required = false) Integer size) {
+		@RequestMapping(value="/{id}/onebyone",method = RequestMethod.GET)
+		public ResponseEntity<QuestionnaireQADTO> findAllOneByOne(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = true) Integer page) {
 			
+			Optional<Questionnaire> questionnaireModel = questionnaireService.findById(id);
+			ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
 			
-			int currentPage=page;
-			List<Questionnaire> questionnaires = questionnaireService.findAll(PageRequest.of(currentPage, size)).stream()
-					.collect(Collectors.toList());
-			
-			log.info("findAll questionnaires count is: " + Integer.toString(questionnaires.size()));
-			
-			return questionnaireMapper.modelToDto(questionnaires);
+			if (questionnaireModel.isPresent()) {
+					QuestionnaireQADTO qADTO=questionnaireService.getQuestionnaireContent(questionnaireModel.get());
+					qADTO.setQuestion(qADTO.getQuestion().stream().collect(Collectors.toList()).subList(page, page+1));
+					respEnt = new ResponseEntity<QuestionnaireQADTO>(qADTO,HttpStatus.OK);
+			}
+			return respEnt;
 		}
 		
-		@ResponseBody
-		@RequestMapping(value="/{id}/onebyone",method = {RequestMethod.GET})
-		public RedirectView getNext(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = true)Integer page,RedirectAttributes redirectAttributes)  {
-			
-		    RedirectView rv = new RedirectView();
-	        rv.setContextRelative(true);
-	        int newPage=page+1;
-	        rv.addStaticAttribute("page", newPage);
-	        rv.setUrl("/questionnaire/{id}/next?page="+newPage + "&size=1");
-	       
-	        return rv;
-		}
+//		@ResponseBody
+//		@RequestMapping(value="/{id}/onebyone",method = {RequestMethod.GET})
+//		public RedirectView getNext(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = true)Integer page,RedirectAttributes redirectAttributes)  {
+//			
+//		    RedirectView rv = new RedirectView();
+//	        rv.setContextRelative(true);
+//	        int newPage=page+1;
+//	        rv.addStaticAttribute("page", newPage);
+//	        rv.setUrl("/questionnaire/{id}/next?page="+newPage + "&size=1");
+//	       
+//	        return rv;
+//		}
 	/************************************* HTTP METHOD POST	*************************************/
 	/**
 	 * 
