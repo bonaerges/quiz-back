@@ -62,6 +62,7 @@ The model take into account next entities:
 	-Delete(C)
  
 <li>	b)Question Service:</li>
+
 <li>    c) DTO and Mapper </li>
 	
 		-UserPostDTO purporse is for RequestBody  update/post controller contains USERDTO + password
