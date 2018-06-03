@@ -31,7 +31,7 @@ public class Result {
 	//TABLE FIELDS
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name=FIELD_ID)
+	@Column(name=FIELD_ID_PK)
 	private Integer id;
 		
 	private double averageNote=0;

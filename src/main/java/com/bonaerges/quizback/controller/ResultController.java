@@ -1,8 +1,8 @@
 package com.bonaerges.quizback.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,19 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
-import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
 import com.bonaerges.quizback.component.mapper.question.QuestionViewDTOMapper;
 import com.bonaerges.quizback.component.mapper.questionnaireUserAnswer.QuestionnaireUserAnswerMapper;
-import com.bonaerges.quizback.dto.AnswerDTO;
-import com.bonaerges.quizback.dto.QuestionDTO;
 import com.bonaerges.quizback.dto.QuestionnaireFilledDTO;
 import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.exception.NotFoundException;
-import com.bonaerges.quizback.model.Answer;
-import com.bonaerges.quizback.model.Question;
+import com.bonaerges.quizback.model.Course;
 import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.model.QuestionnaireUserAnswer;
-import com.bonaerges.quizback.model.Result;
 import com.bonaerges.quizback.service.ResultService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +44,8 @@ public class ResultController {
 	@Autowired
 	AnswerMapper answerMapper;
 	
-	final ResponseEntity<QuestionnaireFilledDTO> respEntOK=new ResponseEntity<QuestionnaireFilledDTO>(HttpStatus.OK);
-	final ResponseEntity<QuestionnaireFilledDTO> respEntNotFound=new ResponseEntity<QuestionnaireFilledDTO>(HttpStatus.NOT_FOUND);
+	final ResponseEntity<List<QuestionnaireFilledDTO>> respEntOK=new ResponseEntity<>(HttpStatus.OK);
+	final ResponseEntity<List<QuestionnaireFilledDTO>> respEntNotFound=new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	
 	/************************************
 	 * HTTP METHOD GET
@@ -58,24 +53,32 @@ public class ResultController {
 	 *************************************/
 	// result BY questionnaire ID based on a course
 	@ResponseBody
-	@RequestMapping(value = "/{idQuestionnaire}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{idCourse}", method = RequestMethod.GET)
 	@ExceptionHandler(NotFoundException.class)
-	public ResponseEntity<QuestionnaireFilledDTO> findById(@PathVariable("idQuestionnaire") Integer idQuestionnaire) throws NotFoundException {
-		Optional<Questionnaire> quiz = resultService.getQuestionnaire(idQuestionnaire);
-		ResponseEntity<QuestionnaireFilledDTO> respEnt=respEntOK;
-		QuestionnaireFilledDTO qFilled;
-		if (quiz.isPresent()) {
-			//THIS SHOUlD TO BE DONE IN MAPPER TRY TO DO LATER
-			qFilled= new QuestionnaireFilledDTO();
-			//DTO questionnaireDescription
-			qFilled.setQuestionnaireDescription(quiz.get().getDescription());
+	public ResponseEntity<List<QuestionnaireFilledDTO>> findById(@PathVariable("idCourse") Integer idCourse) throws NotFoundException {
+		Optional<Course> course = resultService.getCourse(idCourse);
+		ResponseEntity<List<QuestionnaireFilledDTO>> respEnt=respEntOK;
+		List<QuestionnaireFilledDTO> listResult=new ArrayList<QuestionnaireFilledDTO>();
+	
+		if (course.isPresent()) {
+			List<Questionnaire> quiz=course.get().getQuestionnaire();
+			quiz.forEach( quizQ ->{
+				QuestionnaireFilledDTO qFilled;			
+				//For each questionnaire get the result of course/Questionnaire
+				resultService.getQuestionnaire(quizQ.getId());
+				//THIS SHOUlD TO BE DONE IN MAPPER TRY TO DO LATER
+				qFilled= new QuestionnaireFilledDTO();
+				//DTO questionnaireDescription
+				qFilled.setQuestionnaireDescription(quizQ.getDescription());
+				
+				//DTO courseDescription
+				qFilled.setCourseDescription(quizQ.getCourse().getDescription());
+				
+				//DTO private List<QuestionDTO> question - anSwer;
+				Optional<Questionnaire> questionsQuiz=quizQ.getCourse().getQuestionnaire().stream().filter( q -> q.getId() == quizQ.getId()).findFirst();
+				qFilled.setQuestion(questionViewMapper.modelToDto(questionsQuiz.get().getQuestion()));
+			});
 			
-			//DTO courseDescription
-			qFilled.setCourseDescription(quiz.get().getCourse().getDescription());
-			
-			//DTO private List<QuestionDTO> question - anSwer;
-			Optional<Questionnaire> questionsQuiz=quiz.get().getCourse().getQuestionnaire().stream().filter( q -> q.getId() == idQuestionnaire).findFirst();
-			qFilled.setQuestion(questionViewMapper.modelToDto(questionsQuiz.get().getQuestion()));
 			
 			//DTO AnswerDTO correctAnswer
 			
@@ -83,7 +86,7 @@ public class ResultController {
 			//Answer answerCorrect = questionsQuiz.stream().filter(q -> q.getCorrectAnswer()).get();
 			//qFilled.setCorrectAnswer(correctAnswer);
 			//qFilled.getAnswerIdSelected(answerMapper.modelToDto(answerCorrect));
-						List<Result> results= resultService.findAllByQuestionnarie(idQuestionnaire);
+			//			List<Result> results= resultService.findAllByQuestionnarie(idQuestionnaire);
 			
 		}
 		return respEnt;

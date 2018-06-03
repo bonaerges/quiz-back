@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -41,22 +42,28 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 	@Override
 	public QuestionnaireUserAnswer create(QuestionnaireUserAnswer t) {
 		// Create result adn then linked to answer
-		Result res = new Result();
+		final Result res = new Result();
 		QuestionnaireUserAnswer qUAObj = new QuestionnaireUserAnswer();
 		Optional<User> userAnswer = userService.findById(t.getId().getUserId());
 		Optional<Questionnaire> quiz = questionnaireService.findById(t.getId().getQuestionnaireId());
+		
 		if (userAnswer.isPresent() && quiz.isPresent()) {
 			qUAObj.setId(t.getId());
 			qUAObj.setDate(t.getDate());
-			res.setUser(userAnswer.get());
-			res.setDate(new Date());
-			res.setQuestionary(quiz.get());
-			res.setAverageNote(0);
-			res.setTotalAnswerKO(0);
-			res.setTotalAnswerOK(0);
-			res.setTotalQuestions(1);
-			resultService.create(res);
-			qUAObj = questionnaireuserAnswerDAO.save(t);
+//			res.setUser(userAnswer.get());
+//			res.setDate(new Date());
+//			res.setQuestionary(quiz.get());
+//			res.setAverageNote(0);
+//			res.setTotalAnswerKO(0);
+//			res.setTotalAnswerOK(0);
+//			res.setTotalQuestions(1);
+//			res.getQuestionnaireUserAnswer().add(e);
+//			Result resCreate1= resultService.create(res);
+//			Optional <Result> resCreate2=resultService.findById(resCreate1.getId());
+			res.setId(1);
+			qUAObj.setResult(Collections.singletonList(res));
+			
+			qUAObj = questionnaireuserAnswerDAO.save(qUAObj);
 			log.info(" Questionnaire User Answer create successfully " + t.toString());
 		} else
 			log.error(" Resul User Answer does not saved user or questionary not found ");

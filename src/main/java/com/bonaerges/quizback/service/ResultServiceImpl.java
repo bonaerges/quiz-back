@@ -84,7 +84,7 @@ public class ResultServiceImpl implements ResultService {
 		return courseService.findById(idCourse);	
 	}
 
-	public Optional<Questionnaire> getQuestionnaire(Integer idQuestionnaire) throws NotFoundException{
+	public Optional<Questionnaire> getQuestionnaire(Integer idQuestionnaire) {
 		
 		return  questionnaireService.findById(idQuestionnaire);
 		

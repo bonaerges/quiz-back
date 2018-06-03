@@ -1,10 +1,16 @@
 package com.bonaerges.quizback.service;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -15,6 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.bonaerges.quizback.dao.CourseDAO;
 import com.bonaerges.quizback.dao.UserDAO;
@@ -30,6 +39,8 @@ public class CourseServiceTest {
 	@InjectMocks
 	CourseService courseService=new CourseServiceImpl();
 
+	@Mock
+	UserService userService;
 	
 	@Mock
 	private Course course;
@@ -66,8 +77,10 @@ public class CourseServiceTest {
 		user.setEmail("test1@tets.com");
 		user.setId(1);
 		user.setName("TEST1");
-		user.setSurname("SURNAMETEST");
-		userDAO.save(user);
+		user.setSurname("SURNAMETEST");		
+		//user.setCourse(Collections.singletonList(course));
+		//course.setUser(Collections.singletonList(user));
+		
 		
     }
 
@@ -105,12 +118,24 @@ public class CourseServiceTest {
 	
 	@Test
 	public void testDeleteOK() {
+		courseService.delete(course);
+		Assert.assertNull(courseService.findById(1));
 		
 	}
 	
 	@Test
 	public void testFindAllOK() {
-		
+		List<Course> courses=courseService.findAll(PageRequest.of(0, 10));
+		ArrayList<Course> q = new ArrayList<>();
+		q.add(course);
+		q.add(new Course());
+		Mockito.when(courseDAO.findAll(PageRequest.of(0, 10))).thenReturn((Page<Course>) q);
+
+		List<Course> result = courseService.findAll(PageRequest.of(0, 10));
+
+		verify(courseService, times(1)).findAll(PageRequest.of(0, 10));
+		assertEquals(2, result.size());
+		Assert.assertNotNull(courses);
 	}
 	
 	@Test
@@ -122,10 +147,11 @@ public class CourseServiceTest {
 	
 	@Test
 	public void testAddUserCourseOK() {		 
-//		course.setUser(Collections.singleton(user));
-//		Mockito.when(courseDAO.save(course)).thenReturn(course);
-//		courseService.addUserToCourse(1, 1);
-//		Assert.assertEquals(courseService.findById(1).get().getUser(),course.getUser());
+		course.setUser(Collections.singletonList(user));
+		Mockito.when(courseDAO.save(course)).thenReturn(course);
+	
+		List <User> users=courseService.addUserToCourse(1, 1);
+		Assert.assertEquals(users,course.getUser());
 	}
 	
 	@Test
@@ -141,11 +167,20 @@ public class CourseServiceTest {
 		}
 	@Test
 	public void testDeleteUserFromCourse() {
+		course.getUser().removeIf(u -> u.getId() == 1);
+		Mockito.when(courseDAO.save(course)).thenReturn(course);		
+		courseService.deleteUserCouse(1, 1);
+		Optional<Course> courses= courseService.findById(1);
+		Assert.assertTrue(courses.get().getUser().stream().noneMatch(u -> u.getId() == 1));
+		Assert.assertTrue(course.getUser().stream().noneMatch(u -> u.getId() == 1));
+		Assert.assertEquals(course, courses);
 		
 	}
 	
 	@Test
 	public void testBelongsUserToCourse() {
-		
+		boolean belongsCourse=courseService.belongsUserToCourse(1, 1);
+		Assert.assertTrue(belongsCourse == true);
 	}
+	
 }

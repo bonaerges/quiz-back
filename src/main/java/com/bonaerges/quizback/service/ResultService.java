@@ -15,7 +15,7 @@ public interface ResultService extends AbstractCrossService<Result,Integer> {
 	
 	public Optional<Course> getCourse (Integer idCourse) throws NotFoundException;
 	
-	public Optional<Questionnaire> getQuestionnaire (Integer idQuestionnaire) throws NotFoundException;
+	public Optional<Questionnaire> getQuestionnaire (Integer idQuestionnaire) ;
 
 	List<QuestionnaireUserAnswer> findUsersAnswerByQuestionnarie(@Param("idQ")Integer idQ,@Param("idU")Integer IdU);
 	

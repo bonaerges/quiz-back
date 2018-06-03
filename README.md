@@ -266,7 +266,7 @@ GET -->/questionarie/(id)/onebyone
 GET -->/questionarie/(id)/random
 
 [<i>GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)</i>]
- 
- <<<<<<<TO DO>>>>>>>>
- Controller 
+
+/questionnaire Controller 
 GET -->/questionarie/(id)
+IT returns a List of question answer without show correctanswer
