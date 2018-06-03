@@ -229,9 +229,9 @@ getResultQuestionsQuestionnarie redirect to /question/{id }  get}}
 Usage Examples tested with filew txt:
 	PUT -->http://localhost:8080/questionnaire/1-->This creates questionnarie with given body descripton on course 1
 	Body: {"description":"questionnaire1 SPRING"}
-	GET -->http://localhost:8080/questionnaire-->Ths retrieve all questioarie withut question/asnwer details
+	GET -->http://localhost:8080/questionnaire-->This retrieve all questioarie withut question/asnwer details
 	PUT ->http://localhost:8080/questionnaire/1/question/1 -->This Link question 1 with questionnarie 1
-
+---------------------------------------------------------------------------------------------------------------------------
 *******************************************************
 * [<i>GET THE RESULS FILTER BY COURSE</i>]
 *******************************************************
@@ -254,19 +254,22 @@ Usage /quiz example
 POST --> Create user answer: http://localhost:8080/quiz
 Body: { "id": { "questionnaireId" : "1" , "userId": "1", "questionId": "1", "answerId":"1"}, "date": "2018-06-03"}
 
----------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
 [<i>GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION</i>]
  Controller 
 GET -->/questionarie/(id)/onebyone
-
+ <<<<<<<TO DO>>>>>>>>
+---------------------------------------------------------------------------------------------------------------------------
 [<i>GET THE QUESTIONNARIE SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.</i>]
  
  <<<<<<<TO DO>>>>>>>>
  Controller 
 GET -->/questionarie/(id)/random
-
+---------------------------------------------------------------------------------------------------------------------------
 [<i>GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)</i>]
 
 /questionnaire Controller 
-GET -->/questionarie/(id)
-IT returns a List of question answer without show correctanswer
+GET -->/course/(id)/questionarie/(id)-->IT returns a List of question answer without show correctanswer. Redirects to controller
+/questionnaire method /questionnaire/(idC)/getAll
+
+http://localhost:8080/course/1/questionnaire--> 	http://localhost:8080/questionnaire/1/getAll

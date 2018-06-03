@@ -131,7 +131,7 @@ public class CourseController {
 	
 
 	@ResponseBody
-	@RequestMapping(value="/{id}/questionnaire",method = {RequestMethod.PUT})
+	@RequestMapping(value="/{id}/questionnaire",method = {RequestMethod.GET})
 	@PutMapping("/questionnaire")
 	@ExceptionHandler(NotFoundException.class)
 	public RedirectView getQuestionnarieCourse(
@@ -139,7 +139,7 @@ public class CourseController {
 		
 	    RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("/questionnaire/{id}/add");
+        rv.setUrl("/questionnaire/{id}/getAll");
        // RedirectAttributes redirectAttributes;
        
         return rv;

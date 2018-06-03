@@ -1,5 +1,7 @@
 package com.bonaerges.quizback.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,14 +86,14 @@ public class QuestionnaireController {
 			qADTO.setQuestionnaireDescription(questionnaireModel.get().getDescription());
 			qADTO.setCourseDescription(questionnaireModel.get().getCourse().getDescription());
 			List <Question> questions=questionnaireModel.get().getQuestion();
-			
-			questions.forEach(q -> {
+			List <QuestionViewDTO> questionView=new ArrayList<QuestionViewDTO>();
+			questions.forEach(qA -> {
 				QuestionViewDTO qdto= new QuestionViewDTO();
-				qdto.setAnswer(answerUpdateDTOMapper.modelToDto(q.getAnswer()));	
-				qdto.setDescription(q.getDescription());
-				qADTO.getQuestion().add(qdto);
+				qdto.setAnswer(answerUpdateDTOMapper.modelToDto(qA.getAnswer()));	
+				qdto.setDescription(qA.getDescription());
+				questionView.add(qdto);
 			});		
-		
+			qADTO.setQuestion(questionView);
 			
 			log.info("Questionnaire " + id + " found");
 			respEnt = new ResponseEntity<QuestionnaireQADTO>(qADTO,HttpStatus.OK);
@@ -113,6 +115,43 @@ public class QuestionnaireController {
 				.collect(Collectors.toList());
 		log.info("findAll questionnaires count is: " + Integer.toString(questionnaires.size()));
 		return questionnaireMapper.modelToDto(questionnaires);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/{id}/getAll", method = RequestMethod.GET)
+	@ExceptionHandler({ NotFoundException.class })
+	public ResponseEntity<List<QuestionnaireQADTO>> findAllByCourse(@PathVariable("id") Integer id) throws NotFoundException {
+		Optional<Course> courseModelModel = questionnaireService.getCourse(id);
+		ResponseEntity<List<QuestionnaireQADTO>> respEnt = new ResponseEntity<List<QuestionnaireQADTO>>(HttpStatus.OK);
+		List <QuestionnaireQADTO> allQuiz=new ArrayList<QuestionnaireQADTO>();
+		
+		if (courseModelModel.isPresent()) {
+			List<Questionnaire> quizs=courseModelModel.get().getQuestionnaire();
+			
+			quizs.forEach(q -> {
+				QuestionnaireQADTO qADTO= new QuestionnaireQADTO();
+				qADTO.setQuestionnaireDescription(q.getDescription());
+				qADTO.setCourseDescription(q.getCourse().getDescription());
+				List <Question> questions=q.getQuestion();
+				List <QuestionViewDTO> questionView=new ArrayList<QuestionViewDTO>();
+				questions.forEach(qA -> {
+					QuestionViewDTO qdto= new QuestionViewDTO();
+					qdto.setAnswer(answerUpdateDTOMapper.modelToDto(qA.getAnswer()));	
+					qdto.setDescription(qA.getDescription());
+					questionView.add(qdto);
+				});		
+				qADTO.setQuestion(questionView);
+				allQuiz.add(qADTO);
+			});
+			
+			log.info("Questionnaire " + id + " found");
+			respEnt = new ResponseEntity<List<QuestionnaireQADTO>>(allQuiz,HttpStatus.OK);
+		}
+		else {
+		
+			throw new NotFoundException("Must be created questionnaire first");
+		}
+		return respEnt;
 	}
 
 	@ResponseBody
