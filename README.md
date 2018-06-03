@@ -51,23 +51,26 @@ The model take into account next entities:
 * [<i>COMPLETE AT LEAST 3 CRUDS (QUESTION, USER, QUESTIONNAIRE)</i>]
 **************************************************************************************************************************
 
-***********  USER  ********************************************
-a) UserDAO access to Repository map to User Entity mainly. 
+******************************************************  USER  ********************************************
+<p>
+	<ul>
+
+<li>a) UserDAO access to Repository map to User Entity mainly. </li>
 	-Create(C)	
 	-Read(R)
 	-Update(C)
 	-Delete(C)
  
-	b)Question Service:
-	c) DTO and Mapper
+<li>	b)Question Service:</li>
+<li>    c) DTO and Mapper </li>
 	
 		-UserPostDTO purporse is for RequestBody  update/post controller contains USERDTO + password
 		-UserDTO purporse is for HTTP Get methods on controller to show only user data required without password.
 		
-	d) Mapper:
+<li>d) Mapper:</li>
 		-UserMapper is used to convert from DTO to Model and from Model to DTO.
 	
-	e)User Controller:	Below is the mapping can be used on User Rest Controller 
+<li>e)User Controller:	Below is the mapping can be used on User Rest Controller <li>
 	
 	Service Method  HTTP method CRUD 	URI 		Description
 	create			POST 		Create	/user 		Create a new user given a UserDTO object
@@ -77,8 +80,8 @@ a) UserDAO access to Repository map to User Entity mainly.
 	getUserById		GET			Read	/user/(idU)	Return user details for a specific user id							
 	update			PUT			Update	/user/(idU)	Update user,mail, name, surname and /or password
 	delete			DELETE		Delete	/user/(idU)	Remove user completely
-	
-
+</ul>	
+</p>
 **************************************************************************************************************************
 **********  QUESTION  *******************************************************	
 
