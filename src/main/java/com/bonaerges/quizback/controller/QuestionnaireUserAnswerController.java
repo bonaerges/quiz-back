@@ -91,7 +91,6 @@ public class QuestionnaireUserAnswerController {
 			//pk.setQuestionId(idDTO.getIdQuestion());
 			//pk.setQuestionnaireId(idDTO.getIdQuestionnaire());
 			//pk.setUserId(idDTO.getIdUser());
-			
 			questionnaireUserAnswerService.findById(pk);
 		}
 		ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
