@@ -61,7 +61,6 @@ public class CourseController {
 	/************************************HTTP METHOD GET *************************************/
 	@ResponseBody
 	@RequestMapping(method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.FOUND)
 	public List<CourseDTO>  findAll(
 			@RequestParam(value = "page", defaultValue="0",required = false) Integer page,
 			@RequestParam(value = "size", defaultValue="10",required = false)Integer size){
@@ -91,6 +90,7 @@ public class CourseController {
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}/questionnaire/{idQ}/result",method = {RequestMethod.GET})
+	@ExceptionHandler(NotFoundException.class)
 	public RedirectView getResultQuestionnarieCourse(
 			@PathVariable("id") Integer id,
 			@PathVariable("idQ") Integer  idQ) throws NotFoundException,DuplicatedException {
@@ -133,6 +133,7 @@ public class CourseController {
 	@ResponseBody
 	@RequestMapping(value="/{id}/questionnaire",method = {RequestMethod.PUT})
 	@PutMapping("/questionnaire")
+	@ExceptionHandler(NotFoundException.class)
 	public RedirectView getQuestionnarieCourse(
 			@PathVariable("id") Integer id) throws NotFoundException,DuplicatedException {
 		
@@ -192,6 +193,7 @@ public class CourseController {
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}/questionnaire/{idQ}",method = {RequestMethod.DELETE})
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<CourseDTO> deleteQuestionnarieCourse(
 			@PathVariable("id") Integer id,
 			@PathVariable("idQ") Integer  idQ) throws NotFoundException,DuplicatedException {

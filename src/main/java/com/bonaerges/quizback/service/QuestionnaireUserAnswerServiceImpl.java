@@ -46,6 +46,8 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 		Optional<User> userAnswer = userService.findById(t.getId().getUserId());
 		Optional<Questionnaire> quiz = questionnaireService.findById(t.getId().getQuestionnaireId());
 		if (userAnswer.isPresent() && quiz.isPresent()) {
+			qUAObj.setId(t.getId());
+			qUAObj.setDate(t.getDate());
 			res.setUser(userAnswer.get());
 			res.setDate(new Date());
 			res.setQuestionary(quiz.get());
@@ -63,6 +65,9 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 
 	@Override
 	public void update(QuestionnaireUserAnswer t) {
+		QuestionnaireUserAnswer qUAObj = new QuestionnaireUserAnswer();
+		qUAObj.setId(t.getId());
+		qUAObj.setDate(t.getDate());
 		t.setDate(new Date());
 		questionnaireuserAnswerDAO.save(t);
 

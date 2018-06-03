@@ -1,6 +1,6 @@
 package com.bonaerges.quizback.dto;
 
-import com.bonaerges.quizback.model.Level.LevelValue;
+import java.util.List;
 
 import lombok.Data;
 import lombok.Getter;
@@ -9,7 +9,11 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class LevelViewDTO {
+public class QuestionViewDTO {
 
-	private LevelValue name;
+	private String description;
+	
+	private List<AnswerUpdateDTO> answer;
+
+
 }

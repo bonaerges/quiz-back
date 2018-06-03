@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bonaerges.quizback.dao.QuestionDAO;
+import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.Questionnaire;
@@ -160,5 +161,9 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionDAO.findAllByQuestionnaire(idQuest);
 	}
 	
+	public void linkQuestionnarieQuestion(Integer idQuestion, Integer idQuestionnaire) throws NotFoundException {
+		questionnaireService.linkQuestionnarieQuestion(idQuestion, idQuestionnaire);
+	}
+
 	
 }

@@ -19,14 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
+import com.bonaerges.quizback.component.mapper.answer.AnswerUpdateDTOMapper;
 import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
 import com.bonaerges.quizback.component.mapper.questionnaire.QuestionnaireMapper;
 import com.bonaerges.quizback.dto.AnswerDTO;
+import com.bonaerges.quizback.dto.QuestionDTO;
+import com.bonaerges.quizback.dto.QuestionViewDTO;
 import com.bonaerges.quizback.dto.QuestionnaireDTO;
 import com.bonaerges.quizback.dto.QuestionnaireQADTO;
 import com.bonaerges.quizback.dto.QuestionnaireUserAnswerDTO;
 import com.bonaerges.quizback.exception.NotFoundException;
+import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Course;
+import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.service.QuestionnaireService;
 
@@ -45,14 +51,20 @@ public class QuestionnaireController {
 
 	@Autowired
 	QuestionMapper questionMapper;
+	
+	@Autowired
+	QuestionMapper questionViewMapper;
+	
+	@Autowired
+	AnswerMapper answerMapper;
 
-
+	@Autowired
+	AnswerUpdateDTOMapper answerUpdateDTOMapper;
+	
 	final ResponseEntity<QuestionnaireDTO> respEntOK = new ResponseEntity<QuestionnaireDTO>(HttpStatus.OK);
 	final ResponseEntity<QuestionnaireDTO> respEntNotFound = new ResponseEntity<QuestionnaireDTO>(HttpStatus.NOT_FOUND);
 
-	/*************************************************************************/
-	 /* HTTP METHOD GET
-	 /**********************************************************************/
+	/************************************************************************* HTTP METHOD GET**********************************************************************
 	/**
 	 * 
 	 * @param id
@@ -69,10 +81,17 @@ public class QuestionnaireController {
 		ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
 		if (questionnaireModel.isPresent()) {
 			QuestionnaireQADTO qADTO= new QuestionnaireQADTO();
+			qADTO.setQuestionnaireDescription(questionnaireModel.get().getDescription());
 			qADTO.setCourseDescription(questionnaireModel.get().getCourse().getDescription());
+			List <Question> questions=questionnaireModel.get().getQuestion();
 			
-			questionnaireModel.get().getQuestion().forEach(q -> q.getAnswer());
-			qADTO.setQuestion(questionMapper.modelToDto(questionnaireModel.get().getQuestion()));
+			questions.forEach(q -> {
+				QuestionViewDTO qdto= new QuestionViewDTO();
+				qdto.setAnswer(answerUpdateDTOMapper.modelToDto(q.getAnswer()));	
+				qdto.setDescription(q.getDescription());
+				qADTO.getQuestion().add(qdto);
+			});		
+		
 			
 			log.info("Questionnaire " + id + " found");
 			respEnt = new ResponseEntity<QuestionnaireQADTO>(qADTO,HttpStatus.OK);
@@ -128,7 +147,7 @@ public class QuestionnaireController {
 	// questionnaire
 	@ResponseBody
 	@RequestMapping(value = "/{idCourse}", method = { RequestMethod.POST })
-	
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<QuestionnaireDTO> create(@PathVariable("idCourse") Integer idCourse,
 			@RequestBody QuestionnaireDTO dto) throws NotFoundException {
 
@@ -166,6 +185,7 @@ public class QuestionnaireController {
 
 	@ResponseBody
 	@RequestMapping(value = "/{idQ}/question/{idQuestion}", method = RequestMethod.PUT)
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<?> linkQuestion(@PathVariable("idQ") Integer idQuestionnaire,@PathVariable("idQuestion") Integer idQuestion) throws NotFoundException {
 		questionnaireService.linkQuestionnarieQuestion(idQuestion, idQuestionnaire);
 		return new ResponseEntity<>(HttpStatus.OK);

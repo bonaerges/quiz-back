@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
 import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
+import com.bonaerges.quizback.component.mapper.question.QuestionViewDTOMapper;
 import com.bonaerges.quizback.component.mapper.questionnaireUserAnswer.QuestionnaireUserAnswerMapper;
 import com.bonaerges.quizback.dto.AnswerDTO;
 import com.bonaerges.quizback.dto.QuestionDTO;
@@ -42,7 +44,7 @@ public class ResultController {
 	QuestionnaireUserAnswerMapper questionnaireUserAnswerMapper;
 
 	@Autowired
-	QuestionMapper questionMapper;
+	QuestionViewDTOMapper questionViewMapper;
 	
 	@Autowired
 	AnswerMapper answerMapper;
@@ -57,6 +59,7 @@ public class ResultController {
 	// result BY questionnaire ID based on a course
 	@ResponseBody
 	@RequestMapping(value = "/{idQuestionnaire}", method = RequestMethod.GET)
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<QuestionnaireFilledDTO> findById(@PathVariable("idQuestionnaire") Integer idQuestionnaire) throws NotFoundException {
 		Optional<Questionnaire> quiz = resultService.getQuestionnaire(idQuestionnaire);
 		ResponseEntity<QuestionnaireFilledDTO> respEnt=respEntOK;
@@ -72,7 +75,7 @@ public class ResultController {
 			
 			//DTO private List<QuestionDTO> question - anSwer;
 			Optional<Questionnaire> questionsQuiz=quiz.get().getCourse().getQuestionnaire().stream().filter( q -> q.getId() == idQuestionnaire).findFirst();
-			qFilled.setQuestion(questionMapper.modelToDto(questionsQuiz.get().getQuestion()));
+			qFilled.setQuestion(questionViewMapper.modelToDto(questionsQuiz.get().getQuestion()));
 			
 			//DTO AnswerDTO correctAnswer
 			
@@ -88,6 +91,7 @@ public class ResultController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/{idQuestionnaire}/user/{idUser}", method = RequestMethod.GET)
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<QuestionnaireQADTO> findByUserandQuiz(
 			@PathVariable("idQuestionnaire") Integer idQuestionnaire,
 			@PathVariable("idUser") Integer idUser) throws NotFoundException {

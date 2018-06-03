@@ -56,7 +56,7 @@ public class Result {
 	@JoinColumn(name = FIELD_USER)
 	private User user;
 	
-	//RESULT (N) <-- (1) QUESTIONNAIREUSERANSWE
+	//RESULT (N) <-- (1) QUESTIONNAIREUSERANSWER
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = QuestionnaireUserAnswer.TABLE_QA_NAME,
 			joinColumns = {

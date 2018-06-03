@@ -115,6 +115,8 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		Optional<Questionnaire> questionnaire = questionnaireDAO.findById(idQuestionnaire);
 		if (question.isPresent() && questionnaire.isPresent()) {
 			questionnaire.get().getQuestion().add(question.get());
+			question.get().getQuestionnaire().add(questionnaire.get());
+			questionService.update(question.get());
 			questionnaireDAO.save(questionnaire.get());
 		} else
 			throw new NotFoundException("Question " + idQuestion + " or Questionnaire " + idQuestionnaire + " NOT FOUND!!!");
@@ -128,6 +130,5 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		return courseUser;
 	}
 	
-
 
 }

@@ -3,12 +3,10 @@ package com.bonaerges.quizback.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.query.Param;
-
+import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
 import com.bonaerges.quizback.model.Questionnaire;
-import com.bonaerges.quizback.model.Result;
 
 public interface QuestionService extends AbstractCrossService<Question,Integer> {
 
@@ -24,4 +22,5 @@ public interface QuestionService extends AbstractCrossService<Question,Integer> 
 	
 	public List<Question> findAllByQuestionnaire(Integer idQuest);
 	
+	public void linkQuestionnarieQuestion(Integer idQuestion, Integer questionModel) throws NotFoundException ;
 }

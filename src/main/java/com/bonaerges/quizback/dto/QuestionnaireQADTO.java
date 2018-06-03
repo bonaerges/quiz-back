@@ -15,9 +15,9 @@ public class QuestionnaireQADTO {
 	
 	private String courseDescription;
 	
-	private List<QuestionDTO> question;
+	private List<QuestionViewDTO> question;
 	
-	private Integer answerIdSelected;
+	//private Integer answerIdSelected;
 	
 	
 }

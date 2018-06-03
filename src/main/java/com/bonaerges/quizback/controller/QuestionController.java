@@ -1,9 +1,7 @@
 package com.bonaerges.quizback.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bonaerges.quizback.component.mapper.answer.AnswerMapper;
 import com.bonaerges.quizback.component.mapper.question.QuestionMapper;
-import com.bonaerges.quizback.component.mapper.question.QuestionUpdateDTOMapper;
+import com.bonaerges.quizback.component.mapper.question.QuestionViewDTOMapper;
 import com.bonaerges.quizback.dto.AnswerDTO;
 import com.bonaerges.quizback.dto.QuestionDTO;
 import com.bonaerges.quizback.dto.QuestionUpdateDTO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
-import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.service.QuestionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +45,7 @@ public class QuestionController {
 	QuestionMapper questionMapper;
 
 	@Autowired
-	QuestionUpdateDTOMapper questionUpdateDTOMapper;
+	QuestionViewDTOMapper questionUpdateDTOMapper;
 
 	@Autowired
 	AnswerMapper answerMapper;
@@ -59,6 +56,7 @@ public class QuestionController {
 
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<QuestionDTO> findById(@PathVariable("id") Integer id) {
 		Optional<Question> questionModel = questionService.findById(id);
 		ResponseEntity<QuestionDTO> respEnt = respEntOK;
@@ -105,42 +103,39 @@ public class QuestionController {
 	/************************************
 	 * HTTP METHOD POST
 	 *************************************/
-	@ResponseBody
-	@RequestMapping(value = "/{idQ}", method = RequestMethod.POST)
-	// Only allow create Question not mapped objects
-	public ResponseEntity<QuestionUpdateDTO> addToQuestionnaire(@PathVariable("id") Integer idQuestionnaire,@RequestBody QuestionUpdateDTO dto) {
-		
-		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));
-		log.info("Question " + createQuestion.getId() + " succesfuly created.");
-		log.warn("Pending to create answers linked to question");
-		createQuestion.setQuestionnaire(Collections.singletonList(new Questionnaire()));
-		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion), HttpStatus.OK);
-	}
+
 	// url-->/question/(idQuestion)/answer/(idAnswer)
 
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	// Only allow create Question not mapped objects
 	public ResponseEntity<QuestionUpdateDTO> create(@RequestBody QuestionUpdateDTO dto) {
-		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));
+		final Question q= new Question();
+		q.setDescription(dto.getDescription());
+		
+		Question createQuestion = questionService.create(q);
 		
 		log.info("Question " + createQuestion.getId() + " succesfuly created.");
 		log.warn("Pending to create answers linked to question");
-		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion), HttpStatus.OK);
+		return new ResponseEntity<QuestionUpdateDTO>(dto, HttpStatus.OK);
 	}
 	/************************************
 	 * HTTP METHOD PUT
+	 * @throws NotFoundException 
 	 *************************************/
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	@ExceptionHandler(NotFoundException.class)
 	// allow update existing question creating answers, tag and Level
-	ResponseEntity<QuestionUpdateDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionUpdateDTO dto) {
+	ResponseEntity<QuestionUpdateDTO> update(@PathVariable("id") Integer id, @RequestBody QuestionUpdateDTO dto) throws NotFoundException {
 
 		Optional<Question> questionModel = questionService.findById(id);
 		ResponseEntity<QuestionUpdateDTO> respEnt = new ResponseEntity<QuestionUpdateDTO>(HttpStatus.NOT_FOUND);
 		if (questionModel.isPresent()) {
 			questionModel.get().setId(id);
-			Question questionModelDTO = questionUpdateDTOMapper.dtoToModel(dto);
+			questionModel.get().setDescription(dto.getDescription());
+			if (dto.getIdQuestionnaire() >0)
+				questionService.linkQuestionnarieQuestion(dto.getIdQuestionnaire(),questionModel.get().getId());
 			questionService.update(questionModel.get());
 
 			respEnt = new ResponseEntity<QuestionUpdateDTO>(dto, HttpStatus.OK);
@@ -151,6 +146,7 @@ public class QuestionController {
 
 	@ResponseBody
 	@RequestMapping(value = "/{id}/answer", method = { RequestMethod.PUT })
+	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<QuestionDTO> updateAnswerQuestion(@PathVariable("id") Integer id, @RequestBody AnswerDTO dto)
 			throws NotFoundException {
 

@@ -44,28 +44,8 @@ public class QuestionnaireUserAnswerController {
 	final ResponseEntity<QuestionnaireQADTO> respEntNotFound = new ResponseEntity<QuestionnaireQADTO>(
 			HttpStatus.NOT_FOUND);
 
-	/************************************
-	 * HTTP METHOD GET
-	 *************************************/
-	// //questionnaire/id
-	// @ResponseBody
-	// @RequestMapping(method=RequestMethod.GET)
-	// public ResponseEntity<QuestionnaireQADTO> findById(@RequestBody
-	// QuestionUserAnswerPK idDTO)
-	// {
-	// Optional<QuestionnaireUserAnswer>
-	// questionnaireUAModel=questionnaireUserAnswerService.findById(idDTO);
-	// ResponseEntity<QuestionnaireQADTO> respEnt=new
-	// ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK) ;
-	// if(questionnaireUAModel.isPresent()) {
-	//
-	// log.info("Questionnaire " + idDTO + " found");
-	// respEnt=new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
-	// }
-	// //else respEnt=";
-	// return respEnt;
-	// }
-	//
+	/************************************* HTTP METHOD GET ************************************/
+	
 	// questionnaire?page=X&size=X
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
@@ -89,9 +69,7 @@ public class QuestionnaireUserAnswerController {
 		return questionnaires;
 	}
 
-	/************************************
-	 * HTTP METHOD POST
-	 *************************************/
+	/************************************* HTTP METHOD POST*************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public QuestionnaireUserAnswer create(@RequestBody QuestionnaireUserAnswer idDTO) {
@@ -100,20 +78,20 @@ public class QuestionnaireUserAnswerController {
 		return createQuestionnaireUA;
 	}
 
-	/************************************
-	 * HTTP METHOD PUT
-	 *************************************/
+	/************************************* HTTP METHOD PUT*************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT)
 	// ONLY WILL BE ALOwED TO CHANGE ANSWER SELECTED BY USER ANYMORE
 	ResponseEntity<QuestionnaireQADTO> update(@RequestBody QuestionnaireUserAnswerDTO idDTO) {
 
 		if (idDTO.getIdQuestionnaire() != null) {
+			List<QuestionnaireUserAnswer> questionnaires = questionnaireUserAnswerService.findByIdQuestionnaire(idDTO.getIdQuestionnaire());
 			QuestionUserAnswerPK pk = new QuestionUserAnswerPK();
 			pk.setAnswerId(idDTO.getIdAnswer());
-			pk.setQuestionId(idDTO.getIdQuestion());
-			pk.setQuestionnaireId(idDTO.getIdQuestionnaire());
-			pk.setUserId(idDTO.getIdUser());
+			//pk.setQuestionId(idDTO.getIdQuestion());
+			//pk.setQuestionnaireId(idDTO.getIdQuestionnaire());
+			//pk.setUserId(idDTO.getIdUser());
+			
 			questionnaireUserAnswerService.findById(pk);
 		}
 		ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
@@ -128,22 +106,11 @@ public class QuestionnaireUserAnswerController {
 		return respEnt;
 	}
 
-	/************************************
-	 * HTTP METHOD DELETE
-	 *************************************/
-	// @ResponseBody
-	// @RequestMapping(method = RequestMethod.DELETE)
-	// ResponseEntity<QuestionnaireQADTO> delete(@RequestBody QuestionUserAnswerPK
-	// idDTO) {
-	// Optional<QuestionnaireUserAnswer> questionnaireUAModel =
-	// questionnaireUserAnswerService.findById(idDTO);
-	// ResponseEntity<QuestionnaireQADTO> respEnt;
-	// if (questionnaireUAModel.isPresent()) {
-	// // ONly is allowed to change response of user anymore
-	// questionnaireUserAnswerService.delete(questionnaireUAModel.get());
-	// respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
-	// } else
-	// respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
-	// return respEnt;
-	// }
+	/************************************* HTTP METHOD DELETE*************************************/
+	 @ResponseBody
+	 @RequestMapping(method = RequestMethod.DELETE)
+	 void delete(@RequestBody QuestionnaireUserAnswer idDTO) {
+		 	questionnaireUserAnswerService.delete(idDTO);
+			log.info("Questionnaire User Answer succesfuly created.");
+	 }
 }
