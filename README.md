@@ -51,7 +51,8 @@ The model take into account next entities:
 * [<i>COMPLETE AT LEAST 3 CRUDS (QUESTION, USER, QUESTIONNAIRE)</i>]
 **************************************************************************************************************************
 
-***********  USER  ********************************************
+******************************************************  USER  ***********************************************************
+<p>
 a) UserDAO access to Repository map to User Entity mainly. 
 	-Create(C)	
 	-Read(R)
@@ -78,7 +79,7 @@ a) UserDAO access to Repository map to User Entity mainly.
 	update			PUT			Update	/user/(idU)	Update user,mail, name, surname and /or password
 	delete			DELETE		Delete	/user/(idU)	Remove user completely
 	
-
+</p>
 **************************************************************************************************************************
 **********  QUESTION  *******************************************************	
 
