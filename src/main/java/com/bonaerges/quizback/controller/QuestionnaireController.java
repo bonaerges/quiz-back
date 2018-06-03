@@ -1,8 +1,10 @@
 package com.bonaerges.quizback.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,18 +165,23 @@ public class QuestionnaireController {
 			return respEnt;
 		}
 		
-//		@ResponseBody
-//		@RequestMapping(value="/{id}/onebyone",method = {RequestMethod.GET})
-//		public RedirectView getNext(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = true)Integer page,RedirectAttributes redirectAttributes)  {
-//			
-//		    RedirectView rv = new RedirectView();
-//	        rv.setContextRelative(true);
-//	        int newPage=page+1;
-//	        rv.addStaticAttribute("page", newPage);
-//	        rv.setUrl("/questionnaire/{id}/next?page="+newPage + "&size=1");
-//	       
-//	        return rv;
-//		}
+		// questionnaire/1/random?page=X
+				@ResponseBody
+				@RequestMapping(value="/{id}/random",method = RequestMethod.GET)
+				public ResponseEntity<QuestionnaireQADTO> findAllRamdom(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0", required = true) Integer page) {
+					
+					Optional<Questionnaire> questionnaireModel = questionnaireService.findById(id);
+					ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
+					
+					if (questionnaireModel.isPresent()) {
+							QuestionnaireQADTO qADTO=questionnaireService.getQuestionnaireContent(questionnaireModel.get());
+							 Random rand = new Random(qADTO.getQuestion().size());
+							 int randomIndex = rand.nextInt(qADTO.getQuestion().size());
+							qADTO.setQuestion(qADTO.getQuestion().subList(randomIndex, randomIndex+1));
+							respEnt = new ResponseEntity<QuestionnaireQADTO>(qADTO,HttpStatus.OK);
+					}
+					return respEnt;
+				}
 	/************************************* HTTP METHOD POST	*************************************/
 	/**
 	 * 

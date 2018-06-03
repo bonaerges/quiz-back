@@ -257,16 +257,16 @@ Body: { "id": { "questionnaireId" : "1" , "userId": "1", "questionId": "1", "ans
 ---------------------------------------------------------------------------------------------------------------------------
 [<i>GET THE QUESTIONNARIE REQUESTING QUESTION -ANSWER ONE BY ONE.USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION</i>]
  Controller 
-GET -->/questionarie/(id)/onebyone
+GET -->/questionarie/(id)/onebyone?page=X
 
-Redirect to GET -->/questionarie/(id)/next?page=p&size=1
+This function retrieve one by one questionanarie providing  questionanswer shown by page of size 1 creating a sublist of 1 element
+
 ---------------------------------------------------------------------------------------------------------------------------
 [<i>GET THE QUESTIONNARIE SHOWING RAMDOM QUESTION -ANSWER ONE BY ONE. USER MUST RESPONSE, SAVE THE ANSWER AND THEN GET NEXT QUESTION.</i>]
  
- <<<<<<<TO DO>>>>>>>>
 
  Controller 
-GET -->/questionarie/(id)/random
+GET -->/questionnaire/1/random?page=X
 ---------------------------------------------------------------------------------------------------------------------------
 [<i>GET ALL QUESTION-ANSWER FOR QUESTIONNARIE(WITHOUT PAGINATION ??)</i>]
 
