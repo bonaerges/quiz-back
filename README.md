@@ -110,6 +110,28 @@ a) UserDAO access to Repository map to User Entity mainly.
 	And Validation method:
 	isAnswerMapToQuestion(Integer idQuestion, Integer idAnswer) - check if specific Answer belongs to the specific Question
 
+Example
+
+METHOD GET
+http://localhost:8080/question-_>geT ALL QUESTION WITH ITS ANSWERS
+
+METHOD GET , GET QUESTIONS AND ANSWERS QUESTION 1
+http://localhost:8080/question/1
+
+METHOD GET , SHOW CORRECT ANSWER
+http://localhost:8080/question/1/showCorrect
+
+METHOD POST, CREATE QUESTION AND ITS DESCRIPTION
+http://localhost:8080/question
+{ "description": "Question1"}
+
+METHOD PUT TO  ADD ANSWERS LIST TO QUESTIONS
+
+http://localhost:8080/question/1/answer
+[{"description": "answer1.1", "isCorrect":"false"},
+{"description": "answer1.2", "isCorrect":"false"},
+{"description": "answer1.3", "isCorrect":"true"} ]
+
 **************************************************************************************************************************
 *****************  ANSWER  *************************************
 a) AnswerDAO access to Repository map to Answer Entity mainly. 
@@ -132,22 +154,22 @@ a) AnswerDAO access to Repository map to Answer Entity mainly.
 	c) DTO and Mapper
 	
 		-AnswerUpdateDTO purpose is for RequestBody  update/post controller contains Description + isAnswerCorrect
-		-AnswerDTO purporse is for HTTP Get methods on controller to show only user data required without password.
+		-AnswerDTO purporse is for HTTP Get methods and PUT Answer creation controller to show only asnwer data without ID.
 		
 	d) Mapper:
-		-AnswerMapper is used to convert from DTO to Model and from Model to DTO.
+		-AnswerMapper is used to convert from DTO to Model and from Model to DTO.AnswerDTO is the one use for DTO
 	
 	e)Answer Controller:	Below is the mapping can be used on Answer Rest Controller 
 	
-Service Method  	HTTP method 	CRUD 	URI 		Description
-create	   	POST 	Create		/answer		Create a new answer given a 									AnswerDTO object
+Service   HTTP   CRUD 		URI 				Description
+create	  POST 	 Create	   /answer				Create a new answer given a AnswerDTO object
 
-findAll	GET 	Read		/answer		Return a list of answers 										paginate. Default pagination 									page=0 y size 10
-findById	GET	Read		/answer/(idAnswer)	Return answer details for a 									specific answer id							
+findAll	  GET 	 Read		/answer				Return a list of answers paginate. Default pagination page=0 y size 10
+findById  GET	 Read		/answer/(idAnswer)	Return answer details for a specific answer id							
 	
-update		PUT	Update/Repl  /answer/(idAnswer)	Update description for answer
+update	  PUT	 Update/Rep /answer/(idAnswer)	Update description for answer
 										
-delete		DELETE	Delete		/answer/(idAnswer)	Remove answer completely
+delete	  DELETE Delete		/answer/(idAnswer)	Remove answer completely
 	
 
 **************************************************************************************************************************
@@ -157,15 +179,16 @@ File src\main\resources\data\CourseDataModel.txt contains data test for course t
 
 Course Controller:	Below is the mapping can be used on Course Controller 
 	
-Service Method  		HTTP method 	CRUD 		URI 			Description
-create					POST 			Create		/course			Create a new course given a CourseDTO object
+Service Method  	HTTP method 	CRUD 	URI 			         Description
+create				POST 			Create	/course			         Create a new course given a CourseDTO object
 
-findAll					GET 			Read		/course			Return a list of courses paginate.Default pagination page=0 y size 10
-findById				GET				Read		/course/(idC)	Return course details for a specific course id							
+findAll				GET 			Read	/course			          Return a list of courses paginate.Default pagination page=0 y size 10
+findById			GET				Read	/course/(idC)	          Return course details for a specific course id
+getUsersCourseById  GET             Read    /course/(idC)/user        Return lits of users in Course IDC with Course Details also
 	
-update					PUT				Update	    /course/(idC)   Update details fields for course(description, start date..)
-										
-delete					DELETE			Delete		/course/(idC)	Remove course and linked questionnarie
+update				PUT				Update	/course/(idC)             Update details fields for course(description, start date..)
+addUserCouse		PUT				Update  /course/(idC)/user/(idU)  Add user idU to Course idC		
+delete				DELETE			Delete	/course/(idC)	          Remove course and linked questionnarie
 	
 	Usage Examples tested with filew txt:
 	PUT -->http://localhost:8080/course/1/user/1-->This links user 1 with course 1
@@ -173,10 +196,34 @@ delete					DELETE			Delete		/course/(idC)	Remove course and linked questionnarie
 	PUT -->http://localhost:8080/course/1/user/3-->This links user 3 with course 1
 	PUT -->http://localhost:8080/course/2/user/1-->This links user 1 with course 1
 	PUT -->http://localhost:8080/course/2/user/2-->This links user 2 with course 2
-	GET -->http://localhost:8080/course/1/users -->THsi show Course 1 Description + List of Users belong to course 1
+	GET -->http://localhost:8080/course/1/user -->This show Course 1 Description + List of Users belong to course 1
 
 
 	MOCKITO TESTS:
+**************************************************************************************************************************
+* QUESTIONNAIRE CREATION (QUESTIONNARIE ).
+**************************************************************************************************************************
+File src\main\resources\data\CourseDataModel.txt contains data test for questionnaire also to be added and tets controller
+
+Course Controller:	Below is the mapping can be used on Course Controller 
+	
+Service Method  	HTTP method 	CRUD 	URI 			         Description
+create				POST 			Create	/questionnaire			 Create a new course given a CourseDTO object
+
+findAll				GET 			Read	/questionnaire			 Return a list of courses paginate.Default pagination page=0 y 																				 size 10
+findById			GET				Read	/questionnaire/(idQ)	 Return course details for a specific course id
+getResultQuestionnarie  GET             Read    /questionnaire/(idQ)/result Return lits of Questionnarie result
+getResultQuestionsQuestionnarie redirect to /question/{id }  get}}
+update				PUT				Update	/questionnaire/(idQ)     Update details fields for course(description, start date..)
+linkQuestion		PUT				Update  /questionnaire/(idQ)/question/(idQt)  Add user idU to Course idC		
+delete				DELETE			Delete	/questionnaire/(idQ)	          Remove questionnaire and linked questions to questionnaire
+	
+	Usage Examples tested with filew txt:
+	PUT -->http://localhost:8080/questionnaire/1-->This creates questionnarie with given body descripton on course 1
+	Body: {"description":"questionnaire1 SPRING"}
+	GET -->http://localhost:8080/questionnaire-->Ths retrieve all questioarie withut question/asnwer details
+	PUT ->http://localhost:8080/questionnaire/1/question/1 -->This Link question 1 with questionnarie 1
+
 *******************************************************
 + RECUPERACION DE RESULTADOS DEL CURSO
 *******************************************************

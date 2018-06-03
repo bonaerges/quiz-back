@@ -1,7 +1,9 @@
 package com.bonaerges.quizback.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.bonaerges.quizback.dto.QuestionUpdateDTO;
 import com.bonaerges.quizback.exception.NotFoundException;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
+import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.service.QuestionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +94,14 @@ public class QuestionController {
 		return respEnt;
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/{id}/quiz", method = RequestMethod.GET)
+	public ResponseEntity<QuestionDTO> findByQuiz(@PathVariable("id") Integer id) {
+		List<Question> questionModel = questionService.findAllByQuestionnaire(id);
+		ResponseEntity<QuestionDTO> respEnt = respEntOK;
+		return respEnt;
+	}
+
 	/************************************
 	 * HTTP METHOD POST
 	 *************************************/
@@ -102,6 +113,7 @@ public class QuestionController {
 		Question createQuestion = questionService.create(questionUpdateDTOMapper.dtoToModel(dto));
 		log.info("Question " + createQuestion.getId() + " succesfuly created.");
 		log.warn("Pending to create answers linked to question");
+		createQuestion.setQuestionnaire(Collections.singletonList(new Questionnaire()));
 		return new ResponseEntity<QuestionUpdateDTO>(questionUpdateDTOMapper.modelToDto(createQuestion), HttpStatus.OK);
 	}
 	// url-->/question/(idQuestion)/answer/(idAnswer)

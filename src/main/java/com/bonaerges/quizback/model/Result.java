@@ -63,10 +63,10 @@ public class Result {
 					@JoinColumn(name = FIELD_ID_PK, nullable = false, updatable = false)
 			}, 
 			inverseJoinColumns = { 
-				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_ANSWER, nullable = false, updatable = false),
-				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_QUESTION, nullable = false, updatable = false),
-				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_QUESTIONNAIRE, nullable = false, updatable = false),
-				@JoinColumn(name = QuestionUserAnswerId.FIELD_ID_USER, nullable = false, updatable = false) 
+				@JoinColumn(name = QuestionUserAnswerPK.FIELD_ID_ANSWER, nullable = false, updatable = false),
+				@JoinColumn(name = QuestionUserAnswerPK.FIELD_ID_QUESTION, nullable = false, updatable = false),
+				@JoinColumn(name = QuestionUserAnswerPK.FIELD_ID_QUESTIONNAIRE, nullable = false, updatable = false),
+				@JoinColumn(name = QuestionUserAnswerPK.FIELD_ID_USER, nullable = false, updatable = false) 
 			})
 	private List<QuestionnaireUserAnswer> questionnaireUserAnswer;
 }

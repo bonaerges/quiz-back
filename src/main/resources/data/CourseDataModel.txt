@@ -11,7 +11,16 @@ METHOD POST, ADD COURSE
 
 	PUT -->http://localhost:8080/course/1/user/1-->This links user 1 with course 1
 	PUT -->http://localhost:8080/course/1/user/2-->This links user 2 with course 1
-	PUT -->http://localhost:8080/course/1/user/3-->This links user 3 with course 1
+	PUT -->http://localhost:8PUT -->http://localhost:8080/questionnaire/1-->This creates questionnarie with given body descripton on course 1
+	Body: {"description":"questionnaire1 SPRING"}
+	GET -->http://localhost:8080/questionnaire-->Ths retrieve all questioarie withut question/asnwer details
+	PUT ->http://localhost:8080/questionnaire/1/question/1 -->This Link question 1 with questionnarie 1080/course/1/user/3-->This links user 3 with course 1
 	PUT -->http://localhost:8080/course/2/user/1-->This links user 1 with course 1
 	PUT -->http://localhost:8080/course/2/user/2-->This links user 2 with course 2
 	GET -->http://localhost:8080/course/1/users -->THsi show Course 1 Description + List of Users belong to course 1
+
+Creation Questionnarie
+	PUT -->http://localhost:8080/questionnaire/1-->This creates questionnarie with given body descripton on course 1
+	Body: {"description":"questionnaire1 SPRING"}
+	GET -->http://localhost:8080/questionnaire-->Ths retrieve all questioarie withut question/asnwer details
+	PUT ->http://localhost:8080/questionnaire/1/question/1 -->This Link question 1 with questionnarie 1

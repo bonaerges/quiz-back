@@ -19,13 +19,13 @@ import lombok.Setter;
 @Getter
 public class QuestionnaireUserAnswer {
 
-	public static final String FIELD_ID = "questionUserAnswerId";
+	public static final String FIELD_ID = "questionUserAnswerPK";
 	public static final String FIELD = "questionnaireUserAnswer";
 	public static final String TABLE_QA_NAME="questionnaireUserAnswer";
 	
 	@EmbeddedId 
 	@Column(name=FIELD_ID)
-	 public QuestionUserAnswerId id;
+	 public QuestionUserAnswerPK id;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -85,21 +87,7 @@ public class CourseController {
 		    else respEnt=new ResponseEntity<UserCourseDTO>(HttpStatus.NOT_FOUND);
 			return respEnt;
 	}
-	
 
-	@ResponseBody
-	@RequestMapping(value="/{id}/questionnaire/{idQ}",method = {RequestMethod.GET})
-	public RedirectView getQuestionnarieCourse(
-			@PathVariable("id") Integer id,
-			@PathVariable("idQ") Integer  idQ) throws NotFoundException,DuplicatedException {
-		
-	    RedirectView rv = new RedirectView();
-        rv.setContextRelative(true);
-        rv.setUrl("/questionnaire/{idQ}");
-       // RedirectAttributes redirectAttributes;
-       
-        return rv;
-	}	
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}/questionnaire/{idQ}/result",method = {RequestMethod.GET})
@@ -132,11 +120,29 @@ public class CourseController {
 		List <User> usersList=courseService.addUserToCourse(id, idUser);
 		CoursePostDTO courseDTO = new CoursePostDTO();
 		courseDTO.setUsers(userMapper.modelToDto(usersList));
-		//courseDTO.setDescription(courseService.findById(id).get().getQuestionnaire());
+		Course cDTO= courseService.findById(id).get();
+		courseDTO.setStartDate(cDTO.getStartDate());
+		courseDTO.setDescription(cDTO.getDescription());
+		courseDTO.setFinishDate(cDTO.getFinishDate());
+		courseDTO.setCreatedOn(cDTO.getCreatedOn());
+		
 		return new ResponseEntity<CoursePostDTO>(courseDTO,HttpStatus.OK);
 	}
 	
 
+	@ResponseBody
+	@RequestMapping(value="/{id}/questionnaire",method = {RequestMethod.PUT})
+	@PutMapping("/questionnaire")
+	public RedirectView getQuestionnarieCourse(
+			@PathVariable("id") Integer id) throws NotFoundException,DuplicatedException {
+		
+	    RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/questionnaire/{id}/add");
+       // RedirectAttributes redirectAttributes;
+       
+        return rv;
+	}	
 
 //	@ResponseBody
 //	@RequestMapping(value="/{id}/questionnaire/{idQ}",method = {RequestMethod.PUT})

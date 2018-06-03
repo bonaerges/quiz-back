@@ -28,7 +28,7 @@ public class Question {
 	public static final String LEVEL_FIELD = "level";
 	public static final String QUESTION_FIELD = "question";
 	public static final String TABLE_NAME_QUESTION_TAG = "QuestionTag";
-	
+	public static final String TABLE_NAME_QUESTION_QUIZ = "QuestionQuestionnaire";
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name=FIELD_ID)
@@ -46,8 +46,11 @@ public class Question {
 	@OneToOne
 	private Answer correctAnswer;
 
-	@ManyToOne
-	private Questionnaire questionnaire;
+	@ManyToMany
+	@JoinTable(name=TABLE_NAME_QUESTION_QUIZ,
+    joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),
+    inverseJoinColumns=@JoinColumn(name=Questionnaire.FIELD_ID, referencedColumnName=Questionnaire.FIELD_ID))
+	private List<Questionnaire> questionnaire;
 	
 	
 	//QUESTION (N) <-- (1) LEVEL
@@ -55,7 +58,7 @@ public class Question {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Level level;
 	
-	//QUESTION (N) <--> (M) TAG
+	//QUES@ManyToManyTION (N) <--> (M) TAG
 	@ManyToMany
 	@JoinTable(name=TABLE_NAME_QUESTION_TAG,
      joinColumns=@JoinColumn(name=FIELD_ID, referencedColumnName=FIELD_ID),

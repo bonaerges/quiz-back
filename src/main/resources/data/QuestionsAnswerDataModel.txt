@@ -1,33 +1,11 @@
 METHOD GET
 http://localhost:8080/question
 
-METHOD POST, ADD QUESTIONS
+GET ALL QUETION AND ANSWER
 
-http://localhost:8080/question
-c
-{ "description": "Question2"}
-{ "description": "Question3"}
+METHOD GET , GET QUESTIONS AND ANSWERS QUESTION 1
 
-METHOD POST,  ADD ANSWERS LIST TO QUESTIONS
-
-http://localhost:8080/question/1/answer
-[{"description": "answer1.1", "isCorrect":"false"},
-{"description": "answer1.2", "isCorrect":"false"},
-{"description": "answer1.3", "isCorrect":"true"} ]
-
-http://localhost:8080/question/2/answer
-[ {"description": "answer2.1", "isCorrect":"false"},
-{"description": "answer2.2", "isCorrect":"true"},
-{"description": "answer2.3", "isCorrect":"false"} ]
-
-http://localhost:8080/question/3/answer
-[{"description": "answer3.1", "isCorrect":"true"},
-{"description": "answer3.2", "isCorrect":"false"},
-{"description": "answer3.3", "isCorrect":"false"}]
-
-METHOD GET , GET QUESTIONS AND ANSWER QUESTION 1
-
-http://localhost:8080/question/1/answers
+http://localhost:8080/question/1
 {
     "description": "Question1",
     "answer": [
@@ -44,3 +22,90 @@ http://localhost:8080/question/1/answers
             "isCorrect": true
         }
     ],
+
+
+METHOD POST, ADD QUESTIONS
+
+http://localhost:8080/question
+{ "description": "Question1"}
+{ "description": "Question2"}
+{ "description": "Question3"}
+{ "description": "Question4"}
+{ "description": "Question5"}
+{ "description": "Question6"}
+{ "description": "Question7"}
+{ "description": "Question8"}
+{ "description": "Question9"}
+{ "description": "Question10"}
+{ "description": "Question11"}
+
+METHOD PUT TO  ADD ANSWERS LIST TO QUESTIONS
+
+http://localhost:8080/question/1/answer
+[{"description": "answer1.1", "isCorrect":"false"},
+{"description": "answer1.2", "isCorrect":"false"},
+{"description": "answer1.3", "isCorrect":"true"} ]
+
+http://localhost:8080/question/2/answer
+[ {"description": "answer2.1", "isCorrect":"false"},
+{"description": "answer2.2", "isCorrect":"true"},
+{"description": "answer2.3", "isCorrect":"false"} ]
+
+http://localhost:8080/question/3/answer
+[{"description": "answer3.1", "isCorrect":"true"},
+{"description": "answer3.2", "isCorrect":"false"},
+{"description": "answer3.3", "isCorrect":"false"}]
+
+http://localhost:8080/question/4/answer
+[{"description": "answer4.1", "isCorrect":"true"},
+{"description": "answer4.2", "isCorrect":"false"},
+{"description": "answer4.3", "isCorrect":"false"}]
+
+http://localhost:8080/question/5/answer
+[{"description": "answer5.1", "isCorrect":"flase"},
+{"description": "answer5.2", "isCorrect":"true"},
+{"description": "answer5.3", "isCorrect":"false"}]
+
+
+http://localhost:8080/question/6/answer
+[{"description": "answer6.1", "isCorrect":"true"},
+{"description": "answer6.2", "isCorrect":"false"},
+{"description": "answer6.3", "isCorrect":"false"}]
+
+
+http://localhost:8080/question/7/answer
+[{"description": "answer7.1", "isCorrect":"true"},
+{"description": "answer7.2", "isCorrect":"false"},
+{"description": "answer7.3", "isCorrect":"false"}]
+
+
+http://localhost:8080/question/8/answer
+[{"description": "answer8.1", "isCorrect":"true"},
+{"description": "answer8.2", "isCorrect":"false"},
+{"description": "answer8.3", "isCorrect":"false"}]
+
+
+http://localhost:8080/question/9/answer
+[{"description": "answer9.1", "isCorrect":"true"},
+{"description": "answer9.2", "isCorrect":"false"},
+{"description": "answer9.3", "isCorrect":"false"}]
+
+
+http://localhost:8080/question/10/answer
+[{"description": "answer10.1", "isCorrect":"true"},
+{"description": "answer10.2", "isCorrect":"false"},
+{"description": "answer10.3", "isCorrect":"false"}]
+
+
+http://localhost:8080/question/11/answer
+[{"description": "answer11.1", "isCorrect":"true"},
+{"description": "answer11.2", "isCorrect":"false"},
+{"description": "answer11.3", "isCorrect":"false"}]
+
+http://localhost:8080/question/12/answer
+[{"description": "answer12.1", "isCorrect":"true"},
+{"description": "answer12.2", "isCorrect":"false"},
+{"description": "answer12.3", "isCorrect":"false"}]
+
+
+

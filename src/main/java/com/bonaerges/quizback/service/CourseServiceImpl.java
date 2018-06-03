@@ -101,6 +101,9 @@ public class CourseServiceImpl implements CourseService {
 			userObject.ifPresent(u -> {
 				courseObject.get().getUser().add(u);
 				courseDAO.save(courseObject.get());
+			//	userObject.get().getCourse().add(courseObject.get());
+			//	userService.update(userObject.get());
+	
 				
 			});
 			return courseObject.get().getUser();

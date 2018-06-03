@@ -100,8 +100,11 @@ public class QuestionServiceImpl implements QuestionService {
 		if (question.isPresent()) {
 			// add answers linked to current question
 			answerModel.setQuestion(question.get());
+			answerModel.setIsCorrect(answerModel.getIsCorrect());
 			answerCreate = answerService.create(answerModel);
 			question.get().getAnswer().add(answerCreate);
+			if (answerModel.getIsCorrect())
+				question.get().setCorrectAnswer(answerCreate);
 			// questionDAO.save(question.get());
 			log.info("Succesfully add question " + id + " and answers linked to question");
 		}
@@ -153,5 +156,9 @@ public class QuestionServiceImpl implements QuestionService {
 		log.info(" Questionnaire findById successfully " + questionObject.toString());
 		return questionObject;
 	}
-
+	public List<Question> findAllByQuestionnaire(Integer idQuest){
+		return questionDAO.findAllByQuestionnaire(idQuest);
+	}
+	
+	
 }

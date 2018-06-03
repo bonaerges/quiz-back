@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -36,7 +37,7 @@ public class Questionnaire {
 	@Column(nullable = true,unique=true)
 	private String description="DEFAULT QUIZ";
 	
-	@OneToMany(mappedBy = QUESTIONNAIRE_FIELD, fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = QUESTIONNAIRE_FIELD, fetch = FetchType.LAZY)
 	private List<Question> question;
 
 	@ManyToOne(fetch = FetchType.LAZY)

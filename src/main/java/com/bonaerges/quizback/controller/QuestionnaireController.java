@@ -70,6 +70,7 @@ public class QuestionnaireController {
 		if (questionnaireModel.isPresent()) {
 			QuestionnaireQADTO qADTO= new QuestionnaireQADTO();
 			qADTO.setCourseDescription(questionnaireModel.get().getCourse().getDescription());
+			
 			questionnaireModel.get().getQuestion().forEach(q -> q.getAnswer());
 			qADTO.setQuestion(questionMapper.modelToDto(questionnaireModel.get().getQuestion()));
 			
@@ -105,6 +106,17 @@ public class QuestionnaireController {
        
         return rv;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/{id}/question",method = {RequestMethod.GET})
+	public RedirectView getResultQuestionsQuestionnarie(@PathVariable("id") Integer id,RedirectAttributes redirectAttributes)  {
+		
+	    RedirectView rv = new RedirectView();
+        rv.setContextRelative(false);
+        rv.setUrl("/question/{id}/quiz");
+       
+        return rv;
+	}
 	/************************************* HTTP METHOD POST	*************************************/
 	/**
 	 * 
@@ -115,7 +127,8 @@ public class QuestionnaireController {
 	 */
 	// questionnaire
 	@ResponseBody
-	@RequestMapping(value = "/{idCourse}/questionnaire", method = RequestMethod.POST)
+	@RequestMapping(value = "/{idCourse}", method = { RequestMethod.POST })
+	
 	public ResponseEntity<QuestionnaireDTO> create(@PathVariable("idCourse") Integer idCourse,
 			@RequestBody QuestionnaireDTO dto) throws NotFoundException {
 

@@ -1,6 +1,5 @@
 package com.bonaerges.quizback.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bonaerges.quizback.component.mapper.questionnaire.QuestionnaireMapper;
 import com.bonaerges.quizback.component.mapper.questionnaireUserAnswer.QuestionnaireUserAnswerMapper;
 import com.bonaerges.quizback.dto.QuestionnaireQADTO;
-import com.bonaerges.quizback.model.QuestionUserAnswerId;
+import com.bonaerges.quizback.dto.QuestionnaireUserAnswerDTO;
+import com.bonaerges.quizback.model.QuestionUserAnswerPK;
 import com.bonaerges.quizback.model.QuestionnaireUserAnswer;
 import com.bonaerges.quizback.service.QuestionnaireUserAnswerService;
 
@@ -50,7 +51,7 @@ public class QuestionnaireUserAnswerController {
 	// @ResponseBody
 	// @RequestMapping(method=RequestMethod.GET)
 	// public ResponseEntity<QuestionnaireQADTO> findById(@RequestBody
-	// QuestionUserAnswerId idDTO)
+	// QuestionUserAnswerPK idDTO)
 	// {
 	// Optional<QuestionnaireUserAnswer>
 	// questionnaireUAModel=questionnaireUserAnswerService.findById(idDTO);
@@ -77,18 +78,26 @@ public class QuestionnaireUserAnswerController {
 		return questionnaireUserAnswerMapper.modelToDto(questionnaires);
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/{idQ}/", method = RequestMethod.GET)
+	public List<QuestionnaireUserAnswer> findAllByQuestionnaire(@PathVariable("idQ") Integer idQuestionnaire) {
+
+		QuestionUserAnswerPK pkID = new QuestionUserAnswerPK();
+		List<QuestionnaireUserAnswer> questionnaires = questionnaireUserAnswerService.findByIdQuestionnaire(idQuestionnaire);
+		// log.info("findAll questionnaires count is: " +
+		// Integer.toString(questionnaires.size()));
+		return questionnaires;
+	}
+
 	/************************************
 	 * HTTP METHOD POST
 	 *************************************/
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
-	public QuestionnaireQADTO create(@RequestBody QuestionUserAnswerId idDTO) {
-
-		QuestionnaireUserAnswer qUA = new QuestionnaireUserAnswer();
-		qUA.setId(idDTO);
-		final QuestionnaireUserAnswer createQuestionnaireUA = questionnaireUserAnswerService.create(qUA);
-		log.info("Questionnaire User Answer" + createQuestionnaireUA.getId() + " succesfuly created.");
-		return questionnaireUserAnswerMapper.modelToDto(createQuestionnaireUA);
+	public QuestionnaireUserAnswer create(@RequestBody QuestionnaireUserAnswer idDTO) {
+		final QuestionnaireUserAnswer createQuestionnaireUA = questionnaireUserAnswerService.create(idDTO);
+		log.info("Questionnaire User Answer succesfuly created.");
+		return createQuestionnaireUA;
 	}
 
 	/************************************
@@ -97,35 +106,44 @@ public class QuestionnaireUserAnswerController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT)
 	// ONLY WILL BE ALOwED TO CHANGE ANSWER SELECTED BY USER ANYMORE
-	ResponseEntity<QuestionnaireQADTO> update(@RequestBody QuestionUserAnswerId idDTO) {
+	ResponseEntity<QuestionnaireQADTO> update(@RequestBody QuestionnaireUserAnswerDTO idDTO) {
 
-		Optional<QuestionnaireUserAnswer> questionnaireUAModel = questionnaireUserAnswerService.findById(idDTO);
-		ResponseEntity<QuestionnaireQADTO> respEnt;
-		if (questionnaireUAModel.isPresent()) {
-			// ONly is allowed to change response of user anymore
-			questionnaireUAModel.get().getId().setIdAnswer(idDTO.getIdAnswer());
-			questionnaireUAModel.get().setDate(new Date());
-			questionnaireUserAnswerService.update(questionnaireUAModel.get());
-			respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
-		} else
-			respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
+		if (idDTO.getIdQuestionnaire() != null) {
+			QuestionUserAnswerPK pk = new QuestionUserAnswerPK();
+			pk.setAnswerId(idDTO.getIdAnswer());
+			pk.setQuestionId(idDTO.getIdQuestion());
+			pk.setQuestionnaireId(idDTO.getIdQuestionnaire());
+			pk.setUserId(idDTO.getIdUser());
+			questionnaireUserAnswerService.findById(pk);
+		}
+		ResponseEntity<QuestionnaireQADTO> respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
+		// if (questionnaireUAModel.isPresent()) {
+		// // ONly is allowed to change response of user anymore
+		// questionnaireUAModel.get().setIdAnswer(idDTO.getIdAnswer());
+		// questionnaireUAModel.get().setDate(new Date());
+		// questionnaireUserAnswerService.update(questionnaireUAModel.get());
+		// respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
+		// } else
+		// respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
 		return respEnt;
 	}
 
 	/************************************
 	 * HTTP METHOD DELETE
 	 *************************************/
-	@ResponseBody
-	@RequestMapping(method = RequestMethod.DELETE)
-	ResponseEntity<QuestionnaireQADTO> delete(@RequestBody QuestionUserAnswerId idDTO) {
-		Optional<QuestionnaireUserAnswer> questionnaireUAModel = questionnaireUserAnswerService.findById(idDTO);
-		ResponseEntity<QuestionnaireQADTO> respEnt;
-		if (questionnaireUAModel.isPresent()) {
-			// ONly is allowed to change response of user anymore
-			questionnaireUserAnswerService.delete(questionnaireUAModel.get());
-			respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
-		} else
-			respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
-		return respEnt;
-	}
+	// @ResponseBody
+	// @RequestMapping(method = RequestMethod.DELETE)
+	// ResponseEntity<QuestionnaireQADTO> delete(@RequestBody QuestionUserAnswerPK
+	// idDTO) {
+	// Optional<QuestionnaireUserAnswer> questionnaireUAModel =
+	// questionnaireUserAnswerService.findById(idDTO);
+	// ResponseEntity<QuestionnaireQADTO> respEnt;
+	// if (questionnaireUAModel.isPresent()) {
+	// // ONly is allowed to change response of user anymore
+	// questionnaireUserAnswerService.delete(questionnaireUAModel.get());
+	// respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.OK);
+	// } else
+	// respEnt = new ResponseEntity<QuestionnaireQADTO>(HttpStatus.NOT_FOUND);
+	// return respEnt;
+	// }
 }

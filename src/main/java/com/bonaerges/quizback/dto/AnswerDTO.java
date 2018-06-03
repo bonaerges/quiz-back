@@ -11,5 +11,7 @@ public class AnswerDTO {
 
 	
 	public String description;
+	
+	public Boolean isCorrect;
 
 }

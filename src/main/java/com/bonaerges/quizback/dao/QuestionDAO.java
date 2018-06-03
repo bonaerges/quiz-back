@@ -1,5 +1,6 @@
 package com.bonaerges.quizback.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -14,5 +15,7 @@ public interface QuestionDAO extends PagingAndSortingRepository<Question, Intege
 
 	Optional<Question> findByDescription(String name);
 	
+	//@Query("SELECT q FROM Questionnaire As q JOIN q.question AS q WHERE q.question= qz.questionnaire AND q.questionnaire = :idQuest")
+	List<Question> findAllByQuestionnaire(Integer idQuest);
 	
 }

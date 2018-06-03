@@ -3,7 +3,6 @@ package com.bonaerges.quizback.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.bonaerges.quizback.dao.QuestionnaireUserAnswerDAO;
 import com.bonaerges.quizback.model.Answer;
 import com.bonaerges.quizback.model.Question;
-import com.bonaerges.quizback.model.QuestionUserAnswerId;
+import com.bonaerges.quizback.model.QuestionUserAnswerPK;
 import com.bonaerges.quizback.model.Questionnaire;
 import com.bonaerges.quizback.model.QuestionnaireUserAnswer;
 import com.bonaerges.quizback.model.Result;
@@ -44,8 +43,8 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 		// Create result adn then linked to answer
 		Result res = new Result();
 		QuestionnaireUserAnswer qUAObj = new QuestionnaireUserAnswer();
-		Optional<User> userAnswer = userService.findById(t.getId().getIdUser());
-		Optional<Questionnaire> quiz = questionnaireService.findById(t.getId().getIdQuestionnaire());
+		Optional<User> userAnswer = userService.findById(t.getId().getUserId());
+		Optional<Questionnaire> quiz = questionnaireService.findById(t.getId().getQuestionnaireId());
 		if (userAnswer.isPresent() && quiz.isPresent()) {
 			res.setUser(userAnswer.get());
 			res.setDate(new Date());
@@ -77,8 +76,7 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 
 	}
 
-	@Override
-	public Optional<QuestionnaireUserAnswer> findById(QuestionUserAnswerId id) {
+	public Optional<QuestionnaireUserAnswer> findById(QuestionUserAnswerPK id) {
 		Optional<QuestionnaireUserAnswer> qUAOb = questionnaireuserAnswerDAO.findById(id);
 		log.info(" Questionnaire findById successfully " + qUAOb.toString());
 		return qUAOb;
@@ -112,15 +110,15 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 				int toalQuestions = resultUser.getTotalQuestions();
 				boolean answerSelected = false;
 
-				Optional<User> userAnswer = userService.findById(answerUser.getId().getIdUser());
+				Optional<User> userAnswer = userService.findById(answerUser.getId().getUserId());
 				if (userAnswer.isPresent()) {
 					// Compare if question answer from questionnaire is correct one for question
 					// answered
-					if (answerUser.getId().getIdQuestion() == questionFilledQ.getId()) {
+					if (answerUser.getId().getQuestionId() == questionFilledQ.getId()) {
 						// Check if answer provide for the question is the correctAnswer to sumarize
 						// error or succeed
 						boolean answeredCorrect = Optional.ofNullable(answerUser)
-								.filter(aUser -> aUser.getId().getIdAnswer() == correctAnswer.getId()).isPresent();
+								.filter(aUser -> aUser.getId().getAnswerId() == correctAnswer.getId()).isPresent();
 						if (answeredCorrect) {
 							// find user that answer questionnaire for save into result and update answer OK
 							// and KO
@@ -164,4 +162,11 @@ public class QuestionnaireUserAnswerServiceImpl implements QuestionnaireUserAnsw
 		return questionnaireuserAnswerDAO.findUsersAnswerByQuestionnarie(idQ, idU);
 	}
 
+	public List<QuestionnaireUserAnswer> findByIdQuestionnaire(@Param("idQ")Integer idQ){
+		return questionnaireuserAnswerDAO.findByIdQuestionnaire(idQ);
+	}
+
+	public List<QuestionnaireUserAnswer> findByIdQuestionnaireAndUser(@Param("idQ")Integer idQ,@Param("idU")Integer idU){
+		return questionnaireuserAnswerDAO.findByIdQuestionnaireAndUser(idQ, idU);
+	}
 }
