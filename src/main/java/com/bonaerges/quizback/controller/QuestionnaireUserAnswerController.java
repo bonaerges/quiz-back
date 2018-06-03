@@ -62,7 +62,7 @@ public class QuestionnaireUserAnswerController {
 	@RequestMapping(value = "/{idQ}/", method = RequestMethod.GET)
 	public List<QuestionnaireUserAnswer> findAllByQuestionnaire(@PathVariable("idQ") Integer idQuestionnaire) {
 
-		QuestionUserAnswerPK pkID = new QuestionUserAnswerPK();
+	//	QuestionUserAnswerPK pkID = new QuestionUserAnswerPK();
 		List<QuestionnaireUserAnswer> questionnaires = questionnaireUserAnswerService.findByIdQuestionnaire(idQuestionnaire);
 		// log.info("findAll questionnaires count is: " +
 		// Integer.toString(questionnaires.size()));
